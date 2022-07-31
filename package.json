@@ -18,6 +18,7 @@
   "homepage": "https://github.com/JamesAUre/WizardBot#readme",
   "dependencies": {
     "@discordjs/rest": "^1.0.1",
+    "axios": "^0.27.2",
     "cron": "^2.1.0",
     "discord.js": "^13.9.1",
     "dotenv": "^16.0.1",
