@@ -27,7 +27,19 @@ const alreadyTaken = async (tag, discordID) => {
     })
 }
 
+const insertVerification = async (tag, discordID) => {
+    return verify.create({
+        discordID: discordID,
+        playerTag: tag,
+        leaderboard: false,
+        trophies: 0,
+        builderleaderboard: false,
+        buildertrophies: 0
+    }).catch((e) => console.log(e))
+}
+
 module.exports = {
     tagVerified,
-    alreadyTaken
+    alreadyTaken,
+    insertVerification
 }
