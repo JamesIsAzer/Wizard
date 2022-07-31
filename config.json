@@ -1,6 +1,8 @@
 {
     "prefix": "!!",
     "IDs": {
+        "guild": "582085045561458692",
+        "client": "691118910631575613",
         "leaderboardChannels": {
             "legendary": "849825440705151017",
             "builder": "849825482853974026"
