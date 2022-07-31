@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const mongoose = require("mongoose")
+const Schema = mongoose.Schema
 
 const verifySchema = Schema({
     discordID: String,
@@ -10,6 +10,6 @@ const verifySchema = Schema({
     builderleaderboard: Boolean,
 })
 
-const verify = mongoose.model("Data", verifySchema);
+const verify = mongoose.model("Data", verifySchema)
 
-module.exports = verify;
+module.exports = verify
