@@ -1,5 +1,7 @@
 const { Client, Intents, Collection } = require('discord.js');
 const fs = require('fs');
+const { tagVerified } = require('./api/mongo/verify/connections');
+
 require('dotenv').config();
 
 const client = new Client({
