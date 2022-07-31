@@ -1,0 +1,39 @@
+const { MessageEmbed } = require('discord.js')
+
+const getInvalidTagEmbed = () => new MessageEmbed()
+    .setTitle('Invalid Tag! ❌')
+    .setColor('#D10202')
+    .addFields({
+        name: 'How can I find my player tag?',
+        value: 'Your player tag can be found on your in-game profile page.'
+    })
+    .setImage(
+      'https://media.discordapp.net/attachments/582092054264545280/1003295714425720842/IMG_9034.jpg'
+    )
+
+const getInvalidApiTokenEmbed = () => new MessageEmbed()
+    .setTitle('Invalid API token! ❌')
+    .setColor('#D10202')
+    .addFields({
+      name: 'How can I find my API token?',
+      value: 'You can find your API token by going into settings -> advanced settings.',
+    })
+    .setImage(
+      'https://media.discordapp.net/attachments/582092054264545280/813606623519703070/image0.png?width=1440&height=665'
+    )
+
+const getValidVerificationEmbed = (desc) => new MessageEmbed()
+    .setTitle('Verification successful! ✅')
+    .setColor('#00de30')
+    .addFields({
+        name: 'Roles added',
+        value: desc
+    })
+    
+
+module.exports = {
+    getInvalidTagEmbed,
+    getInvalidApiTokenEmbed,
+    getValidVerificationEmbed
+} 
+
