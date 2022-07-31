@@ -12,8 +12,8 @@ const verifyProfileRequest = async ({ id, token }) => {
       `https://api.clashofclans.com/v1/players/%23${id.toUpperCase()}/verifytoken`, 
       { token: token },
       clashHeader
-    ).then((response) => { return response })
-    .catch((error) => { return error.response })
+    ).then((response) => response )
+    .catch((error) => error.response )
 };
 
 const verifyProfile = async( id, token ) => {
