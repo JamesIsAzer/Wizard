@@ -8,27 +8,31 @@ mongoose.connect(process.env.MONGO_URI, {
 
 const verify = require('./schema')
 
-const tagVerified = async (tag) => {
-    return verify.findOne({
+const tagVerified = async (tag) => 
+    verify.findOne({
         playerTag: tag
     }).then((result) => {
         if (result) return true
         return false
     })
-}
 
-const alreadyTaken = async (tag, discordID) => {
-    return verify.findOne({
+const alreadyTaken = async (tag, discordID) => 
+    verify.findOne({
         discordID: { $ne: discordID },
         playerTag: tag
     }).then((result) => {
         if(result) return true
         return false
     })
-}
 
-const insertVerification = async (tag, discordID) => {
-    return verify.create({
+
+const getDiscordOfTag = async (tag) => 
+    verify.findOne({
+        playerTag: tag
+    }).then((result) => result.discordID)
+
+const insertVerification = async (tag, discordID) =>
+    verify.create({
         discordID: discordID,
         playerTag: tag,
         leaderboard: false,
@@ -36,10 +40,11 @@ const insertVerification = async (tag, discordID) => {
         builderleaderboard: false,
         buildertrophies: 0
     }).catch((e) => console.log(e))
-}
+
 
 module.exports = {
     tagVerified,
     alreadyTaken,
+    getDiscordOfTag,
     insertVerification
 }

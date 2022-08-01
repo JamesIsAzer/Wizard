@@ -7,11 +7,13 @@ const {
   tagVerified,
   alreadyTaken,
   insertVerification,
+  getDiscordOfTag,
 } = require('../../../api/mongo/verify/connections');
 const {
   getInvalidApiTokenEmbed,
   getInvalidTagEmbed,
   getValidVerificationEmbed,
+  alertAttemptVerification
 } = require('../../../utils/embeds/verify');
 const { parseTag, isTagValid } = require('../../../utils/tagHandling');
 const { IDs } = require('../../../config.json');
@@ -37,6 +39,8 @@ module.exports = {
     const tag = interaction.options.getString('tag');
     const token = interaction.options.getString('token');
     const id = parseTag(tag);
+    const logChannel = interaction.guild.channels.cache.get(IDs.logChannels.alert)
+    const memberId = interaction.member.id
 
     if (!isTagValid(id)) {
       await interaction.editReply({
@@ -82,7 +86,9 @@ module.exports = {
 
     if (await tagVerified(tag)) {
       if (await alreadyTaken(tag, interaction.member.id)) {
+        const originalAccountId = getDiscordOfTag(tag)
         await interaction.editReply('This account is already taken!');
+        await logChannel.send({embeds: [alertAttemptVerification(memberId, await originalAccountId, tag)]})
         return;
       } else {
         await interaction.editReply({
