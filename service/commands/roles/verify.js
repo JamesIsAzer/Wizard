@@ -11,7 +11,6 @@ const {
 const {
   getInvalidApiTokenEmbed,
   getInvalidTagEmbed,
-  getValidVerificationEmbed,
 } = require('../../../utils/embeds/verify');
 const { parseTag, isTagValid } = require('../../../utils/tagHandling');
 const { setRoles } = require('../../../utils/setRoles');
