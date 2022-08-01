@@ -13,6 +13,7 @@ const {
   getInvalidTagEmbed,
   getValidVerificationEmbed,
 } = require('../../../utils/embeds/verify');
+const { parseTag, isTagValid } = require('../../../utils/tagHandling');
 const { IDs } = require('../../../config.json');
 const roles = IDs.verificationRoles;
 
@@ -35,7 +36,15 @@ module.exports = {
   async execute(interaction) {
     const tag = interaction.options.getString('tag');
     const token = interaction.options.getString('token');
+    const id = parseTag(tag);
 
+    if (!isTagValid(id)) {
+      await interaction.editReply({
+        embeds: [getInvalidTagEmbed()],
+        ephemeral: true,
+      });
+      return;
+    }
     const findProfileResponse = await findProfile(tag);
 
     if (findProfileResponse.error) {
