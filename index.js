@@ -40,5 +40,6 @@ client.on('interactionCreate', async (interaction) => {
 
 client.once('ready', () => {
   console.log('Ready!');
+  // insert scheduler here when ready
 });
 client.login(process.env.DISCORD_TOKEN);
