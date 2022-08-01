@@ -22,18 +22,23 @@ const getInvalidApiTokenEmbed = () => new MessageEmbed()
       'https://media.discordapp.net/attachments/582092054264545280/813606623519703070/image0.png?width=1440&height=665'
     )
 
-const getValidVerificationEmbed = (desc) => new MessageEmbed()
+const getValidVerificationEmbed = desc => new MessageEmbed()
     .setTitle('Verification successful! ✅')
-    .setColor('#00de30')
+    .setColor('#00DE30')
     .addFields({
         name: 'Roles added',
         value: desc
     })
     
-
-module.exports = {
+const alertAttemptVerification = (newUserId, originalOwnerId, tag) => new MessageEmbed()
+    .setTitle('Attempted cross verification⚠️')
+    .setColor('FFFF00')
+    .setDescription(`User <@${newUserId}> tried to verify an account linked to <@${originalOwnerId}> using the tag \`#${tag}\``)
+    
+  module.exports = {
     getInvalidTagEmbed,
     getInvalidApiTokenEmbed,
-    getValidVerificationEmbed
+    getValidVerificationEmbed,
+    alertAttemptVerification
 } 
 
