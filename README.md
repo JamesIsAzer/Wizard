@@ -17,7 +17,7 @@ Get your Clash of Clans API Token from [here](https://developer.clashofclans.com
 2. Make a copy of `.env.copy` and rename it to `.env`.
    Fill in your Discord Token, your Mongo_URI and your Clash Token. Make sure you include Bearer before your clash token like `"Bearer eyJ0eXAiOiJKV..."`
 
-3. Go to the `config.json` file and change all the ids to ids in your server.
+3. Make a copy of the `config.json.copy` file and rename it to `config.json`. Then go to the `config.json` file and change all the ids to ids in your server.
 
 ### Installation
 
