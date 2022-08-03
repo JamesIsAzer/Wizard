@@ -1,18 +1,21 @@
 const { CronJob } = require('cron');
 
-const scheduleLeaderboards = async() => {
+const { createLeaderboard } = require('../service/automatic/leaderboard')
+
+const scheduleLeaderboards = () => {
     const RESET_TIME = '45 11,23 * * *'
     
     new CronJob({
         cronTime: RESET_TIME,
         onTick: function () {
-            leaderboard.createLeaderboard(
-                legendaryChannel,
-                builderChannel,
-                client
-            );
+            createLeaderboard()
         },
         start: true,
         utcOffset: -5
       });
 }
+
+module.exports = {
+    scheduleLeaderboards
+};
+  
