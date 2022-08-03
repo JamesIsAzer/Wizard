@@ -1,6 +1,8 @@
 const { Collection } = require('discord.js');
 const fs = require('fs');
 const client = require('./utils/client')
+const { scheduleLeaderboards } = require('./utils/scheduler')
+
 require('dotenv').config();
 
 client.commands = new Collection();
@@ -36,5 +38,6 @@ client.on('interactionCreate', async (interaction) => {
 
 client.once('ready', () => {
   console.log('Ready!');
+  scheduleLeaderboards()
 });
 client.login(process.env.DISCORD_TOKEN);
