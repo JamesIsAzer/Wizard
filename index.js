@@ -1,11 +1,8 @@
-const { Client, Intents, Collection } = require('discord.js');
+const { Collection } = require('discord.js');
 const fs = require('fs');
-
+const client = require('./utils/client')
 require('dotenv').config();
 
-const client = new Client({
-  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
-});
 
 client.commands = new Collection();
 
@@ -40,6 +37,5 @@ client.on('interactionCreate', async (interaction) => {
 
 client.once('ready', () => {
   console.log('Ready!');
-  // insert scheduler here when ready
 });
 client.login(process.env.DISCORD_TOKEN);
