@@ -3,7 +3,6 @@ const fs = require('fs');
 const client = require('./utils/client')
 require('dotenv').config();
 
-
 client.commands = new Collection();
 
 const commandFolders = fs.readdirSync('./service/commands');
