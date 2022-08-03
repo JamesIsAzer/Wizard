@@ -41,10 +41,17 @@ const insertVerification = async (tag, discordID) =>
         buildertrophies: 0
     }).catch((e) => console.log(e))
 
+const getLeaderboardAccounts = async () => 
+    verify.find({
+        $or: [{ leaderboard: true }, { builderleaderboard: true }]
+    }).then(result => result)
+
+
 
 module.exports = {
     tagVerified,
     alreadyTaken,
     getDiscordOfTag,
-    insertVerification
+    insertVerification,
+    getLeaderboardAccounts
 }
