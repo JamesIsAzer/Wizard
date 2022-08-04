@@ -1,12 +1,12 @@
-require('dotenv').config()
-const mongoose = require('mongoose')
+require('dotenv').config();
+const mongoose = require('mongoose');
 
 mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
-const verify = require('./schema')
+const verify = require('./schema');
 
 const tagVerified = async (tag) => 
     verify.findOne({
@@ -40,6 +40,16 @@ const insertVerification = async (tag, discordID) =>
         builderleaderboard: false,
         buildertrophies: 0
     }).catch((e) => console.log(e))
+    
+const tagVerifiedBySameUser = async (tag, discordID) => 
+    verify.findOne({
+      discordID,
+      playerTag: tag,
+    })
+    .then((result) => {
+      if (result) return true;
+      return false;
+    });
 
 const getLeaderboardAccounts = async () => 
     verify.find({
@@ -53,5 +63,6 @@ module.exports = {
     alreadyTaken,
     getDiscordOfTag,
     insertVerification,
-    getLeaderboardAccounts
+    getLeaderboardAccounts,
+    tagVerifiedBySameUser
 }
