@@ -7,14 +7,14 @@ const responseObject = (response, fallback) => ({
   error: fallback
 })
 
-const verifyProfileRequest = async ({ tag, token }) => {
-    return axios.post(
+const verifyProfileRequest = async ({ tag, token }) => 
+    axios.post(
       `https://api.clashofclans.com/v1/players/%23${tag.toUpperCase()}/verifytoken`, 
       { token: token },
       clashHeader
     ).then((response) => response )
     .catch((error) => error.response )
-};
+
 
 const verifyProfile = async( tag, token ) => {
   const response = await verifyProfileRequest({tag, token})
@@ -22,13 +22,12 @@ const verifyProfile = async( tag, token ) => {
   return responseObject(null, parseClashStatus(response.status))
 }
 
-const findProfileRequest = async ({ tag }) => {
-  return axios.get(
+const findProfileRequest = async ({ tag }) => 
+  axios.get(
     `https://api.clashofclans.com/v1/players/%23${tag.toUpperCase()}`, 
     clashHeader
   ).then((response) => response )
   .catch((error) => error.response )
-};
 
 const findProfile = async( tag ) => {
 const response = await findProfileRequest({ tag })

@@ -47,9 +47,7 @@ const appendDiscordData = async(participants) => {
     const guild = client.guilds.cache.get(IDs.guild)
     const memberData = await guild.members.fetch({ user: participantsIDs })
 
-    return participants.map((participant) => {
-        return { ...participant._doc, discordUsername: findDiscordUsername(participant, memberData) } 
-    })
+    return participants.map((participant) => ({ ...participant._doc, discordUsername: findDiscordUsername(participant, memberData) }))
 }
 
 const findDiscordUsername = (participant, memberData) => 
@@ -60,17 +58,15 @@ const findDiscordUsername = (participant, memberData) =>
 
 const fetchAllAccounts = (participants) => 
     promiseAllProps(participantDatas = participants.map((participant) => 
-        limiter.schedule(() => {
-            return {
-                discord: participant.discordUsername ? participant.discordUsername : '[Could not find name]',
-                clash: findProfile(participant.playerTag),
-                db: {
-                    discordID: participant.discordID,
-                    leaderboard: participant.leaderboard,
-                    builderleaderboard: participant.builderleaderboard
-                }
+        limiter.schedule(() => ({
+            discord: participant.discordUsername ? participant.discordUsername : '[Could not find name]',
+            clash: findProfile(participant.playerTag),
+            db: {
+                discordID: participant.discordID,
+                leaderboard: participant.leaderboard,
+                builderleaderboard: participant.builderleaderboard
             }
-        })
+        }))
     ))
 
 const splitParticipants = (participants) => 

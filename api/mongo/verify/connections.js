@@ -40,9 +40,9 @@ const insertVerification = async (tag, discordID) =>
         builderleaderboard: false,
         buildertrophies: 0
     }).catch((e) => console.log(e))
-const tagVerifiedBySameUser = async (tag, discordID) => {
-  return verify
-    .findOne({
+    
+const tagVerifiedBySameUser = async (tag, discordID) => 
+    verify.findOne({
       discordID,
       playerTag: tag,
     })
@@ -50,7 +50,6 @@ const tagVerifiedBySameUser = async (tag, discordID) => {
       if (result) return true;
       return false;
     });
-};
 
 const getLeaderboardAccounts = async () => 
     verify.find({
