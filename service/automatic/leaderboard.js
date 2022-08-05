@@ -11,6 +11,10 @@ const {
     getBuilderLeaderboard
 } = require('../../utils/embeds/leaderboard')
 
+const {
+    getHowToCompete
+} = require('../../utils/buttons/leaderboard')
+
 const { IDs } = require('../../config.json')
 const Bottleneck = require('bottleneck');
 const client = require('../../utils/client')
@@ -30,16 +34,16 @@ const createLeaderboard = async() => {
     
     const participantsSplit = splitParticipants(playerData)
 
-    const topLegends = getTopLegends(participantsSplit.legendParticipants, MAX_LEADERBOARD_PARTICIPANTS)
-    const topBuilders = getTopBuilders(participantsSplit.builderParticipants, MAX_LEADERBOARD_PARTICIPANTS)
+    const topLegends = getTopLegends(participantsSplit.legendParticipants)
+    const topBuilders = getTopBuilders(participantsSplit.builderParticipants)
     const legendParticipantCount = participantsSplit.legendParticipants.length
     const builderParticipantCount = participantsSplit.builderParticipants.length
 
     const legendsChannel = client.channels.cache.get(IDs.leaderboardChannels.legendary)
     const builderChannel = client.channels.cache.get(IDs.leaderboardChannels.builder)
 
-    legendsChannel.send({embeds: [getLegendaryLeaderboard(topLegends, legendParticipantCount)]})
-    builderChannel.send({embeds: [getBuilderLeaderboard(topBuilders, builderParticipantCount)]})
+    legendsChannel.send({embeds: [getLegendaryLeaderboard(topLegends, legendParticipantCount)], components: [getHowToCompete()] })
+    builderChannel.send({embeds: [getBuilderLeaderboard(topBuilders, builderParticipantCount)], components: [getHowToCompete()] })
 }
 
 const appendDiscordData = async(participants) => {
@@ -82,17 +86,17 @@ const pruneIncompleteData = (playerData) =>
         return acc
     }, [])
 
-const getTopLegends = (legendParticipants, max) => 
+const getTopLegends = (legendParticipants) => 
     legendParticipants.sort((a, b) => 
         (a.clash.response.trophies > b.clash.response.trophies) ? 1 : 
         ((b.clash.response.trophies > a.clash.response.trophies) ? -1 : 0)
-    ).slice(0, max)
+    ).slice(0, MAX_LEADERBOARD_PARTICIPANTS)
 
-const getTopBuilders = (builderParticipants, max) => 
+const getTopBuilders = (builderParticipants) => 
 builderParticipants.sort((a, b) => 
     (a.clash.response.versusTrophies > b.clash.response.versusTrophies) ? 1 : 
     ((b.clash.response.versusTrophies > a.clash.response.versusTrophies) ? -1 : 0)
-).slice(0, max)
+).slice(0, MAX_LEADERBOARD_PARTICIPANTS)
 
 const promiseAllProps = (arrayOfObjects) => 
     Promise.map(arrayOfObjects, (obj) => Promise.props(obj));
