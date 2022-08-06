@@ -15,6 +15,7 @@ const {
 } = require('../../../utils/embeds/verify');
 const { parseTag, isTagValid } = require('../../../utils/tagHandling');
 const { setRoles } = require('../../../utils/setRoles');
+const { IDs } = require('../../../config.json')
 
 module.exports = {
   data: new SlashCommandBuilder()
