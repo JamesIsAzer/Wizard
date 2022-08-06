@@ -6,7 +6,7 @@ const getLegendaryLeaderboard = (topLegends, legendParticipantCount) => {
     .setColor('#9650DC');
     for (let i = 0; i < topLegends.length; i++){
         embed.addFields({
-            name: `Rank ${i+1} - ${topLegends[i].clash.response.data.trophies}🏆`,
+            name: `Rank ${i+1} - ${topLegends[i].clash.response.data.trophies} 🏆`,
             value: `Discord tag: <@${topLegends[i].db.discordID}>\n` +
             `Discord username: ${topLegends[i].discord}\n` +
             `In-game name: ${topLegends[i].clash.response.data.name}\n` +
@@ -23,7 +23,7 @@ const getBuilderLeaderboard = (topBuilders, builderParticipantCount) => {
     .setColor('#0B0B3B');
     for (let i = 0; i < topBuilders.length; i++){
         embed.addFields({
-            name: `Rank ${i+1} - ${topBuilders[i].clash.response.data.trophies}🏆`,
+            name: `Rank ${i+1} - ${topBuilders[i].clash.response.data.versusTrophies} 🏆`,
             value: `Discord tag: <@${topBuilders[i].db.discordID}>\n` +
             `Discord username: ${topBuilders[i].discord}\n` +
             `In-game name: ${topBuilders[i].clash.response.data.name}\n` +
@@ -33,7 +33,6 @@ const getBuilderLeaderboard = (topBuilders, builderParticipantCount) => {
     embed.setFooter({text: `Participants: ${builderParticipantCount}`});
     return embed
 }
-
 
 module.exports = {
     getLegendaryLeaderboard,

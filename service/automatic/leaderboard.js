@@ -36,6 +36,7 @@ const createLeaderboard = async() => {
 
     const topLegends = getTopLegends(participantsSplit.legendParticipants)
     const topBuilders = getTopBuilders(participantsSplit.builderParticipants)
+
     const legendParticipantCount = participantsSplit.legendParticipants.length
     const builderParticipantCount = participantsSplit.builderParticipants.length
 
@@ -54,11 +55,7 @@ const appendDiscordData = async(participants) => {
     return participants.map((participant) => ({ ...participant._doc, discordUsername: findDiscordUsername(participant, memberData) }))
 }
 
-const findDiscordUsername = (participant, memberData) => 
-    memberData.reduce((acc, x) => {
-        if (acc) return acc
-        if (participant.discordID === x.user.id) return `${x.user.username}#${x.user.discriminator}`
-    }, null) 
+const findDiscordUsername = (participant, memberData) => memberData.find(x => x.user.id === participant.discordID)
 
 const fetchAllAccounts = (participants) => 
     promiseAllProps(participantDatas = participants.map((participant) => 
@@ -87,16 +84,12 @@ const pruneIncompleteData = (playerData) =>
     }, [])
 
 const getTopLegends = (legendParticipants) => 
-    legendParticipants.sort((a, b) => 
-        (a.clash.response.trophies > b.clash.response.trophies) ? 1 : 
-        ((b.clash.response.trophies > a.clash.response.trophies) ? -1 : 0)
-    ).slice(0, MAX_LEADERBOARD_PARTICIPANTS)
+    legendParticipants.sort((a, b) => b.clash.response.data.trophies - a.clash.response.data.trophies)
+        .slice(0, MAX_LEADERBOARD_PARTICIPANTS)
 
 const getTopBuilders = (builderParticipants) => 
-builderParticipants.sort((a, b) => 
-    (a.clash.response.versusTrophies > b.clash.response.versusTrophies) ? 1 : 
-    ((b.clash.response.versusTrophies > a.clash.response.versusTrophies) ? -1 : 0)
-).slice(0, MAX_LEADERBOARD_PARTICIPANTS)
+    builderParticipants.sort((a, b) => b.clash.response.data.versusTrophies - a.clash.response.data.versusTrophies)
+        .slice(0, MAX_LEADERBOARD_PARTICIPANTS)
 
 const promiseAllProps = (arrayOfObjects) => 
     Promise.map(arrayOfObjects, (obj) => Promise.props(obj));
