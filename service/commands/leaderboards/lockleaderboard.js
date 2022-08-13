@@ -7,7 +7,7 @@ const {
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('lockleaderboard')
-    .setDescription('Enable/disable people from participating on the leaderboard')
+    .setDescription('Mod only - Enable/disable people from participating on the leaderboard')
     .addBooleanOption((option) =>
       option
         .setName('lock')
