@@ -62,9 +62,13 @@ const tagVerifiedBySameUser = async (tag, discordID) =>
 const getLeaderboardAccounts = async () => 
     verify.find({
         $or: [{ leaderboard: true }, { builderleaderboard: true }]
+    }).then((result) => result)
+
+const unverifyUser = async (discordID) =>
+    verify.deleteMany({
+        discordID: discordID
     }).then(result => result)
-
-
+    .catch((e) => console.log(e))
 
 module.exports = {
     tagVerified,
@@ -73,5 +77,6 @@ module.exports = {
     getDiscordOfTag,
     insertVerification,
     getLeaderboardAccounts,
-    tagVerifiedBySameUser
+    tagVerifiedBySameUser,
+    unverifyUser
 }

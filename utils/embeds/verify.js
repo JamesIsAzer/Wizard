@@ -30,6 +30,14 @@ const getValidVerificationEmbed = desc => new MessageEmbed()
         value: desc
     })
     
+const getUnverifiedEmbed = rolesRemoved => new MessageEmbed()
+    .setTitle('Unverification successful! ✅')
+    .setColor('#00DE30')
+    .addFields({
+        name: 'Roles removed',
+        value: rolesRemoved.reduce((acc, x) => acc += `${x.icon ?? '•'} <@&${x.id}> removed!\n` , '')
+    });
+
 const alertAttemptVerification = (newUserId, originalOwnerId, tag) => new MessageEmbed()
     .setTitle('Attempted cross verification⚠️')
     .setColor('FFFF00')
@@ -39,6 +47,7 @@ module.exports = {
     getInvalidTagEmbed,
     getInvalidApiTokenEmbed,
     getValidVerificationEmbed,
+    getUnverifiedEmbed,
     alertAttemptVerification
 } 
 
