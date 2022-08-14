@@ -2,13 +2,13 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const {
   verifyProfile,
   findProfile,
-} = require('../../../api/clash/verification');
+} = require('../../../dao/clash/verification');
 const {
   tagVerified,
   alreadyTaken,
   insertVerification,
   getDiscordOfTag,
-} = require('../../../api/mongo/verify/connections');
+} = require('../../../dao/mongo/verify/connections');
 const {
   getInvalidApiTokenEmbed,
   getInvalidTagEmbed,

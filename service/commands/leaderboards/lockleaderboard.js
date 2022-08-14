@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { hasMediumPerms } = require('../../../utils/permissions');
 const {
   toggleLeaderboard,
-} = require('../../../api/mongo/leaderboard/connections');
+} = require('../../../dao/mongo/leaderboard/connections');
 
 module.exports = {
   data: new SlashCommandBuilder()
