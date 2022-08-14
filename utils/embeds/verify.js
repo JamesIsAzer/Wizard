@@ -35,7 +35,7 @@ const getUnverifiedEmbed = rolesRemoved => new MessageEmbed()
     .setColor('#00DE30')
     .addFields({
         name: 'Roles removed',
-        value: rolesRemoved.reduce((acc, x) => acc += `${x.icon ?? '•'} <@&${x.id}> removed!\n` , '')
+        value: rolesRemoved.reduce((acc, x) => acc += `${x.icon ?? '•'} <@&${x.id}> removed!\n` , '') ?? '• No roles to remove'
     });
 
 const alertAttemptVerification = (newUserId, originalOwnerId, tag) => new MessageEmbed()
