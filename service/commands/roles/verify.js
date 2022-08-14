@@ -100,7 +100,7 @@ module.exports = {
       insertVerification(tag, interaction.member.id);
       await interaction.editReply({
         embeds: [setRoles(profileData, interaction.member)],
-        ephemeral: true,
+        ephemeral: true
       });
       return;
     }
