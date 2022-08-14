@@ -25,6 +25,14 @@ const alreadyTaken = async (tag, discordID) =>
         return false
     })
 
+const isOwnerOfAccount = async (tag, discordID) => 
+    verify.findOne({
+        discordID: discordID,
+        playerTag: tag
+    }).then((result) => {
+        if(result) return true
+        return false
+    })
 
 const getDiscordOfTag = async (tag) => 
     verify.findOne({
@@ -61,6 +69,7 @@ const getLeaderboardAccounts = async () =>
 module.exports = {
     tagVerified,
     alreadyTaken,
+    isOwnerOfAccount,
     getDiscordOfTag,
     insertVerification,
     getLeaderboardAccounts,

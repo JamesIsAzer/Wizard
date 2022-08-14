@@ -35,7 +35,7 @@ const alertAttemptVerification = (newUserId, originalOwnerId, tag) => new Messag
     .setColor('FFFF00')
     .setDescription(`User <@${newUserId}> tried to verify an account linked to <@${originalOwnerId}> using the tag \`#${tag}\``)
     
-  module.exports = {
+module.exports = {
     getInvalidTagEmbed,
     getInvalidApiTokenEmbed,
     getValidVerificationEmbed,

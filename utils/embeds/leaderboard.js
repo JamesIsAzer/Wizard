@@ -37,5 +37,5 @@ const getBuilderLeaderboard = (topBuilders, builderParticipantCount) => {
 module.exports = {
     getLegendaryLeaderboard,
     getBuilderLeaderboard
-  };
+};
   

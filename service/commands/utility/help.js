@@ -22,19 +22,19 @@ module.exports = {
   async execute(interaction) {
     switch(interaction.options.getString('command')){
         case 'verification':
-        await interaction.editReply({embeds: [getVerificationHelp()], ephemeral: true,})
+        await interaction.reply({embeds: [getVerificationHelp()], ephemeral: true,})
         return
         case 'colours':
-        await interaction.editReply({embeds: [getColoursHelp()], ephemeral: true,})
+        await interaction.reply({embeds: [getColoursHelp()], ephemeral: true,})
         return
         case 'stats':
-        await interaction.editReply({embeds: [getStatsHelp()], ephemeral: true,})
+        await interaction.reply({embeds: [getStatsHelp()], ephemeral: true,})
         return
         case 'leaderboards':
-        await interaction.editReply({embeds: [getLeaderboardHelp()], ephemeral: true,})
+        await interaction.reply({embeds: [getLeaderboardHelp()], ephemeral: true,})
         return
         default:
-        await interaction.editReply({embeds: [getGeneralHelp()], ephemeral: true,})
+        await interaction.reply({embeds: [getGeneralHelp()], ephemeral: true,})
         return
     }
   },
