@@ -15,6 +15,7 @@ module.exports = {
         .setRequired(true)
     ),
   async execute(interaction) {
+    await interaction.deferReply({ ephemeral: false });
     if(hasMediumPerms(interaction.member)){
       const shouldLock = interaction.options.getBoolean('lock');
       toggleLeaderboard(shouldLock)

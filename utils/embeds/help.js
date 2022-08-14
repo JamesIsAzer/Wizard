@@ -56,16 +56,20 @@ const getStatsHelp = () => new MessageEmbed()
     .setDescription(
         `Wizard lets you see in-game statistics of player profiles and clans. It shows whether you verified under an account, but is not necessary.`)
     .addFields({
-        name: '/profile <player tag>',
+        name: '/profile get <player tag>',
         value: `Displays the stats of a player with the specified tag.`,
+    },
+    {
+        name: '/profile get',
+        value: `An easy shortcut to display your default profile.`,
     },
     {
         name: '/profile save <player tag>',
         value: `If you verified under an account, you can save it to make it your default profile.`,
     },
     {
-        name: '/profile',
-        value: `An easy shortcut to display your default profile.`,
+        name: '/profile remove <player tag>',
+        value: `If you have a default profile saved, you can remove it as your default.`,
     },
     {
         name: '/clan <clan tag>',

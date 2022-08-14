@@ -34,6 +34,7 @@ module.exports = {
         .setRequired(true)
     ),
   async execute(interaction) {
+    await interaction.deferReply({ ephemeral: true });
     const tag = interaction.options.getString('tag');
     const token = interaction.options.getString('token');
     const id = parseTag(tag);

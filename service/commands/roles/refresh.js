@@ -18,6 +18,7 @@ module.exports = {
         .setRequired(true)
     ),
   async execute(interaction) {
+    await interaction.deferReply({ ephemeral: true });
     const tag = interaction.options.getString('tag');
     const id = parseTag(tag);
     const discordID = interaction.member.id;

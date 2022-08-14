@@ -37,7 +37,6 @@ client.on('interactionCreate', async (interaction) => {
   if (!command) return;
 
   try {
-    await interaction.deferReply({ ephemeral: true });
     await command.execute(interaction);
   } catch (e) {
     console.log(`${new Date().toString()} - ${e}`);
