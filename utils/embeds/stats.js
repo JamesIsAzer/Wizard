@@ -1,4 +1,5 @@
 const { MessageEmbed } = require('discord.js')
+const MAX_MEMBERS = 3
 
 const getProfileEmbed = (profile, verified) => {
     const embed = new MessageEmbed()
@@ -19,7 +20,7 @@ const getProfileEmbed = (profile, verified) => {
     },
     {
         name: 'Clan',
-        value: `<a:looking_for_clanmates:584303569809834005> ${isInClan(profile) ? "No clan found" : `[${profile.clan.name}](https://www.clashofstats.com/clans/${getURLClanName(player)}-${getURLClanTag(player)}/summary)`}`,
+        value: `<a:looking_for_clanmates:584303569809834005> ${isInClan(profile) ? "No clan found" : `[${profile.clan.name}](https://www.clashofstats.com/clans/${getURLPlayerClanName(player)}-${getURLPlayerClanTag(player)}/summary)`}`,
         inline: true,
     }, 
     // trophies
@@ -97,6 +98,86 @@ const getProfileEmbed = (profile, verified) => {
     return embed
 }
 
+const getClanEmbed = (clan) => {
+    const embed = new MessageEmbed()
+        .setTitle(`<:versusbattle:777311333649219594> ${clan.name} ${clan.tag}`)
+        .setURL(`https://www.clashofstats.com/clans/${getURLClanName(clan)}-${getURLClanTag(clan)}/summary`)
+        .setDescription(clan.description)
+        .setThumbnail(clan.badgeUrls.medium)
+        .setColor('#33E3FF')
+        .addFields(
+        // 1
+        {
+            name: 'War wins',
+            value: `:zap: ${prettyNumbers(clan.warWins)}`,
+            inline: true,
+        },
+        {
+            name: 'War losses',
+            value: `:dash: ${clan.warLosses ? prettyNumbers(clan.warLosses) : 'Private'}`,
+            inline: true,
+        },
+        {
+            name: 'War league',
+            value: `${getWarLeagueEmote(clan.warLeague.id)} ${clan.warLeague.name}`,
+            inline: true,
+        }, 
+
+        // 2
+        {
+            name: 'Required trophies',
+            value: `<:trophy:927704647089676369> ${prettyNumbers(clan.requiredTrophies)}`,
+            inline: true,
+        },
+        {
+            name: 'Clan trophies',
+            value: `<:trophy:927704647089676369> ${clan.clanPoints ? prettyNumbers(clan.clanPoints) : 0}`,
+            inline: true,
+        }, 
+        {
+            name: 'Members',
+            value: `:bust_in_silhouette: ${prettyNumbers(clan.members)}/50`,
+            inline: true,
+        },
+
+        // 3
+        {
+            name: 'Required builder cups',
+            value: `<:versustrophy:927704667960528926> ${prettyNumbers(clan.requiredVersusTrophies)}`,
+            inline: true,
+        },
+        {
+            name: 'Clan builder cups',
+            value: `<:versustrophy:927704667960528926> ${clan.clanVersusPoints ? prettyNumbers(clan.clanVersusPoints) : 0}`,
+            inline: true,
+        }, 
+        {
+            name: 'Language',
+            value: `:speech_balloon: ${clan.chatLanguage ? prettyNumbers(clan.chatLanguage.name) : 'Not set'}`,
+            inline: true,
+        },
+
+        // 4
+        {
+            name: 'Top players',
+            value: getTopMemberNames(clan) ?? "No players",
+            inline: true,
+        },
+        {
+            name: 'Tag',
+            value: getTopMemberTags(clan) ?? "-",
+            inline: true,
+        },
+        {
+            name: 'Trophies',
+            value: getTopMemberTrophies(clan) ?? "-",
+            inline: true,
+        });
+        
+        if(clan.labels.length > 0) embed.setFooter({text: `${clan.labels[0].name}`, iconURL: `${clan.labels[0].iconUrls.small}` });
+        return embed
+}
+
 const getLeagueEmote = (trophycount) => {
     if (trophycount >= 5000) return "<:legend:590895411284410407>"
     if (trophycount >= 4100) return "<:titan:613349333584052237>"
@@ -119,13 +200,31 @@ const getTownhallEmote = (thlvl) => {
     else return "<:th8:936511388849934356>"
 }
 
+function getWarLeagueEmote(warLeagueId){
+    if (warLeagueId > 48000015) return "<:champion:613349285852872725>"
+    if (warLeagueId > 48000012) return "<:master:613349394724552712>"
+    if (warLeagueId > 48000009) return "<:crystal:613349239271063553>"
+    if (warLeagueId > 48000006) return "<:gold:613349361715249182>"
+    if (warLeagueId > 48000003) return "<:silver:613349425317806085>"
+    if (warLeagueId > 48000000) return "<:bronze:613349202528960534>"
+    else return "<:unranked:935678512822616074>"
+}
+
 const prettyNumbers = (x) => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 const getURLTag = (profile) => profile.tag.substr(1)
 const getURLName = (profile) => profile.name.replace(/\s+/g, '-').toLowerCase()
-const getURLClanTag = (profile) => profile?.clan?.tag?.substr(1)
-const getURLClanName = (profile) => profile?.clan?.name?.replace(/\s+/g, '-').toLowerCase()
+const getURLPlayerClanTag = (profile) => profile?.clan?.tag?.substr(1)
+const getURLPlayerClanName = (profile) => profile?.clan?.name?.replace(/\s+/g, '-').toLowerCase()
+const getURLClanTag = (clan) => clan.tag.substr(1)
+const getURLClanName = (clan) => clan.name.replace(/[\s+]/g, '-').toLowerCase()
 const isInClan = (profile) => !!profile.clan
+const getTopMemberNames = (clan) => getTopMembers(clan.memberList).map((member) => member.name).join("\n")
+const getTopMemberTags = (clan) => getTopMembers(clan.memberList).map((member) => member.tag).join("\n")
+const getTopMemberTrophies = (clan) => getTopMembers(clan.memberList).map((member) => member.trophies).join("\n")
+
+const getTopMembers = (memberList) => memberList.slice(0, MAX_MEMBERS)
 
 module.exports = {
-    getProfileEmbed
+    getProfileEmbed,
+    getClanEmbed
 } 

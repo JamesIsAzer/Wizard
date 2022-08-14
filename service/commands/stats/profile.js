@@ -1,8 +1,8 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { findTag, saveDefaultProfile } = require('../../../api/mongo/profile/connections');
-const { isOwnerOfAccount } = require('../../../api/mongo/verify/connections');
+const { findTag, saveDefaultProfile } = require('../../../dao/mongo/profile/connections');
+const { isOwnerOfAccount } = require('../../../dao/mongo/verify/connections');
 const { parseTag, isTagValid } = require('../../../utils/tagHandling');
-const { findProfile } = require('../../../api/clash/verification');
+const { findProfile } = require('../../../dao/clash/verification');
 const { getInvalidTagEmbed } = require('../../../utils/embeds/verify');
 const { getProfileEmbed } = require('../../../utils/embeds/stats')
 

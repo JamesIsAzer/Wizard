@@ -1,10 +1,10 @@
 const {
     getLeaderboardAccounts
-} = require('../../api/mongo/verify/connections');
+} = require('../../dao/mongo/verify/connections');
 
 const {
     findProfile
-} = require('../../api/clash/verification');
+} = require('../../dao/clash/verification');
 
 const {
     getLegendaryLeaderboard,
