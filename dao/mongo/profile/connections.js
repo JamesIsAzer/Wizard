@@ -10,12 +10,12 @@ const profile = require('./schema');
 
 const findTag = async (discordID) => 
     profile.findOne({
-        discordID: discordID
+        discordID
     }).then((result) => result.tag)
 
 const saveDefaultProfile = async (tag, discordID) => 
     profile.updateOne({
-        discordID: discordID
+        discordID
     }, 
     { $set: { tag: tag }},
     { upsert: true })

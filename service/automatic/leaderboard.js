@@ -1,20 +1,7 @@
-const {
-    getLeaderboardAccounts
-} = require('../../dao/mongo/verify/connections');
-
-const {
-    findProfile
-} = require('../../dao/clash/verification');
-
-const {
-    getLegendaryLeaderboard,
-    getBuilderLeaderboard
-} = require('../../utils/embeds/leaderboard')
-
-const {
-    getHowToCompete
-} = require('../../utils/buttons/leaderboard')
-
+const { getLeaderboardAccounts } = require('../../dao/mongo/participant/connections');
+const { findProfile } = require('../../dao/clash/verification');
+const { getLegendaryLeaderboard, getBuilderLeaderboard } = require('../../utils/embeds/leaderboard')
+const { getHowToCompete } = require('../../utils/buttons/leaderboard')
 const { IDs } = require('../../config.json')
 const Bottleneck = require('bottleneck');
 const client = require('../../utils/client')
