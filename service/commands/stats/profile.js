@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { findTag, saveDefaultProfile } = require('../../../dao/mongo/profile/connections');
+const { findTag, saveDefaultProfile, removeDefaultProfile } = require('../../../dao/mongo/profile/connections');
 const { isOwnerOfAccount } = require('../../../dao/mongo/verification/connections');
 const { parseTag, isTagValid } = require('../../../utils/tagHandling');
 const { findProfile } = require('../../../dao/clash/verification');
@@ -13,25 +13,30 @@ const { getProfileEmbed } = require('../../../utils/embeds/stats')
     .addSubcommand((subcommand) => 
         subcommand
           .setName('show')
-          .setDescription('Gets the stats of an in-game account')
+          .setDescription('Gets the stats of an in-game account.')
           .addStringOption((option) =>
             option
             .setName('tag')
-            .setDescription('The player tag to get the stats of')
+            .setDescription('The player tag to get the stats of.')
             .setRequired(false)
         ),
       )
       .addSubcommand((subcommand) =>
         subcommand
             .setName('save')
-            .setDescription('Save an account as your default profile')
+            .setDescription('Save an account as your default profile.')
             .addStringOption((option) =>
                 option
                 .setName('tag')
-                .setDescription('The verified tag you want to save')
+                .setDescription('The verified tag you want to save.')
                 .setRequired(true)
             )
       
+      )
+      .addSubcommand((subcommand) =>
+        subcommand
+            .setName('remove')
+            .setDescription('Remove your default profile.')
       ),
   async execute(interaction) {
     await interaction.deferReply({ ephemeral: false });
@@ -88,6 +93,11 @@ const { getProfileEmbed } = require('../../../utils/embeds/stats')
             await interaction.editReply(`This tag is not verified under this account. To verify an account, type \`/verify <player tag> <api token>\``)
             return
         }
+    } else if ( interaction.options.getSubcommand() === 'remove') {
+        const foundDefaultProfile = await removeDefaultProfile(interaction.member.id)
+        if (foundDefaultProfile) await interaction.editReply(`I have removed your default profile.`)
+        else await interaction.editReply(`You don't have a default profile to remove!`)
+        return
     }
   }
 };

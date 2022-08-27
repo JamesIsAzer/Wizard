@@ -1,7 +1,9 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { getClanEmbed } = require('../../../utils/embeds/stats');
+const { getInvalidTagEmbed } = require('../../../utils/embeds/clanTag')
 const { parseTag, isTagValid } = require('../../../utils/tagHandling');
 const { findClan } = require('../../../dao/clash/clans')
+
   module.exports = {
   data: new SlashCommandBuilder()
     .setName('clan')
@@ -9,7 +11,7 @@ const { findClan } = require('../../../dao/clash/clans')
     .addStringOption((option) =>
         option
         .setName('tag')
-        .setDescription('The clan tag you want to look up')
+        .setDescription('The clan tag you want to look up.')
         .setRequired(true)
     ),
   async execute(interaction) {
@@ -39,4 +41,4 @@ const { findClan } = require('../../../dao/clash/clans')
   }
 };
 
-const sendInvalidTagReply = async(interaction) => await interaction.editReply('Invalid clan tag.');
+const sendInvalidTagReply = async(interaction) => await interaction.editReply({embeds: [ getInvalidTagEmbed()], ephemeral: true});

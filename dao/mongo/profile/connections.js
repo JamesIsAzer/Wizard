@@ -20,7 +20,14 @@ const saveDefaultProfile = async (tag, discordID) =>
     { $set: { tag: tag }},
     { upsert: true })
 
+const removeDefaultProfile = async (discordID) =>
+    profile.deleteOne({discordID}).then((result) => {
+        if(result.deletedCount === 1) return true
+        else return false
+    })
+
 module.exports = {
     findTag,
-    saveDefaultProfile
+    saveDefaultProfile,
+    removeDefaultProfile
 }

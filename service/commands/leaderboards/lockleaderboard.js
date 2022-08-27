@@ -11,7 +11,7 @@ module.exports = {
     .addBooleanOption((option) =>
       option
         .setName('lock')
-        .setDescription('Should the leaderboard be locked')
+        .setDescription('Should the leaderboard be locked.')
         .setRequired(true)
     ),
   async execute(interaction) {

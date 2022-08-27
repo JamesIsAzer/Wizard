@@ -30,7 +30,7 @@ module.exports = {
     .addStringOption((option) =>
       option
         .setName('token')
-        .setDescription('The API token of the account')
+        .setDescription('The API token of the account.')
         .setRequired(true)
     ),
   async execute(interaction) {
