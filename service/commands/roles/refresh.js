@@ -1,8 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { findProfile } = require('../../../dao/clash/verification');
-const {
-  tagVerifiedBySameUser,
-} = require('../../../dao/mongo/verify/connections');
+const { tagVerifiedBySameUser } = require('../../../dao/mongo/verification/connections');
 const { getInvalidTagEmbed } = require('../../../utils/embeds/verify');
 const { parseTag, isTagValid } = require('../../../utils/tagHandling');
 const { setRoles } = require('../../../utils/setRoles');

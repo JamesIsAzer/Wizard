@@ -6,10 +6,10 @@ mongoose.connect(process.env.MONGO_URI, {
   useUnifiedTopology: true,
 });
 
-const verify = require('./schema');
+const verifation = require('./schema');
 
 const tagVerified = async (tag) => 
-    verify.findOne({
+    verifation.findOne({
         playerTag: tag
     }).then((result) => {
         if (result) return true
@@ -17,7 +17,7 @@ const tagVerified = async (tag) =>
     })
 
 const alreadyTaken = async (tag, discordID) => 
-    verify.findOne({
+    verifation.findOne({
         discordID: { $ne: discordID },
         playerTag: tag
     }).then((result) => {
@@ -26,8 +26,8 @@ const alreadyTaken = async (tag, discordID) =>
     })
 
 const isOwnerOfAccount = async (tag, discordID) => 
-    verify.findOne({
-        discordID: discordID,
+    verifation.findOne({
+        discordID,
         playerTag: tag
     }).then((result) => {
         if(result) return true
@@ -35,22 +35,18 @@ const isOwnerOfAccount = async (tag, discordID) =>
     })
 
 const getDiscordOfTag = async (tag) => 
-    verify.findOne({
+    verifation.findOne({
         playerTag: tag
     }).then((result) => result.discordID)
 
 const insertVerification = async (tag, discordID) =>
-    verify.create({
-        discordID: discordID,
-        playerTag: tag,
-        leaderboard: false,
-        trophies: 0,
-        builderleaderboard: false,
-        buildertrophies: 0
+    verifation.create({
+        discordID,
+        playerTag: tag
     }).catch((e) => console.log(e))
     
 const tagVerifiedBySameUser = async (tag, discordID) => 
-    verify.findOne({
+    verifation.findOne({
       discordID,
       playerTag: tag,
     })
@@ -59,13 +55,8 @@ const tagVerifiedBySameUser = async (tag, discordID) =>
       return false;
     });
 
-const getLeaderboardAccounts = async () => 
-    verify.find({
-        $or: [{ leaderboard: true }, { builderleaderboard: true }]
-    }).then((result) => result)
-
 const unverifyUser = async (discordID) =>
-    verify.deleteMany({
+    verifation.deleteMany({
         discordID: discordID
     }).then(result => result)
     .catch((e) => console.log(e))
@@ -76,7 +67,6 @@ module.exports = {
     isOwnerOfAccount,
     getDiscordOfTag,
     insertVerification,
-    getLeaderboardAccounts,
     tagVerifiedBySameUser,
     unverifyUser
 }

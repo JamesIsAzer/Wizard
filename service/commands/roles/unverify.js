@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { hasMediumPerms } = require('../../../utils/permissions');
-const { unverifyUser } = require('../../../dao/mongo/verify/connections');
+const { unverifyUser } = require('../../../dao/mongo/verification/connections');
 const { removeRoles } = require('../../../utils/removeRoles')
 const { getUnverifiedEmbed } = require('../../../utils/embeds/verify')
 module.exports = {

@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { hasMediumPerms } = require('../../../utils/permissions');
 const {
   toggleLeaderboard,
-} = require('../../../dao/mongo/leaderboard/connections');
+} = require('../../../dao/mongo/toggle/connections');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -20,7 +20,6 @@ module.exports = {
       const shouldLock = interaction.options.getBoolean('lock');
       toggleLeaderboard(shouldLock)
       await interaction.editReply(`Leaderboard ${shouldLock ? 'locked' : 'unlocked'}`)        
-    }
-    else await interaction.editReply(`Insufficient permissions to use this command.`)
+    } else await interaction.editReply(`Insufficient permissions to use this command.`)
   }
 };

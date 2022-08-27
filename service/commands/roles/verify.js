@@ -8,7 +8,7 @@ const {
   alreadyTaken,
   insertVerification,
   getDiscordOfTag,
-} = require('../../../dao/mongo/verify/connections');
+} = require('../../../dao/mongo/verification/connections');
 const {
   getInvalidApiTokenEmbed,
   getInvalidTagEmbed,
@@ -35,13 +35,12 @@ module.exports = {
     ),
   async execute(interaction) {
     await interaction.deferReply({ ephemeral: true });
-    const tag = interaction.options.getString('tag');
+    const tag = parseTag(interaction.options.getString('tag'))
     const token = interaction.options.getString('token');
-    const id = parseTag(tag);
     const logChannel = interaction.guild.channels.cache.get(IDs.logChannels.alert)
     const memberId = interaction.member.id
 
-    if (!isTagValid(id)) {
+    if (!isTagValid(tag)) {
       await interaction.editReply({
         embeds: [getInvalidTagEmbed()],
         ephemeral: true,
