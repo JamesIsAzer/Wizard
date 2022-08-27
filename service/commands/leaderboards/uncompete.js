@@ -33,9 +33,9 @@ module.exports = {
         return;
     }
 
-    const success = hasMediumPerms(interaction.member) ? uncompeteAnyone(tag) : uncompete(tag, id)
+    const success = hasMediumPerms(interaction.member) ? await uncompeteAnyone(tag) : await uncompete(tag, id)
 
-    if (success) interaction.editReply(`Leaderboard withdrawal successful for #${tag}. To compete again use \`/compete <player tag>\``) 
-    else interaction.editReply(`Couldn't uncompete #${tag}. Make sure the tag is correct and that you have verified under it.`)
+    if (success) interaction.editReply(`Leaderboard withdrawal successful for \`#${tag}\`. To compete again use \`/compete <player tag>\``) 
+    else interaction.editReply(`Couldn't uncompete \`#${tag}\`. Make sure the tag is correct and that you have verified under it.`)
   },
 };

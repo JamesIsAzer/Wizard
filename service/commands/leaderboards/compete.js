@@ -5,9 +5,8 @@ const {
   checkIfCompetingInBoth,
   updateLeaderboardParticipation
 } = require('../../../dao/mongo/participant/connections');
-const {
-  getInvalidTagEmbed,
-} = require('../../../utils/embeds/verify');
+const { isLeaderboardLocked } = require('../../../dao/mongo/toggle/connections')
+const { getInvalidTagEmbed } = require('../../../utils/embeds/verify');
 const { parseTag, isTagValid } = require('../../../utils/tagHandling');
 
 const LEGENDARY_MINIMUM = 5000
@@ -28,6 +27,11 @@ module.exports = {
     
     const tag = parseTag(interaction.options.getString('tag'))
     const id = interaction.member.id
+
+    if (await isLeaderboardLocked()) {
+      await interaction.editReply('Leaderboard participation is currently locked.')
+      return
+    }
 
     if (!isTagValid(tag)) {
       await interaction.editReply({

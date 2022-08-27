@@ -16,6 +16,12 @@ const toggleLeaderboard = async (lockLeaderboard) =>
     { $set: { lockLeaderboard: lockLeaderboard } },
     { upsert: true })
 
+const isLeaderboardLocked = async () =>
+    guildToggles.findOne({
+        guildID: IDs.guild,
+    }).then((result) => result.lockLeaderboard)
+
 module.exports = {
-    toggleLeaderboard
+    toggleLeaderboard,
+    isLeaderboardLocked
 }
