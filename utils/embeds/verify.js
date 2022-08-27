@@ -38,16 +38,22 @@ const getUnverifiedEmbed = rolesRemoved => new MessageEmbed()
         value: rolesRemoved.reduce((acc, x) => acc += `${x.icon ?? '•'} <@&${x.id}> removed!\n` , '') ?? '• No roles to remove'
     });
 
-const alertAttemptVerification = (newUserId, originalOwnerId, tag) => new MessageEmbed()
+const alertAttemptCrossVerification = (newUserId, originalOwnerId, tag) => new MessageEmbed()
     .setTitle('Attempted cross verification⚠️')
     .setColor('FFFF00')
     .setDescription(`User <@${newUserId}> tried to verify an account linked to <@${originalOwnerId}> using the tag \`#${tag}\``)
-    
+
+const alertAttemptNewVerification = (newUserId, tag) => new MessageEmbed()
+    .setTitle('Attempted new verification⚠️')
+    .setColor('00DE30')
+    .setDescription(`User <@${newUserId}> verified a new account under the tag \`#${tag}\``)
+
 module.exports = {
     getInvalidTagEmbed,
     getInvalidApiTokenEmbed,
     getValidVerificationEmbed,
     getUnverifiedEmbed,
-    alertAttemptVerification
+    alertAttemptCrossVerification,
+    alertAttemptNewVerification
 } 
 
