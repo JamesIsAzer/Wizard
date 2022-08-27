@@ -8,7 +8,7 @@ const getInvalidTagEmbed = () => new MessageEmbed()
         value: 'Your player tag can be found on your in-game profile page.'
     })
     .setImage(
-      'https://media.discordapp.net/attachments/582092054264545280/1003295714425720842/IMG_9034.jpg'
+      'https://media.discordapp.net/attachments/582092054264545280/1013012740861853696/findprofile.jpg?width=959&height=443'
     )
 
 const getInvalidApiTokenEmbed = () => new MessageEmbed()

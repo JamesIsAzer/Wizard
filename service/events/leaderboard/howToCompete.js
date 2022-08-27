@@ -6,7 +6,7 @@ module.exports = {
     async execute(interaction) {
         if (!interaction.isButton()) return;
         interaction.reply({
-            content: 'Run `!!compete <playertag>` in <#328964121871777793>',
+            content: 'Run `/compete <player tag>` in <#328964121871777793>',
             ephemeral: true,
         })
         

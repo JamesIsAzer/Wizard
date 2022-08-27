@@ -7,11 +7,10 @@ const getGeneralHelp = () => new MessageEmbed()
         `Wizard enables you to verify and connect your Clash of Clans account to the discord server! To get more information on a specific feature, type \`/help command\` and enter one of the subcommands below.`)
     .addFields({
         name: 'Help subcommands',
-        value: `<:bullet:840654524213231716> \`verification\` - How to verify your account
-        <:bullet:840654524213231716> \`colors\` - Information about setting your name color
-        <:bullet:840654524213231716> \`stats\` - Displaying your in-game statistics
-        <:bullet:840654524213231716> \`leaderboards\` - Competing with other players on the server leaderboard
-        `,
+        value: `<:bullet:840654524213231716> \`verification\` - How to verify your account\n`+
+        `<:bullet:840654524213231716> \`colours\` - Information about setting your name color\n` +
+        `<:bullet:840654524213231716> \`stats\` - Displaying your in-game statistics\n` +
+        `<:bullet:840654524213231716> \`leaderboards\` - Competing with other players on the server leaderboard\n`,
     })
   
 const getVerificationHelp = () => new MessageEmbed()
@@ -56,11 +55,11 @@ const getStatsHelp = () => new MessageEmbed()
     .setDescription(
         `Wizard lets you see in-game statistics of player profiles and clans. It shows whether you verified under an account, but is not necessary.`)
     .addFields({
-        name: '/profile get <player tag>',
+        name: '/profile show <player tag>',
         value: `Displays the stats of a player with the specified tag.`,
     },
     {
-        name: '/profile get',
+        name: '/profile show',
         value: `An easy shortcut to display your default profile.`,
     },
     {

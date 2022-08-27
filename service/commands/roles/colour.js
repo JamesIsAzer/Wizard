@@ -16,12 +16,12 @@ module.exports = {
       subcommand
         .setName('add')
         .setDescription(
-          'Adds colour override to user if they have the in-game role'
+          'Adds colour override to user if they have the in-game role.'
         )
         .addStringOption((option) =>
           option
             .setName('colour')
-            .setDescription('The colour override you want')
+            .setDescription('The colour override you want.')
             .setRequired(true)
             .addChoices(
               { name: 'Purple', value: 'PURPLE' },
@@ -42,7 +42,7 @@ module.exports = {
         )
     )
     .addSubcommand((subcommand) =>
-      subcommand.setName('remove').setDescription('Remove colour overrides')
+      subcommand.setName('remove').setDescription('Remove colour overrides.')
     )
     .addSubcommand((subcommand) =>
       subcommand

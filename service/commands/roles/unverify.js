@@ -11,7 +11,7 @@ module.exports = {
     .addStringOption((option) =>
       option
         .setName('id')
-        .setDescription('Mod only - Discord ID of account to unverify')
+        .setDescription('Mod only - Discord ID of account to unverify.')
         .setRequired(false)
     ),
   async execute(interaction) {
