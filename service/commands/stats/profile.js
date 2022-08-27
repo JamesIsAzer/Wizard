@@ -9,7 +9,7 @@ const { getProfileEmbed } = require('../../../utils/embeds/stats')
   module.exports = {
   data: new SlashCommandBuilder()
     .setName('profile')
-    .setDescription('Get information about players in-game stats')
+    .setDescription('Get information about players in-game stats.')
     .addSubcommand((subcommand) => 
         subcommand
           .setName('show')

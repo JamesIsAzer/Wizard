@@ -3,13 +3,13 @@ const { IDs } = require('../../config.json');
 const colours = IDs.verificationRoles.colour;
 const getSuccessfulColourEmbed = (roleID) =>
   new MessageEmbed()
-    .setTitle(':zap: Color override added! :zap:')
+    .setTitle('🔥 Color override added! 🔥')
     .setColor('#00de30')
     .setDescription(`I have added <@&${roleID}> as your override`);
 
 const getUnsatisfiedRequirementEmbed = (roleID) =>
   new MessageEmbed()
-    .setTitle(":dash: Couldn't add color override!:dash: ")
+    .setTitle("💨 Couldn't add color override! 💨")
     .setColor('#d10202')
     .setDescription(`For this override you need <@&${roleID}>`);
 

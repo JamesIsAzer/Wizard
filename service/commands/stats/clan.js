@@ -5,7 +5,7 @@ const { findClan } = require('../../../dao/clash/clans')
   module.exports = {
   data: new SlashCommandBuilder()
     .setName('clan')
-    .setDescription('Get information about a clans in-game stats')
+    .setDescription('Get information about a clans in-game stats.')
     .addStringOption((option) =>
         option
         .setName('tag')

@@ -33,7 +33,6 @@ for (const folder of eventFolders) {
 client.on('interactionCreate', async (interaction) => {
   if (!interaction.isCommand()) return;
   const command = client.commands.get(interaction.commandName);
-
   if (!command) return;
 
   try {
@@ -49,6 +48,8 @@ client.on('interactionCreate', async (interaction) => {
 
 client.once('ready', () => {
   console.log('Ready!');
+  client.user.setPresence({ activities: [{ name: 'with fireballs 🔥', type: 'PLAYING'}], status: 'online'})
   scheduleLeaderboards()
 });
+
 client.login(process.env.DISCORD_TOKEN);
