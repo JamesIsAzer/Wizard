@@ -12,6 +12,8 @@ const {
 const {
   getInvalidApiTokenEmbed,
   getInvalidTagEmbed,
+  alertAttemptCrossVerification,
+  alertAttemptNewVerification
 } = require('../../../utils/embeds/verify');
 const { parseTag, isTagValid } = require('../../../utils/tagHandling');
 const { setRoles } = require('../../../utils/setRoles');
@@ -86,7 +88,7 @@ module.exports = {
       if (await alreadyTaken(tag, interaction.member.id)) {
         const originalAccountId = getDiscordOfTag(tag)
         await interaction.editReply('This account is already taken!');
-        await logChannel.send({embeds: [alertAttemptVerification(memberId, await originalAccountId, tag)]})
+        await logChannel.send({embeds: [alertAttemptCrossVerification(memberId, await originalAccountId, tag)]})
         return;
       } else {
         await interaction.editReply({
@@ -101,6 +103,7 @@ module.exports = {
         embeds: [setRoles(profileData, interaction.member)],
         ephemeral: true
       });
+      await logChannel.send({embeds: [alertAttemptNewVerification(memberId, tag)]})
       return;
     }
   },

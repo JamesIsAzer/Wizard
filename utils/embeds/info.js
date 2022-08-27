@@ -10,7 +10,7 @@ const getInfo = () => new MessageEmbed()
     .addFields(
     {
         name: 'Contributors',
-        value: `• Azer\n• Hawk Eye`,
+        value: `• Azer - Coding\n• Hawk Eye - Coding\n• Vibe - Testing`,
         inline: true
     },
     {
