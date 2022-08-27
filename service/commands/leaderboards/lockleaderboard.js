@@ -19,7 +19,7 @@ module.exports = {
     if(hasMediumPerms(interaction.member)){
       const shouldLock = interaction.options.getBoolean('lock');
       toggleLeaderboard(shouldLock)
-      await interaction.editReply(`Leaderboard ${shouldLock ? 'locked' : 'unlocked'}`)        
+      await interaction.editReply(`Leaderboard ${shouldLock ? 'locked' : 'unlocked'}.`)        
     } else await interaction.editReply(`Insufficient permissions to use this command.`)
   }
 };

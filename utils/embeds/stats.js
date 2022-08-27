@@ -19,7 +19,7 @@ const getProfileEmbed = (profile, verified) => {
     },
     {
         name: 'Clan',
-        value: `<a:looking_for_clanmates:584303569809834005> ${isInClan(profile) ? "No clan found" : `[${profile.clan.name}](https://www.clashofstats.com/clans/${getURLPlayerClanName(player)}-${getURLPlayerClanTag(player)}/summary)`}`,
+        value: `<a:looking_for_clanmates:584303569809834005> ${isInClan(profile) ? `[${profile.clan.name}](https://www.clashofstats.com/clans/${getURLPlayerClanName(profile)}-${getURLPlayerClanTag(profile)}/summary)` : "No clan found"}`,
         inline: true,
     }, 
 

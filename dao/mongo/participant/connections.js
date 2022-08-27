@@ -45,11 +45,16 @@ const uncompeteAllAccounts = async ( discordID ) =>
     }).then(result => result)
     .catch((e) => console.log(e))
 
+const resetLeaderboards = async () =>
+    participants.deleteMany( { } ).catch(e => console.log(e))
+
+
 module.exports = {
     getLeaderboardAccounts,
     checkIfCompetingInBoth,
     updateLeaderboardParticipation,
     uncompete,
     uncompeteAnyone,
-    uncompeteAllAccounts
+    uncompeteAllAccounts,
+    resetLeaderboards
 }
