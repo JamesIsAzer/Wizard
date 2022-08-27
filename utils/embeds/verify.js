@@ -44,7 +44,7 @@ const alertAttemptCrossVerification = (newUserId, originalOwnerId, tag) => new M
     .setDescription(`User <@${newUserId}> tried to verify an account linked to <@${originalOwnerId}> using the tag \`#${tag}\``)
 
 const alertAttemptNewVerification = (newUserId, tag) => new MessageEmbed()
-    .setTitle('Attempted new verification⚠️')
+    .setTitle('New verification⚠️')
     .setColor('00DE30')
     .setDescription(`User <@${newUserId}> verified a new account under the tag \`#${tag}\``)
 
