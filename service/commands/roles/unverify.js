@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { hasMediumPerms } = require('../../../utils/permissions');
 const { unverifyUser } = require('../../../dao/mongo/verification/connections');
+const { uncompeteAllAccounts } = require('../../../dao/mongo/participant/connections');
 const { removeRoles } = require('../../../utils/removeRoles')
 const { getUnverifiedEmbed } = require('../../../utils/embeds/verify')
 module.exports = {
@@ -22,6 +23,8 @@ module.exports = {
     }
     
     const discordID = interaction.options.getString('id') ?? interaction.member.id
+
+    uncompeteAllAccounts(discordID)
 
     interaction.guild.members.fetch(discordID)
         .then(member => unverifyOnServer(member, interaction))
