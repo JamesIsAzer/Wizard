@@ -11,7 +11,7 @@ const colours = IDs.verificationRoles.colour;
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('colour')
-    .setDescription('Manage colour roles')
+    .setDescription('Manage colour roles.')
     .addSubcommand((subcommand) =>
       subcommand
         .setName('add')

@@ -7,7 +7,6 @@ const getProfileEmbed = (profile, verified) => {
     .setURL(`https://www.clashofstats.com/players/${getURLName(profile)}-${getURLTag(profile)}/summary`)
     .setColor('#33E3FF')
     .addFields(
-    // general
     {
         name: 'Townhall Level',
         value: `${getTownhallEmote(profile.townHallLevel)} ${profile.townHallLevel}`,
@@ -23,7 +22,7 @@ const getProfileEmbed = (profile, verified) => {
         value: `<a:looking_for_clanmates:584303569809834005> ${isInClan(profile) ? "No clan found" : `[${profile.clan.name}](https://www.clashofstats.com/clans/${getURLPlayerClanName(player)}-${getURLPlayerClanTag(player)}/summary)`}`,
         inline: true,
     }, 
-    // trophies
+
     {
         name: 'Trophies',
         value: `<:trophy:927704647089676369> ${prettyNumbers(profile.trophies)}`,
@@ -40,7 +39,6 @@ const getProfileEmbed = (profile, verified) => {
         inline: true,
     }, 
 
-    // donations
     {
         name: 'Troop Donations',
         value: `<:speedup:927704617981190205> ${prettyNumbers(profile.achievements[14].value)}`,
@@ -57,7 +55,6 @@ const getProfileEmbed = (profile, verified) => {
         inline: true,
     }, 
 
-    // wins
     {
         name: 'Multiplayer Wins',
         value: `⚔️ ${prettyNumbers(profile.achievements[12].value)}`,
@@ -74,8 +71,6 @@ const getProfileEmbed = (profile, verified) => {
         inline: true,
     }, 
 
-
-    // builder base
     {
         name: 'Builderhall Level',
         value: `<:bh:341677900698877952> ${profile.builderHallLevel ? profile.builderHallLevel : 'No builder hall'}`,
@@ -106,72 +101,68 @@ const getClanEmbed = (clan) => {
         .setThumbnail(clan.badgeUrls.medium)
         .setColor('#33E3FF')
         .addFields(
-        // 1
         {
             name: 'War wins',
             value: `:zap: ${prettyNumbers(clan.warWins)}`,
-            inline: true,
+            inline: true
         },
         {
             name: 'War losses',
             value: `:dash: ${clan.warLosses ? prettyNumbers(clan.warLosses) : 'Private'}`,
-            inline: true,
+            inline: true
         },
         {
             name: 'War league',
             value: `${getWarLeagueEmote(clan.warLeague.id)} ${clan.warLeague.name}`,
-            inline: true,
+            inline: true
         }, 
 
-        // 2
         {
             name: 'Required trophies',
             value: `<:trophy:927704647089676369> ${prettyNumbers(clan.requiredTrophies)}`,
-            inline: true,
+            inline: true
         },
         {
             name: 'Clan trophies',
             value: `<:trophy:927704647089676369> ${clan.clanPoints ? prettyNumbers(clan.clanPoints) : 0}`,
-            inline: true,
+            inline: true
         }, 
         {
             name: 'Members',
             value: `:bust_in_silhouette: ${prettyNumbers(clan.members)}/50`,
-            inline: true,
+            inline: true
         },
 
-        // 3
         {
             name: 'Required builder cups',
             value: `<:versustrophy:927704667960528926> ${prettyNumbers(clan.requiredVersusTrophies)}`,
-            inline: true,
+            inline: true
         },
         {
             name: 'Clan builder cups',
             value: `<:versustrophy:927704667960528926> ${clan.clanVersusPoints ? prettyNumbers(clan.clanVersusPoints) : 0}`,
-            inline: true,
+            inline: true
         }, 
         {
             name: 'Language',
             value: `:speech_balloon: ${clan.chatLanguage ? prettyNumbers(clan.chatLanguage.name) : 'Not set'}`,
-            inline: true,
+            inline: true
         },
 
-        // 4
         {
             name: 'Top players',
             value: getTopMemberNames(clan) ?? "No players",
-            inline: true,
+            inline: true
         },
         {
             name: 'Tag',
             value: getTopMemberTags(clan) ?? "-",
-            inline: true,
+            inline: true
         },
         {
             name: 'Trophies',
             value: getTopMemberTrophies(clan) ?? "-",
-            inline: true,
+            inline: true
         });
         
         if(clan.labels.length > 0) embed.setFooter({text: `${clan.labels[0].name}`, iconURL: `${clan.labels[0].iconUrls.small}` });

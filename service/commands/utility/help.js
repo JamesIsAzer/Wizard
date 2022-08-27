@@ -6,7 +6,7 @@ const {
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('help')
-    .setDescription('Gives information about the bot!')
+    .setDescription('Tells you how to use the bot.')
     .addStringOption((option) =>
       option
         .setName('command')
