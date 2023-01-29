@@ -1,8 +1,8 @@
-const { MessageEmbed } = require('discord.js')
+const { EmbedBuilder } = require('discord.js')
 const MAX_MEMBERS = 3
 const { IDs } = require('../../config.json') 
 const getProfileEmbed = (profile, verified) => {
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
     .setTitle(`${getLeagueEmote(profile.trophies)} ${profile.name} ${profile.tag}`)
     .setURL(`https://www.clashofstats.com/players/${getURLName(profile)}-${getURLTag(profile)}/summary`)
     .setColor('#33E3FF')
@@ -94,7 +94,7 @@ const getProfileEmbed = (profile, verified) => {
 }
 
 const getClanEmbed = (clan) => {
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
         .setTitle(`<:versusbattle:777311333649219594> ${clan.name} ${clan.tag}`)
         .setURL(`https://www.clashofstats.com/clans/${getURLClanName(clan)}-${getURLClanTag(clan)}/summary`)
         .setDescription(clan.description)
