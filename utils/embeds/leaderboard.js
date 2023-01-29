@@ -1,7 +1,7 @@
-const { MessageEmbed } = require('discord.js')
+const { EmbedBuilder } = require('discord.js')
 
 const getLegendaryLeaderboard = (topLegends, legendParticipantCount) => {
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
     .setTitle('Legendary leaderboard')
     .setColor('#9650DC');
     for (let i = 0; i < topLegends.length; i++){
@@ -18,7 +18,7 @@ const getLegendaryLeaderboard = (topLegends, legendParticipantCount) => {
 }
 
 const getBuilderLeaderboard = (topBuilders, builderParticipantCount) => {
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
     .setTitle('Builder base leaderboard')
     .setColor('#0B0B3B');
     for (let i = 0; i < topBuilders.length; i++){

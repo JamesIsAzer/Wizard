@@ -8,7 +8,7 @@ const {
 const { isLeaderboardRestricted } = require('../../../dao/mongo/restriction/connections')
 const { isLeaderboardLocked } = require('../../../dao/mongo/toggle/connections')
 const { getInvalidTagEmbed } = require('../../../utils/embeds/verify');
-const { parseTag, isTagValid } = require('../../../utils/tagHandling');
+const { parseTag, isTagValid } = require('../../../utils/arguments/tagHandling');
 
 const LEGENDARY_MINIMUM = 5000
 const BUILDER_MINIMUM = 5000
