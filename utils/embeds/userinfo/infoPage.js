@@ -2,7 +2,7 @@ const { EmbedBuilder } = require('discord.js');
 
 const addRows = (vericationsPage, embedTemplate, pageCount, pageSize) => {
     if (vericationsPage.length > 0) {
-        const description = vericationsPage.reduce((acc, verification, index) => acc + `${(pageCount*pageSize)+index+1}. ${verification.playerTag}\n`, '')
+        const description = vericationsPage.reduce((acc, verification, index) => acc + `${(pageCount*pageSize)+index+1}. #${verification.playerTag}\n`, '')
         return embedTemplate.setDescription(description)
     }
     return embedTemplate
