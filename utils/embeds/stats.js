@@ -204,11 +204,11 @@ function getWarLeagueEmote(warLeagueId){
 
 const prettyNumbers = (number) => number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 const getURLTag = (profile) => profile.tag.substr(1)
-const getURLName = (profile) => profile.name.replace(/\s+/g, '-').toLowerCase()
+const getURLName = (profile) => encodeURIComponent(profile.name.replace(/\s+/g, '-').toLowerCase())
 const getURLPlayerClanTag = (profile) => profile?.clan?.tag?.substr(1)
-const getURLPlayerClanName = (profile) => profile?.clan?.name?.replace(/\s+/g, '-').toLowerCase()
+const getURLPlayerClanName = (profile) => encodeURIComponent(profile?.clan?.name?.replace(/\s+/g, '-').toLowerCase())
 const getURLClanTag = (clan) => clan.tag.substr(1)
-const getURLClanName = (clan) => clan.name.replace(/[\s+]/g, '-').toLowerCase()
+const getURLClanName = (clan) => encodeURIComponent(clan.name.replace(/[\s+]/g, '-').toLowerCase())
 const isInClan = (profile) => !!profile.clan
 const getTopMemberNames = (clan) => fillEmptyString(getTopMembers(clan.memberList).map((member) => member.name).join("\n"))
 const getTopMemberTags = (clan) => fillEmptyString(getTopMembers(clan.memberList).map((member) => member.tag).join("\n"))
