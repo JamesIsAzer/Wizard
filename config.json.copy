@@ -20,7 +20,9 @@
                 "philanthropist": {"name": "Philanthropist", "roleid": "803603055123365910", "icon": "<:clangames:927703762561286176>"},
                 "greenthumb": {"name": "Green Thumb", "roleid": "935653229159657562", "icon": "<:bush:927704061204119652>"},
                 "mastergamer": {"name": "Master Gamer", "roleid": "935653392028692530", "icon": "<:clangames:927703762561286176>"},
-                "conqueror": {"name": "Conqueror", "roleid": "1040742997228257401", "icon": "<:legend_trophy:935757690020429844>"}
+                "conqueror": {"name": "Conqueror", "roleid": "1040742997228257401", "icon": "<:legend_trophy:935757690020429844>"},
+                "vanquisher": {"name": "Vanquisher", "roleid": "1176120858415222824", "icon": "<:DiamondLeague:1108318143425814591>"},
+                "capitalist": {"name": "Capitalist", "roleid": "1176120907094315028", "icon": "<:capitalgold:980717889285939210>"}
             },
             "colour": {
                 "requirement" : {
@@ -32,8 +34,10 @@
                     "gold": {"arg": "GOLD",        "name": "Gold color",           "colourid": "935654693995180083", "roleid": "935655645024227359", "icon": "<:gold:312346438157991938>"},
                     "vip": {"arg": "VIPRED",         "name": "V.I.P red",             "colourid": "935654763046010980", "roleid": "935655609364262942", "icon": "<:heart:927704127272804403>"},
                     "greenthumb": {"arg": "GREEN",       "name": "Bush green",         "colourid": "935654988095557642", "roleid": "935653229159657562", "icon": "<:bush:927704061204119652>"},
-                    "mastergamer": {"arg": "TURQUOISE",       "name": "Gamer turquoise",         "colourid": "935655105569624095", "roleid": "935653392028692530", "icon": "<:clangames:927703762561286176>"},
-                    "conqueror": {"arg": "RED",       "name": "Conqueror red",         "colourid": "1040743016970862772", "roleid": "1040742997228257401", "icon": "<:legend_trophy:935757690020429844>"}
+                    "mastergamer": {"arg": "MINT",       "name": "Gamer mint",         "colourid": "935655105569624095", "roleid": "935653392028692530", "icon": "<:clangames:927703762561286176>"},
+                    "conqueror": {"arg": "RED",       "name": "Conqueror red",         "colourid": "1040743016970862772", "roleid": "1040742997228257401", "icon": "<:legend_trophy:935757690020429844>"},
+                    "vanquisher": {"arg": "TURQUOISE",       "name": "Vanquisher turqoise",         "colourid": "1176120964891815947", "roleid": "1176120858415222824", "icon": "<:DiamondLeague:1108318143425814591>"},
+                    "capitalist": {"arg": "BLACK",       "name": "Capitalist black",         "colourid": "935654258710286356", "roleid": "1176120907094315028", "icon": "<:capitalgold:980717889285939210>"}
                 },
                 "norequirement" : {
                     "default": {"arg": "WHITE",       "name": "Default white",         "colourid": "935655174641451018"}
@@ -41,13 +45,13 @@
             },
             "townhall": {
                 "TH8": {"name": "Townhall 8", "roleid": "892969275554414642", "lvl": 8, "icon": "<:th8:936511388849934356>"},
-                "TH9": {"name": "Townhall 9", "roleid": "892969343489564682", "lvl": 9, "icon": "<:th9:288436023573086211>"},
+                "TH9": {"name": "Townhall 9", "roleid": "892969312057434132", "lvl": 9, "icon": "<:th9:288436023573086211>"},
                 "TH10": {"name": "Townhall 10", "roleid": "892969343489564682", "lvl": 10, "icon": "<:th10:288436059203829770>"},
                 "TH11": {"name": "Townhall 11", "roleid": "892969409302384640", "lvl": 11, "icon": "<:th11:288436090665172992>"},
                 "TH12": {"name": "Townhall 12", "roleid": "892969438406668338", "lvl": 12, "icon": "<:th12:451408476426469387>"},
                 "TH13": {"name": "Townhall 13", "roleid": "892969469922668614", "lvl": 13, "icon": "<:th13:651100997367627823>"},
                 "TH14": {"name": "Townhall 14", "roleid": "892969502881484850", "lvl": 14, "icon": "<:th14:829099837034070027>"},
-                "TH15": {"name": "Townhall 15", "roleid": "1027377109976485898", "lvl": 15, "icon": "<:th15:1027192859130069062>"}
+                "TH15": {"name": "Townhall 15", "roleid": "1013013266286510100", "lvl": 15, "icon": "<:th15:1027192859130069062>"}
             }
         },
         "mediumPermRoles" : ["761865691904606228", "621998190601961473"],

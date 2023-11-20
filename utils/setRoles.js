@@ -16,7 +16,9 @@ const setRoles = (playerData, user) => {
     philanthropist: playerAchievement[14].value >= 750000,
     greenThumb: playerAchievement[3].value >= 7500,
     masterGamer: playerAchievement[31].value >= 150000,
-    conqueror: playerData?.legendStatistics?.bestSeason?.rank <= 1000
+    conqueror: playerData?.legendStatistics?.bestSeason?.rank <= 1000,
+    vanquisher: playerData?.legendStatistics?.bestBuilderBaseSeason?.rank <= 1000,
+    capitalist: playerData?.clanCapitalContributions >= 3000000
   };
 
   addAchievementRoles(user, achieved);
@@ -71,6 +73,12 @@ const createValidVerificationEmbedDescription = (
     (achieved.conqueror
       ? `${roles.prestige.conqueror.icon} <@&${roles.prestige.conqueror.roleid}> added!\n`
       : ``) +  
+    (achieved.vanquisher
+      ? `${roles.prestige.vanquisher.icon} <@&${roles.prestige.vanquisher.roleid}> added!\n`
+      : ``) + 
+    (achieved.conqueror
+      ? `${roles.prestige.capitalist.icon} <@&${roles.prestige.capitalist.roleid}> added!\n`
+      : ``) + 
     (thLevel > 0 ? thEmbedDesc : ``)
   );
 };
@@ -86,6 +94,8 @@ const addAchievementRoles = (user, achieved) => {
   if (achieved.greenThumb) user.roles.add(roles.prestige.greenthumb.roleid);
   if (achieved.masterGamer) user.roles.add(roles.prestige.mastergamer.roleid);
   if (achieved.conqueror) user.roles.add(roles.prestige.conqueror.roleid);
+  if (achieved.vanquisher) user.roles.add(roles.prestige.vanquisher.roleid);
+  if (achieved.capitalist) user.roles.add(roles.prestige.capitalist.roleid);
 };
 
 const addTownhall = (player, user) => {

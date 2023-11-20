@@ -32,8 +32,10 @@ module.exports = {
               { name: 'Gold', value: 'GOLD' },
               { name: 'Vip Red', value: 'VIPRED' },
               { name: 'Bush Green', value: 'GREEN' },
-              { name: 'Gamer Turquoise', value: 'TURQUOISE' },
+              { name: 'Gamer Mint', value: 'MINT' },
               { name: 'Conqueror Red', value: 'RED' },
+              { name: 'Vanquisher Turqoise', value: 'TURQUOISE' },
+              { name: 'Capitalist Black', value: 'BLACK' },
               { name: 'Default White', value: 'WHITE' }
             )
         )
