@@ -76,7 +76,7 @@ const createValidVerificationEmbedDescription = (
     (achieved.vanquisher
       ? `${roles.prestige.vanquisher.icon} <@&${roles.prestige.vanquisher.roleid}> added!\n`
       : ``) + 
-    (achieved.conqueror
+    (achieved.capitalist
       ? `${roles.prestige.capitalist.icon} <@&${roles.prestige.capitalist.roleid}> added!\n`
       : ``) + 
     (thLevel > 0 ? thEmbedDesc : ``)
