@@ -80,7 +80,7 @@ module.exports = {
     const account = accountResponse.response.data
 
     const legends = account.trophies >= LEGENDARY_MINIMUM
-    const builder = account.versusTrophies >= BUILDER_MINIMUM
+    const builder = account.builderBaseTrophies >= BUILDER_MINIMUM
 
     if (legends || builder) updateLeaderboardParticipation(tag, id, legends, builder)
 
