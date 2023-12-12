@@ -78,17 +78,17 @@ const getProfileEmbed = (profile, verified) => {
     }, 
     {
         name: 'Builder Trophies',
-        value: `<:versustrophy:927704667960528926> ${prettyNumbers(profile.versusTrophies)}`,
+        value: `<:versustrophy:927704667960528926> ${prettyNumbers(profile.builderBaseTrophies)}`,
         inline: true,
     }, 
     {
         name: 'Builder Personal Best',
-        value: `<:nightwitch:316157731297820672> ${prettyNumbers(profile.bestVersusTrophies)}`,
+        value: `<:nightwitch:316157731297820672> ${prettyNumbers(profile.bestBuilderBaseTrophies)}`,
         inline: true,
     });
     if (profile.legendStatistics?.legendTrophies) embed.addFields({name: 'Legend Trophies', value: `<:legend_trophy:935757690020429844> ${prettyNumbers(profile.legendStatistics.legendTrophies)}`, inline: true})
     if (profile.legendStatistics?.bestSeason) embed.addFields({name: 'Best Legend Rank', value: `<:globe:777311138789851167> ${prettyNumbers(profile.legendStatistics.bestSeason.rank)}`, inline: true})
-    if (profile.legendStatistics?.bestVersusSeason) embed.addFields({name: 'Best Builder Rank', value: `<:globe:777311138789851167> ${prettyNumbers(profile.legendStatistics.bestVersusSeason.rank)}`, inline: true})    
+    if (profile.legendStatistics?.bestBuilderBaseSeason) embed.addFields({name: 'Best Builder Rank', value: `<:globe:777311138789851167> ${prettyNumbers(profile.legendStatistics.bestBuilderBaseSeason.rank)}`, inline: true})    
     if(verified) embed.setFooter({text: 'Verified under this account', iconURL: "https://media.discordapp.net/attachments/582092054264545280/935702845183918160/check-mark_2714-fe0f.png"})
     return embed
 }
@@ -135,12 +135,12 @@ const getClanEmbed = (clan) => {
 
         {
             name: 'Required builder cups',
-            value: `<:versustrophy:927704667960528926> ${prettyNumbers(clan.requiredVersusTrophies)}`,
+            value: `<:versustrophy:927704667960528926> ${prettyNumbers(clan.requiredBuilderBaseTrophies)}`,
             inline: true
         },
         {
             name: 'Clan builder cups',
-            value: `<:versustrophy:927704667960528926> ${clan.clanVersusPoints ? prettyNumbers(clan.clanVersusPoints) : 0}`,
+            value: `<:versustrophy:927704667960528926> ${clan.clanBuilderBasePoints ? prettyNumbers(clan.clanBuilderBasePoints) : 0}`,
             inline: true
         }, 
         {

@@ -23,7 +23,7 @@ const getBuilderLeaderboard = (topBuilders, builderParticipantCount) => {
     .setColor('#0B0B3B');
     for (let i = 0; i < topBuilders.length; i++){
         embed.addFields({
-            name: `Rank ${i+1} - ${topBuilders[i].clash.response.data.versusTrophies} 🏆`,
+            name: `Rank ${i+1} - ${topBuilders[i].clash.response.data.builderBaseTrophies} 🏆`,
             value: `Discord tag: <@${topBuilders[i].discordID}>\n` +
             `Discord username: ${topBuilders[i].discordUsername}\n` +
             `In-game name: ${topBuilders[i].clash.response.data.name}\n` +

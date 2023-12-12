@@ -80,7 +80,7 @@ const getTopLegends = (legendParticipants) =>
         .slice(0, MAX_LEADERBOARD_PARTICIPANTS)
 
 const getTopBuilders = (builderParticipants) => 
-    builderParticipants.sort((a, b) => b.clash.response.data.versusTrophies - a.clash.response.data.versusTrophies)
+    builderParticipants.sort((a, b) => b.clash.response.data.builderBaseTrophies - a.clash.response.data.builderBaseTrophies)
         .slice(0, MAX_LEADERBOARD_PARTICIPANTS)
 
 const promiseAllProps = (arrayOfObjects) => 
