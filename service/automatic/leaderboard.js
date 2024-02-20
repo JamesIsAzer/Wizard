@@ -38,13 +38,22 @@ const createLeaderboard = async() => {
 const appendDiscordData = async(participants) => {
     const participantsIDs = participants.map((participant) => participant.discordID)
     const guild = client.guilds.cache.get(IDs.guild)
-    const memberData = await guild.members.fetch({ user: participantsIDs })
+    
+    const participantIDChunks = chunk(participantsIDs, 100)
+
+    const memberDataAsync = participantIDChunks.reduce((acc, participantIDChunk) => {
+        const members = guild.members.fetch({ user: participantIDChunk })
+        return acc.concat(members)
+    }, [])
+
+    const memberDataArray = (await Promise.all(memberDataAsync))
+    const memberData = new Map(memberDataArray.map(x => [...x]).flat())
 
     return participants.map((participant) => ({ ...participant._doc, discordUsername: findDiscordUsername(participant, memberData) }))
 }
 
 const findDiscordUsername = (participant, memberData) => {
-    const discordUser = memberData.find(x => x.user.id === participant.discordID)?.user
+    const discordUser = memberData.get(participant.discordID)?.user
     return discordUser ? `${discordUser.username}#${discordUser.discriminator}` : null
 }
 
@@ -85,6 +94,11 @@ const getTopBuilders = (builderParticipants) =>
 
 const promiseAllProps = (arrayOfObjects) => 
     Promise.map(arrayOfObjects, (obj) => Promise.props(obj));
+
+const chunk = (arr, size) =>
+    Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
+      arr.slice(i * size, i * size + size)
+    )
 
 module.exports = {
     createLeaderboard
