@@ -13,6 +13,7 @@
         },
         "verificationRoles": {
             "prestige": {
+                "member": {"name": "Member", "roleid": "1222098445389529088", "icon": "<:xp:935754903882702938>"},
                 "legends": {"name": "Legends", "roleid": "803602993945509908", "icon": "<:legend:590895411284410407>"}, 
                 "starlord": {"name": "Star lord", "roleid": "803603014211731476", "icon": "<:star:927704564914860052>"},
                 "farmersrus": {"name": "FarmersRUs", "roleid": "803603106708717589", "icon": "<:loot:927704097803600002>"},
@@ -51,7 +52,8 @@
                 "TH12": {"name": "Townhall 12", "roleid": "892969438406668338", "lvl": 12, "icon": "<:th12:451408476426469387>"},
                 "TH13": {"name": "Townhall 13", "roleid": "892969469922668614", "lvl": 13, "icon": "<:th13:651100997367627823>"},
                 "TH14": {"name": "Townhall 14", "roleid": "892969502881484850", "lvl": 14, "icon": "<:th14:829099837034070027>"},
-                "TH15": {"name": "Townhall 15", "roleid": "1013013266286510100", "lvl": 15, "icon": "<:th15:1027192859130069062>"}
+                "TH15": {"name": "Townhall 15", "roleid": "1013013266286510100", "lvl": 15, "icon": "<:th15:1027192859130069062>"},
+                "TH16": {"name": "Townhall 16", "roleid": "1181977338565644358", "lvl": 16, "icon": "<:th16:1181986502473961503>"}
             }
         },
         "mediumPermRoles" : ["761865691904606228", "621998190601961473"],
