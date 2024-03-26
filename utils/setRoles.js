@@ -18,7 +18,8 @@ const setRoles = (playerData, user) => {
     masterGamer: playerAchievement[31].value >= 150000,
     conqueror: playerData?.legendStatistics?.bestSeason?.rank <= 1000,
     vanquisher: playerData?.legendStatistics?.bestBuilderBaseSeason?.rank <= 1000,
-    capitalist: playerData?.clanCapitalContributions >= 3000000
+    capitalist: playerData?.clanCapitalContributions >= 3000000,
+    member: playerData?.townHallLevel >= 5
   };
 
   addAchievementRoles(user, achieved);
@@ -79,6 +80,9 @@ const createValidVerificationEmbedDescription = (
     (achieved.capitalist
       ? `${roles.prestige.capitalist.icon} <@&${roles.prestige.capitalist.roleid}> added!\n`
       : ``) + 
+    (achieved.member
+      ? `${roles.prestige.member.icon} <@&${roles.prestige.member.roleid}> added!\n`
+      : ``) + 
     (thLevel > 0 ? thEmbedDesc : ``)
   );
 };
@@ -96,6 +100,7 @@ const addAchievementRoles = (user, achieved) => {
   if (achieved.conqueror) user.roles.add(roles.prestige.conqueror.roleid);
   if (achieved.vanquisher) user.roles.add(roles.prestige.vanquisher.roleid);
   if (achieved.capitalist) user.roles.add(roles.prestige.capitalist.roleid);
+  if (achieved.member) user.roles.add(roles.prestige.member.roleid);
 };
 
 const addTownhall = (player, user) => {
