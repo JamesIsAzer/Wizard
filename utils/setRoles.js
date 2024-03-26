@@ -80,10 +80,10 @@ const createValidVerificationEmbedDescription = (
     (achieved.capitalist
       ? `${roles.prestige.capitalist.icon} <@&${roles.prestige.capitalist.roleid}> added!\n`
       : ``) + 
+    (thLevel > 0 ? thEmbedDesc : ``) +
     (achieved.member
       ? `${roles.prestige.member.icon} <@&${roles.prestige.member.roleid}> added!\n`
-      : ``) + 
-    (thLevel > 0 ? thEmbedDesc : ``)
+      : ``) 
   );
 };
 
