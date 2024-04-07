@@ -12,7 +12,7 @@ const setRoles = (playerData, user) => {
       playerAchievement[5].value >= 2000000000 &&
       playerAchievement[6].value >= 2000000000 &&
       playerAchievement[16].value >= 20000000,
-    masterBuilder: playerData.builderBaseTrophies >= 5000,
+    masterBuilder: playerData.bestBuilderBaseTrophies >= 5000,
     philanthropist: playerAchievement[14].value >= 750000,
     greenThumb: playerAchievement[3].value >= 7500,
     masterGamer: playerAchievement[31].value >= 150000,
