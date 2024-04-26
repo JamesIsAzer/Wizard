@@ -27,7 +27,7 @@ const sortLegends = (legendParticipants) =>
     legendParticipants.sort((a, b) => b.trophiesLegends - a.trophiesLegends)
 
 const sortBuilders = (builderParticipants) => 
-    builderParticipants.sort((a, b) => b.trophiesLegends - a.trophiesLegends)
+    builderParticipants.sort((a, b) => b.trophiesBuilders - a.trophiesBuilders)
 
 module.exports = {
     data: new SlashCommandBuilder()
