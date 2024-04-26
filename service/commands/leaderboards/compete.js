@@ -9,6 +9,7 @@ const { isLeaderboardRestricted } = require('../../../dao/mongo/restriction/conn
 const { isLeaderboardLocked } = require('../../../dao/mongo/toggle/connections')
 const { getInvalidTagEmbed } = require('../../../utils/embeds/verify');
 const { parseTag, isTagValid } = require('../../../utils/arguments/tagHandling');
+const { IDs } = require("../../../config.json")
 
 const LEGENDARY_MINIMUM = 5000
 const BUILDER_MINIMUM = 5000
@@ -82,7 +83,10 @@ module.exports = {
     const legends = account.trophies >= LEGENDARY_MINIMUM
     const builder = account.builderBaseTrophies >= BUILDER_MINIMUM
 
-    if (legends || builder) updateLeaderboardParticipation(tag, id, legends, builder)
+    if (legends || builder) {
+      updateLeaderboardParticipation(tag, id, legends, builder)
+      interaction.member.roles.add(IDs.leaderboardContest);
+    }
 
     const msg = x => `You are now competing under the ${x}, good luck!`
 
