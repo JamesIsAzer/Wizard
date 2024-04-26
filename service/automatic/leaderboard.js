@@ -1,4 +1,5 @@
 const { getLeaderboardAccounts } = require('../../dao/mongo/participant/connections');
+const { refreshLeaderboardSnapshot } = require('../../dao/mongo/leaderboard_snapshot/connections');
 const { findProfile } = require('../../dao/clash/verification');
 const { getLegendaryLeaderboard, getBuilderLeaderboard } = require('../../utils/embeds/leaderboard')
 const { getHowToCompete } = require('../../utils/buttons/leaderboard')
@@ -6,6 +7,7 @@ const { IDs } = require('../../config.json')
 const Bottleneck = require('bottleneck');
 const client = require('../../utils/client')
 const {Promise} = require('bluebird');
+const participants = require('../../dao/mongo/participant/schema');
 
 const MAX_LEADERBOARD_PARTICIPANTS = 5
 
@@ -22,8 +24,8 @@ const createLeaderboard = async() => {
     
     const participantsSplit = splitParticipants(playerData)
 
-    const topLegends = getTopLegends(participantsSplit.legendParticipants)
-    const topBuilders = getTopBuilders(participantsSplit.builderParticipants)
+    const topLegends = takeTopPlayers(sortLegends(participantsSplit.legendParticipants))
+    const topBuilders = takeTopPlayers(sortBuilders(participantsSplit.builderParticipants))
 
     const legendParticipantCount = participantsSplit.legendParticipants.length
     const builderParticipantCount = participantsSplit.builderParticipants.length
@@ -31,8 +33,10 @@ const createLeaderboard = async() => {
     const legendsChannel = client.channels.cache.get(IDs.leaderboardChannels.legendary)
     const builderChannel = client.channels.cache.get(IDs.leaderboardChannels.builder)
 
-    legendsChannel.send({embeds: [getLegendaryLeaderboard(topLegends, legendParticipantCount)], components: [getHowToCompete()] })
-    builderChannel.send({embeds: [getBuilderLeaderboard(topBuilders, builderParticipantCount)], components: [getHowToCompete()] })
+    refreshLeaderboardSnapshot(playerData)
+
+    legendsChannel.send({embeds: [getLegendaryLeaderboard(formatToSnapshot(topLegends), legendParticipantCount, 0, MAX_LEADERBOARD_PARTICIPANTS)], components: [getHowToCompete()] })
+    builderChannel.send({embeds: [getBuilderLeaderboard(formatToSnapshot(topBuilders), builderParticipantCount, 0, MAX_LEADERBOARD_PARTICIPANTS)], components: [getHowToCompete()] })
 }
 
 const appendDiscordData = async(participants) => {
@@ -84,13 +88,15 @@ const pruneIncompleteData = (playerData) =>
         return acc
     }, [])
 
-const getTopLegends = (legendParticipants) => 
+const sortLegends = (legendParticipants) => 
     legendParticipants.sort((a, b) => b.clash.response.data.trophies - a.clash.response.data.trophies)
         .slice(0, MAX_LEADERBOARD_PARTICIPANTS)
 
-const getTopBuilders = (builderParticipants) => 
+const sortBuilders = (builderParticipants) => 
     builderParticipants.sort((a, b) => b.clash.response.data.builderBaseTrophies - a.clash.response.data.builderBaseTrophies)
         .slice(0, MAX_LEADERBOARD_PARTICIPANTS)
+
+const takeTopPlayers = (participants) => participants.slice(0, MAX_LEADERBOARD_PARTICIPANTS)
 
 const promiseAllProps = (arrayOfObjects) => 
     Promise.map(arrayOfObjects, (obj) => Promise.props(obj));
@@ -100,6 +106,18 @@ const chunk = (arr, size) =>
       arr.slice(i * size, i * size + size)
     )
 
+const formatToSnapshot = (participants) => participants.map(participant => ({
+    discordID: participant.discordID,
+    discordUsername: participant.discordUsername,
+    gameName: participant.clash.response.data.name,
+    gameTag: participant.clash.response.data.tag,
+    trophiesLegends: participant.leaderboard ? participant.clash.response.data.trophies : null,
+    trophiesBuilders: participant.builderleaderboard ? participant.clash.response.data.builderBaseTrophies : null
+}))
+
 module.exports = {
-    createLeaderboard
+    createLeaderboard,
+    splitParticipants,
+    sortLegends,
+    sortBuilders
 }
