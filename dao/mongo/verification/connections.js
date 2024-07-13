@@ -37,7 +37,7 @@ const isOwnerOfAccount = async (tag, discordID) =>
 const getDiscordOfTag = async (tag) => 
     verifation.findOne({
         playerTag: tag
-    }).then((result) => result.discordID)
+    }).then((result) => result && result.discordID)
 
 const insertVerification = async (tag, discordID) =>
     verifation.create({
