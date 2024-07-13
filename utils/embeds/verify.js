@@ -46,7 +46,7 @@ const alertAttemptCrossVerification = (newUserId, originalOwnerId, tag) => new E
 const alertAttemptNewVerification = (newUserId, tag) => new EmbedBuilder()
     .setTitle('New verification⚠️')
     .setColor('00DE30')
-    .setDescription(`User <@${newUserId}> verified a new account under the tag \`#${tag}\``)
+    .setDescription(`User <@${newUserId}> (${newUserId}) verified a new account under the tag \`#${tag}\``)
 
 module.exports = {
     getInvalidTagEmbed,
