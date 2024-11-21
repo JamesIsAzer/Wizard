@@ -44,6 +44,8 @@ module.exports = {
     const memberId = interaction.member.id
 
     if (!isTagValid(tag)) {
+      console.log(`${new Date().toString()} - User ${interaction.member.id} attempted to verify with the tag ${tag}`);
+      
       await interaction.editReply({
         embeds: [getInvalidTagEmbed()],
         ephemeral: true,
@@ -104,6 +106,7 @@ module.exports = {
         embeds: [setRoles(profileData, interaction.member)],
         ephemeral: true
       });
+      console.log(`${new Date().toString()} - User ${interaction.member.id} verified with the tag ${tag}`);
       await newVerifyLogChannel.send({embeds: [alertAttemptNewVerification(memberId, tag)], components: [getNewVerifationID()]})
       return;
     }
