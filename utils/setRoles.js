@@ -19,6 +19,8 @@ const setRoles = (playerData, user) => {
     conqueror: playerData?.legendStatistics?.bestSeason?.rank <= 1000,
     vanquisher: playerData?.legendStatistics?.bestBuilderBaseSeason?.rank <= 1000,
     capitalist: playerData?.clanCapitalContributions >= 3000000,
+    campaigner: playerAchievement[1].value >= 270,
+    rockSolid: playerAchievement[13].value >= 7500,
     member: playerData?.townHallLevel >= 5
   };
 
@@ -80,6 +82,12 @@ const createValidVerificationEmbedDescription = (
     (achieved.capitalist
       ? `${roles.prestige.capitalist.icon} <@&${roles.prestige.capitalist.roleid}> added!\n`
       : ``) + 
+    (achieved.campaigner
+      ? `${roles.prestige.campaigner.icon} <@&${roles.prestige.campaigner.roleid}> added!\n`
+      : ``) + 
+    (achieved.rockSolid
+      ? `${roles.prestige.rockSolid.icon} <@&${roles.prestige.rockSolid.roleid}> added!\n`
+      : ``) + 
     (thLevel > 0 ? thEmbedDesc : ``) +
     (achieved.member
       ? `${roles.prestige.member.icon} <@&${roles.prestige.member.roleid}> added!\n`
@@ -100,6 +108,8 @@ const addAchievementRoles = (user, achieved) => {
   if (achieved.conqueror) user.roles.add(roles.prestige.conqueror.roleid);
   if (achieved.vanquisher) user.roles.add(roles.prestige.vanquisher.roleid);
   if (achieved.capitalist) user.roles.add(roles.prestige.capitalist.roleid);
+  if (achieved.campaigner) user.roles.add(roles.prestige.campaigner.roleid);
+  if (achieved.rockSolid) user.roles.add(roles.prestige.rockSolid.roleid);
   if (achieved.member) user.roles.add(roles.prestige.member.roleid);
 };
 

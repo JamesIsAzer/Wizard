@@ -7,7 +7,6 @@ const { IDs } = require('../../config.json')
 const Bottleneck = require('bottleneck');
 const client = require('../../utils/client')
 const {Promise} = require('bluebird');
-const participants = require('../../dao/mongo/participant/schema');
 
 const MAX_LEADERBOARD_PARTICIPANTS = 5
 

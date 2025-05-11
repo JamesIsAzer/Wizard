@@ -64,6 +64,9 @@ const unverifyUser = async (discordID) =>
 const getVerifications = async (discordID) =>
     verifation.find({discordID})
 
+const getAllVerifications = async () =>
+    verifation.find({})
+
 module.exports = {
     tagVerified,
     alreadyTaken,
@@ -72,5 +75,6 @@ module.exports = {
     insertVerification,
     tagVerifiedBySameUser,
     unverifyUser,
-    getVerifications
+    getVerifications,
+    getAllVerifications
 }
