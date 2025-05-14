@@ -2,12 +2,16 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { hasMediumPerms } = require('../../../utils/permissions');
 const { getInvalidTagEmbed } = require('../../../utils/embeds/verify');
 const { parseTag, isTagValid } = require('../../../utils/arguments/tagHandling');
-const { saveLeaderboardRestriction } = require('../../../dao/mongo/restriction/connections')
+const { saveLeaderboardRestriction } = require('../../../dao/mongo/restriction/queries')
+const { InteractionContextType } = require('discord.js');
 
 module.exports = {
+  mainServerOnly: true,
+  requiresConfigSetup: true,
   data: new SlashCommandBuilder()
     .setName('restrict')
     .setDescription('Mod only - Restrict a discord user from participating on the leaderboard.')
+    .setContexts(InteractionContextType.Guild)
     .addStringOption((option) =>
           option
             .setName('action')

@@ -8,7 +8,7 @@ const {
   alreadyTaken,
   insertVerification,
   getDiscordOfTag,
-} = require('../../../dao/mongo/verification/connections');
+} = require('../../../dao/mongo/verification/queries');
 const {
   getInvalidApiTokenEmbed,
   getInvalidTagEmbed,
@@ -19,10 +19,15 @@ const { parseTag, isTagValid } = require('../../../utils/arguments/tagHandling')
 const { setRoles } = require('../../../utils/setRoles');
 const { IDs } = require('../../../config.json')
 const { getNewVerifationID, getCrossVerificationIDs } = require('../../../utils/buttons/getID')
+const { InteractionContextType } = require('discord.js');
+
 module.exports = {
+  mainServerOnly: false,
+  requiresConfigSetup: true,
   data: new SlashCommandBuilder()
     .setName('verify')
     .setDescription('Verifies a user and sets their roles.')
+    .setContexts(InteractionContextType.Guild)
     .addStringOption((option) =>
       option
         .setName('tag')
@@ -89,9 +94,9 @@ module.exports = {
 
     if (await tagVerified(tag)) {
       if (await alreadyTaken(tag, interaction.member.id)) {
-        const originalAccountId = getDiscordOfTag(tag)
+        const originalAccountId = await getDiscordOfTag(tag)
         await interaction.editReply('This account is already taken!');
-        await crossVerifyLogChannel.send({embeds: [alertAttemptCrossVerification(memberId, await originalAccountId, tag)], components: [getCrossVerificationIDs()]})
+        await crossVerifyLogChannel.send({embeds: [alertAttemptCrossVerification(memberId, originalAccountId, tag)], components: [getCrossVerificationIDs(memberId, originalAccountId)]})
         return;
       } else {
         await interaction.editReply({
@@ -101,13 +106,13 @@ module.exports = {
         return;
       }
     } else {
-      insertVerification(tag, interaction.member.id);
+      insertVerification(tag, memberId);
       await interaction.editReply({
         embeds: [setRoles(profileData, interaction.member)],
         ephemeral: true
       });
-      console.log(`${new Date().toString()} - User ${interaction.member.id} verified with the tag ${tag}`);
-      await newVerifyLogChannel.send({embeds: [alertAttemptNewVerification(memberId, tag)], components: [getNewVerifationID()]})
+      console.log(`${new Date().toString()} - User ${memberId} verified with the tag ${tag}`);
+      await newVerifyLogChannel.send({embeds: [alertAttemptNewVerification(memberId, tag)], components: [getNewVerifationID(memberId)]})
       return;
     }
   },

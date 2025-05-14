@@ -1,23 +1,23 @@
 const { ActionRowBuilder, ButtonBuilder } = require('discord.js')
 
-const verifyingIDButton = new ButtonBuilder()
-    .setCustomId('getVerifyingID')
+const verifyingIDButton = (verifyingID) => new ButtonBuilder()
+    .setCustomId(`getID_${verifyingID}`)
     .setLabel('Get user ID')
     .setStyle('Primary')
 
-const verifiedIDButton = new ButtonBuilder()
-    .setCustomId('getVerifiedID')
+const verifiedIDButton = (verifiedID) => new ButtonBuilder()
+    .setCustomId(`getID_${verifiedID}`)
     .setLabel('Get ID of linked account')
     .setStyle('Primary')
 
-const getNewVerifationID = () => 
+const getNewVerifationID = (verifyingID) => 
     new ActionRowBuilder().addComponents(
-        verifyingIDButton
+        verifyingIDButton(verifyingID)
     )
 
-const getCrossVerificationIDs = () => 
+const getCrossVerificationIDs = (verifyingID, verifiedID) => 
     new ActionRowBuilder().addComponents(
-        verifyingIDButton, verifiedIDButton
+        verifyingIDButton(verifyingID), verifiedIDButton(verifiedID)
     )
 
 module.exports = {

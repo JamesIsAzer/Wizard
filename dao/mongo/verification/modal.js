@@ -6,6 +6,4 @@ const verifationSchema = Schema({
     playerTag: String
 })
 
-const verification = mongoose.model("Verification", verifationSchema)
-
-module.exports = verification
+module.exports = mongoose.model("Verification", verifationSchema)

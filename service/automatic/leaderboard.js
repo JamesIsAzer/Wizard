@@ -1,11 +1,11 @@
-const { getLeaderboardAccounts } = require('../../dao/mongo/participant/connections');
-const { refreshLeaderboardSnapshot } = require('../../dao/mongo/leaderboard_snapshot/connections');
+const { getLeaderboardAccounts } = require('../../dao/mongo/participant/queries');
+const { refreshLeaderboardSnapshot } = require('../../dao/mongo/leaderboard_snapshot/queries');
 const { findProfile } = require('../../dao/clash/verification');
 const { getLegendaryLeaderboard, getBuilderLeaderboard } = require('../../utils/embeds/leaderboard')
 const { getHowToCompete } = require('../../utils/buttons/leaderboard')
 const { IDs } = require('../../config.json')
 const Bottleneck = require('bottleneck');
-const client = require('../../utils/client')
+const client = require('../../client')
 const {Promise} = require('bluebird');
 
 const MAX_LEADERBOARD_PARTICIPANTS = 5

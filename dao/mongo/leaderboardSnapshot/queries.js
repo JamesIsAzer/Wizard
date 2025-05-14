@@ -1,12 +1,4 @@
-require('dotenv').config();
-const mongoose = require('mongoose');
-
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
-const leaderboardSnapshots = require('./schema');
+const leaderboardSnapshots = require('./modal');
 
 const getLeaderboardSnapshotsLegendary = async () => 
     leaderboardSnapshots.find({ trophiesLegends: { $ne: null }}).then((result) => result)

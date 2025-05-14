@@ -1,10 +1,10 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { ComponentType } = require('discord.js');
+const { ComponentType, InteractionContextType } = require('discord.js');
 const { IDs } = require('../../../config.json')
 const client = require('../../../utils/client')
 const { hasMediumPerms } = require('../../../utils/permissions');
 const { verificationPageEmbed } = require('../../../utils/embeds/userinfo/infoPage')
-const { getVerifications } = require('../../../dao/mongo/verification/connections')
+const { getVerifications } = require('../../../dao/mongo/verification/queries')
 const { getRow } = require('../../../utils/rows/pagination')
 const { containsOnlyNumbers } = require('../../../utils/arguments/discordID')
 const PAGE_LENGTH = 20
@@ -25,9 +25,12 @@ const paginateVerifications = (acc, verifications) => {
 }
 
 module.exports = {
+    mainServerOnly: false,
+    requiresConfigSetup: true,
     data: new SlashCommandBuilder()
       .setName('userinfo')
       .setDescription('Mod only - gets all verifications for a given user.')
+      .setContexts(InteractionContextType.Guild)
       .addStringOption((option) =>
       option
         .setName('id')

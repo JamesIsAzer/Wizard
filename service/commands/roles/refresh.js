@@ -1,14 +1,18 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { findProfile } = require('../../../dao/clash/verification');
-const { tagVerifiedBySameUser } = require('../../../dao/mongo/verification/connections');
+const { tagVerifiedBySameUser } = require('../../../dao/mongo/verification/queries');
 const { getInvalidTagEmbed } = require('../../../utils/embeds/verify');
 const { parseTag, isTagValid } = require('../../../utils/arguments/tagHandling');
 const { setRoles } = require('../../../utils/setRoles');
+const { InteractionContextType } = require('discord.js');
 
 module.exports = {
+  mainServerOnly: false,
+  requiresConfigSetup: true,
   data: new SlashCommandBuilder()
     .setName('refresh')
     .setDescription('Updates your profile roles if already verified.')
+    .setContexts(InteractionContextType.Guild)
     .addStringOption((option) =>
       option
         .setName('tag')

@@ -7,11 +7,15 @@ const {
   getAvailableColoursListEmbed,
 } = require('../../../utils/embeds/colour');
 const colours = IDs.verificationRoles.colour;
+const { InteractionContextType } = require('discord.js');
 
 module.exports = {
+  mainServerOnly: false,
+  requiresConfigSetup: true,
   data: new SlashCommandBuilder()
     .setName('colour')
     .setDescription('Manage colour roles.')
+    .setContexts(InteractionContextType.Guild)
     .addSubcommand((subcommand) =>
       subcommand
         .setName('add')

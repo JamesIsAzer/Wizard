@@ -1,15 +1,19 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { findTag, saveDefaultProfile, removeDefaultProfile } = require('../../../dao/mongo/profile/connections');
-const { isOwnerOfAccount } = require('../../../dao/mongo/verification/connections');
+const { findTag, saveDefaultProfile, removeDefaultProfile } = require('../../../dao/mongo/profile/queries');
+const { isOwnerOfAccount } = require('../../../dao/mongo/verification/queries');
 const { parseTag, isTagValid } = require('../../../utils/arguments/tagHandling');
 const { findProfile } = require('../../../dao/clash/verification');
 const { getInvalidTagEmbed } = require('../../../utils/embeds/verify');
 const { getProfileEmbed } = require('../../../utils/embeds/stats')
+const { InteractionContextType } = require('discord.js');
 
-  module.exports = {
+module.exports = {
+  mainServerOnly: false,
+  requiresConfigSetup: true,
   data: new SlashCommandBuilder()
     .setName('profile')
     .setDescription('Get information about players in-game stats.')
+		.setContexts(InteractionContextType.Guild, InteractionContextType.PrivateChannel, InteractionContextType.BotDM)
     .addSubcommand((subcommand) => 
         subcommand
           .setName('show')

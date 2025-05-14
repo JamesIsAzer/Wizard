@@ -1,14 +1,18 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const {
   getDiscordOfTag,
-} = require('../../../dao/mongo/verification/connections');
+} = require('../../../dao/mongo/verification/queries');
 const { parseTag } = require('../../../utils/arguments/tagHandling');
 const { hasMediumPerms } = require('../../../utils/permissions');
+const { InteractionContextType } = require('discord.js');
 
 module.exports = {
+  mainServerOnly: false,
+  requiresConfigSetup: true,
   data: new SlashCommandBuilder()
     .setName('taginfo')
     .setDescription('Mod only - gets verification for a given tag.')
+    .setContexts(InteractionContextType.Guild)
     .addStringOption((option) =>
       option.setName('playertag').setDescription('Player Tag').setRequired(true)
     ),

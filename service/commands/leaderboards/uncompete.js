@@ -3,16 +3,20 @@ const { hasMediumPerms } = require('../../../utils/permissions');
 const {
   uncompete,
   uncompeteAnyone
-} = require('../../../dao/mongo/participant/connections');
+} = require('../../../dao/mongo/participant/queries');
 const {
   getInvalidTagEmbed,
 } = require('../../../utils/embeds/verify');
 const { parseTag, isTagValid } = require('../../../utils/arguments/tagHandling');
+const { InteractionContextType } = require('discord.js');
 
 module.exports = {
+  mainServerOnly: true,
+  requiresConfigSetup: true,
   data: new SlashCommandBuilder()
     .setName('uncompete')
     .setDescription('Allows you to uncompete on the server leaderboard.')
+    .setContexts(InteractionContextType.Guild)
     .addStringOption((option) =>
       option
         .setName('tag')

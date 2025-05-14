@@ -6,6 +6,4 @@ const guildTogglesSchema = Schema({
     lockLeaderboard: Boolean
 })
 
-const guildToggles = mongoose.model("Toggle", guildTogglesSchema)
-
-module.exports = guildToggles
+module.exports = mongoose.model("Toggle", guildTogglesSchema)

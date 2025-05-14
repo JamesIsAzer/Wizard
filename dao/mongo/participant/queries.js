@@ -1,12 +1,4 @@
-require('dotenv').config();
-const mongoose = require('mongoose');
-
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
-const participants = require('./schema');
+const participants = require('./modal');
 
 const getLeaderboardAccounts = async () => 
     participants.find().then((result) => result)

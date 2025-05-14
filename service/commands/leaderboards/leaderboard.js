@@ -1,10 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { ComponentType } = require('discord.js');
-const { IDs } = require('../../../config.json')
-const client = require('../../../utils/client')
-const { verificationPageEmbed } = require('../../../utils/embeds/userinfo/infoPage')
+const { ComponentType, InteractionContextType } = require('discord.js');
 const { getLegendaryLeaderboard, getBuilderLeaderboard } = require('../../../utils/embeds/leaderboard')
-const { getLeaderboardSnapshotsLegendary, getLeaderboardSnapshotsBuilder } = require('../../../dao/mongo/leaderboard_snapshot/connections')
+const { getLeaderboardSnapshotsLegendary, getLeaderboardSnapshotsBuilder } = require('../../../dao/mongo/leaderboardSnapshot/queries')
 const { getRow } = require('../../../utils/rows/pagination')
 const PAGE_LENGTH = 5
 
@@ -30,10 +27,13 @@ const sortBuilders = (builderParticipants) =>
     builderParticipants.sort((a, b) => b.trophiesBuilders - a.trophiesBuilders)
 
 module.exports = {
+    mainServerOnly: false,
+    requiresConfigSetup: true,
     data: new SlashCommandBuilder()
-      .setName('leaderboard')
-      .setDescription('Check the standings of the last leaderboard snapshot.')
-      .addStringOption((option) =>
+        .setName('leaderboard')
+        .setDescription('Check the standings of the last leaderboard snapshot.')
+        .setContexts(InteractionContextType.Guild, InteractionContextType.BotDM)
+        .addStringOption((option) =>
           option
             .setName('type')
             .setDescription('The type of leaderboard to display.')

@@ -2,12 +2,16 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { hasMediumPerms } = require('../../../utils/permissions');
 const {
   toggleLeaderboard,
-} = require('../../../dao/mongo/toggle/connections');
+} = require('../../../dao/mongo/toggle/queries');
+const { InteractionContextType } = require('discord.js');
 
 module.exports = {
+  mainServerOnly: true,
+  requiresConfigSetup: true,
   data: new SlashCommandBuilder()
-    .setName('lockleaderboard')
+    .setName('lockleaderboard')    
     .setDescription('Mod only - Enable/disable people from participating on the leaderboard.')
+    .setContexts(InteractionContextType.Guild)
     .addBooleanOption((option) =>
       option
         .setName('lock')

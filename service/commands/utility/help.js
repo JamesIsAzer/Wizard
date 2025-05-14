@@ -2,11 +2,15 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const {
     getGeneralHelp, getVerificationHelp, getColoursHelp, getStatsHelp, getLeaderboardHelp
   } = require('../../../utils/embeds/help');
+const { InteractionContextType } = require('discord.js');
 
 module.exports = {
+  mainServerOnly: false,
+  requiresConfigSetup: true,
   data: new SlashCommandBuilder()
     .setName('help')
     .setDescription('Tells you how to use the bot.')
+    .setContexts(InteractionContextType.Guild, InteractionContextType.BotDM)
     .addStringOption((option) =>
       option
         .setName('command')

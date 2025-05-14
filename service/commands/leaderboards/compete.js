@@ -1,23 +1,27 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { findProfile } = require('../../../dao/clash/verification');
-const { isOwnerOfAccount } = require('../../../dao/mongo/verification/connections')
+const { isOwnerOfAccount } = require('../../../dao/mongo/verification/queries')
 const {
   checkIfCompetingInBoth,
   updateLeaderboardParticipation
-} = require('../../../dao/mongo/participant/connections');
-const { isLeaderboardRestricted } = require('../../../dao/mongo/restriction/connections')
-const { isLeaderboardLocked } = require('../../../dao/mongo/toggle/connections')
+} = require('../../../dao/mongo/participant/queries');
+const { isLeaderboardRestricted } = require('../../../dao/mongo/restriction/queries')
+const { isLeaderboardLocked } = require('../../../dao/mongo/toggle/queries')
 const { getInvalidTagEmbed } = require('../../../utils/embeds/verify');
 const { parseTag, isTagValid } = require('../../../utils/arguments/tagHandling');
-const { IDs } = require("../../../config.json")
+const { IDs } = require("../../../config.json");
+const { InteractionContextType } = require('discord.js');
 
 const LEGENDARY_MINIMUM = 5000
 const BUILDER_MINIMUM = 5000
 
 module.exports = {
+  mainServerOnly: true,
+  requiresConfigSetup: true,
   data: new SlashCommandBuilder()
     .setName('compete')
     .setDescription('Allows you to compete on the server leaderboard.')
+    .setContexts(InteractionContextType.Guild)
     .addStringOption((option) =>
       option
         .setName('tag')

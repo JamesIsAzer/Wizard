@@ -6,6 +6,4 @@ const profileSchema = Schema({
     tag: String
 })
 
-const profile = mongoose.model("Profile", profileSchema)
-
-module.exports = profile
+module.exports = mongoose.model("Profile", profileSchema)

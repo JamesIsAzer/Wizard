@@ -1,12 +1,4 @@
-require('dotenv').config();
-const mongoose = require('mongoose');
-
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
-const profile = require('./schema');
+const profile = require('./modal');
 
 const findTag = async (discordID) => 
     profile.findOne({

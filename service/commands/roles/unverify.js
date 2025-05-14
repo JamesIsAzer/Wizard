@@ -1,13 +1,18 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { hasMediumPerms } = require('../../../utils/permissions');
-const { unverifyUser } = require('../../../dao/mongo/verification/connections');
-const { uncompeteAllAccounts } = require('../../../dao/mongo/participant/connections');
+const { unverifyUser } = require('../../../dao/mongo/verification/queries');
+const { uncompeteAllAccounts } = require('../../../dao/mongo/participant/queries');
 const { removeRoles } = require('../../../utils/removeRoles')
 const { getUnverifiedEmbed } = require('../../../utils/embeds/verify')
+const { InteractionContextType } = require('discord.js');
+
 module.exports = {
+  mainServerOnly: false,
+  requiresConfigSetup: true,
   data: new SlashCommandBuilder()
     .setName('unverify')
     .setDescription('Unverifies a user and removes their roles.')
+    .setContexts(InteractionContextType.Guild)
     .addStringOption((option) =>
       option
         .setName('id')

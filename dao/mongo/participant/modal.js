@@ -8,6 +8,4 @@ const participantSchema = Schema({
     builderleaderboard: Boolean
 })
 
-const participants = mongoose.model("Participant", participantSchema)
-
-module.exports = participants
+module.exports = mongoose.model("Participant", participantSchema)

@@ -6,6 +6,4 @@ const restrictionSchema = Schema({
     restrictions: { leaderboard: Boolean }
 })
 
-const restrictions = mongoose.model("Restriction", restrictionSchema)
-
-module.exports = restrictions
+module.exports = mongoose.model("Restriction", restrictionSchema)

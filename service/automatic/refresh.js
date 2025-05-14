@@ -1,4 +1,4 @@
-const { getAllVerifications } = require('../../dao/mongo/verification/connections');
+const { getAllVerifications } = require('../../dao/mongo/verification/queries');
 const { findProfile } = require('../../dao/clash/verification')
 const limiter = new Bottleneck({
     maxConcurrent: 40,

@@ -1,13 +1,9 @@
-
 module.exports = {
-    name: 'interactionCreate',
+    idPrefix: 'howToCompete',
     async execute(interaction) {
-        if (!interaction.isButton()) return;
-        if (interaction.customId !== 'howToCompete') return;
-        interaction.reply({
+        return interaction.reply({
             content: 'Run `/compete <player tag>` in <#328964121871777793>',
             ephemeral: true,
         })
-        
     },
 };

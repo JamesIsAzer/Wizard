@@ -10,6 +10,4 @@ const leaderboardSnapshotSchema = Schema({
     trophiesBuilders: Number
 })
 
-const leaderboardSnapshots = mongoose.model("Leaderboard_Snapshot", leaderboardSnapshotSchema)
-
-module.exports = leaderboardSnapshots
+module.exports = mongoose.model("Leaderboard_Snapshot", leaderboardSnapshotSchema)

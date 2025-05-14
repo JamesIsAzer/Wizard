@@ -1,6 +1,6 @@
 const { Collection, ActivityType } = require('discord.js');
 const fs = require('fs');
-const client = require('./utils/client')
+const client = require('./client.js')
 const { scheduleLeaderboards } = require('./utils/scheduler')
 
 require('dotenv').config();
@@ -30,13 +30,15 @@ for (const folder of eventFolders) {
   }
 }
 
-client.on('interactionCreate', async (interaction) => {
-  if (!interaction.isCommand()) return;
-  const command = client.commands.get(interaction.commandName);
-  if (!command) return;
+const interactionCommand = require('./service/commands/commandHandler.js');
+const interactionEvent = require('./service/events/eventHandler');
 
+interactionCommand.loadCommands(client);
+
+client.on('interactionCreate', async (interaction) => {
   try {
-    await command.execute(interaction);
+    if (interaction.isCommand()) return interactionCommand.execute(interaction)
+    return interactionEvent.execute(interaction)
   } catch (e) {
     console.log(`${new Date().toString()} - ${e}`);
     await interaction.editReply({
