@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { hasFullPerms } = require('../../../utils/permissions');
 const { resetLeaderboards } = require('../../../dao/mongo/participant/queries')
-const { InteractionContextType } = require('discord.js');
+const { InteractionContextType, MessageFlags } = require('discord.js');
 
 module.exports = {
   mainServerOnly: true,
@@ -11,7 +11,9 @@ module.exports = {
     .setDescription('Admin only - Uncompete all participants on every leaderboard.')
     .setContexts(InteractionContextType.Guild),
   async execute(interaction) {
-    await interaction.deferReply({ ephemeral: false });
+    await interaction.deferReply({ 
+      flags: MessageFlags.Ephemeral 
+    });
 
     if(hasFullPerms(interaction.member)){
       resetLeaderboards()

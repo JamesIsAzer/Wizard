@@ -1,34 +1,9 @@
-const { Collection, ActivityType } = require('discord.js');
-const fs = require('fs');
+const { ActivityType, MessageFlags } = require('discord.js');
 const client = require('./client.js')
 const { scheduleLeaderboards } = require('./utils/scheduler')
+const connectDB = require('./dao/mongo/config');
 
 require('dotenv').config();
-
-client.commands = new Collection();
-
-const commandFolders = fs.readdirSync('./service/commands');
-for (const folder of commandFolders) {
-  const commandFiles = fs
-    .readdirSync(`./service/commands/${folder}`)
-    .filter((file) => file.endsWith('.js'));
-  for (const file of commandFiles) {
-    const command = require(`./service/commands/${folder}/${file}`);
-    client.commands.set(command.data.name, command);
-  }
-}
-
-const eventFolders = fs.readdirSync('./service/events');
-for (const folder of eventFolders) {
-  const eventFiles = fs
-    .readdirSync(`./service/events/${folder}`)
-    .filter((file) => file.endsWith('.js'));
-  for (const file of eventFiles) {
-    const event = require(`./service/events/${folder}/${file}`);
-    if (event.once) client.once(event.name, (...args) => event.execute(...args));
-    else client.on(event.name, (...args) => event.execute(...args));
-  }
-}
 
 const interactionCommand = require('./service/commands/commandHandler.js');
 const interactionEvent = require('./service/events/eventHandler');
@@ -43,15 +18,18 @@ client.on('interactionCreate', async (interaction) => {
     console.log(`${new Date().toString()} - ${e}`);
     await interaction.editReply({
       content: 'There was an error while executing this command!',
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral
     });
   }
 });
 
-client.once('ready', () => {
-  console.log('Ready!');
+client.once('ready', async () => {
+  console.log('Connected to discord!');
+  await connectDB()
+
   client.user.setPresence({ activities: [{ name: 'with fireballs 🔥', type: ActivityType.Playing }], status: 'online'})
   scheduleLeaderboards()
+  console.log('Wizard is ready to go!')
 });
 
 client.login(process.env.DISCORD_TOKEN);

@@ -5,10 +5,15 @@ const { IDs } = require('./config.json')
 const fs = require('node:fs')
 
 const commands = []
-const commandFolders = fs.readdirSync('./service/commands')
+const commandFolders = fs.readdirSync('./service/commands', {withFileTypes: true})
+	.filter(child => child.isDirectory())
+	.map(child => child.name)
 
 for (const folder of commandFolders) {
-    const commandFiles = fs.readdirSync(`./service/commands/${folder}`).filter(file => file.endsWith('.js'))
+    const commandFiles = fs.readdirSync(`./service/commands/${folder}`)
+		.filter(file => file.endsWith('.js'))
+		
+
     for (const file of commandFiles) {
       const command = require(`./service/commands/${folder}/${file}`)
       commands.push(command.data.toJSON())

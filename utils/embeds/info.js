@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-const client = require('../../utils/client')
+const client = require('../../client')
 
 const getInfo = () => new EmbedBuilder()
     .setTitle("Wizard")

@@ -7,7 +7,7 @@ const {
   getAvailableColoursListEmbed,
 } = require('../../../utils/embeds/colour');
 const colours = IDs.verificationRoles.colour;
-const { InteractionContextType } = require('discord.js');
+const { InteractionContextType, MessageFlags } = require('discord.js');
 
 module.exports = {
   mainServerOnly: false,
@@ -58,7 +58,9 @@ module.exports = {
         )
     ),
   async execute(interaction) {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ 
+      flags: MessageFlags.Ephemeral 
+    });
     if (interaction.options.getSubcommand() === 'remove') {
       await removeColourRoles(interaction.member);
       await interaction.editReply(`Removed colour override!`);

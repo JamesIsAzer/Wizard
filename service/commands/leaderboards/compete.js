@@ -10,7 +10,7 @@ const { isLeaderboardLocked } = require('../../../dao/mongo/toggle/queries')
 const { getInvalidTagEmbed } = require('../../../utils/embeds/verify');
 const { parseTag, isTagValid } = require('../../../utils/arguments/tagHandling');
 const { IDs } = require("../../../config.json");
-const { InteractionContextType } = require('discord.js');
+const { InteractionContextType, MessageFlags } = require('discord.js');
 
 const LEGENDARY_MINIMUM = 5000
 const BUILDER_MINIMUM = 5000
@@ -29,7 +29,9 @@ module.exports = {
         .setRequired(true)
     ),
   async execute(interaction) {
-    await interaction.deferReply({ ephemeral: false });
+    await interaction.deferReply({       
+      flags: MessageFlags.Ephemeral
+    });
     
     const tag = parseTag(interaction.options.getString('tag'))
     const id = interaction.member.id
@@ -42,7 +44,7 @@ module.exports = {
     if (!isTagValid(tag)) {
       await interaction.editReply({
         embeds: [getInvalidTagEmbed()],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral
       });
       return;
     }
@@ -77,7 +79,7 @@ module.exports = {
     if (!accountResponse.response.found) {
       await interaction.editReply({
         embeds: [getInvalidTagEmbed()],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral
       });
       return;
     }

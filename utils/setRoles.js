@@ -1,7 +1,9 @@
-const { getValidVerificationEmbed } = require('./embeds/verify');
 const { IDs } = require('../config.json');
+const { user } = require('../client');
+const { getConfig } = require('../config');
 const roles = IDs.verificationRoles;
-const setRoles = (playerData, user) => {
+
+const getAchievements = (playerData) => {
   const playerAchievement = playerData.achievements;
   const achieved = {
     legends: playerData.bestTrophies >= 5000,
@@ -24,115 +26,61 @@ const setRoles = (playerData, user) => {
     member: playerData?.townHallLevel >= 5
   };
 
-  addAchievementRoles(user, achieved);
-
-  const thLevel = addTownhall(playerData, user);
-
-  const noRoles =
-    thLevel === 0 && Object.values(achieved).every((val) => val === false);
-
-  return getValidVerificationEmbed(
-    createValidVerificationEmbedDescription(achieved, thLevel, noRoles)
-  );
+  return achieved
 };
 
-const createValidVerificationEmbedDescription = (
-  achieved,
-  thLevel,
-  noRoles
-) => {
-  if (noRoles) return `• Not eligible for any roles\n`;
+const setTownhallRoles = () => addTownhall(playerData, user);
 
-  let thEmbedDesc = '';
-  for (let thRole in roles.townhall) {
-    if (roles.townhall[thRole].lvl === thLevel) {
-      thEmbedDesc = `${roles.townhall[thRole].icon} <@&${roles.townhall[thRole].roleid}> added!\n`;
-      break;
-    }
+const hasAnyRoles = (thLevel) => thLevel !== 0 || Object.values(achieved).some((val) => val === true);
+
+const addRoles = (anyRoles, achieved, townhallLevel, user) => {
+  if (!anyRoles) return
+  addAchievementRoles(user, achieved)
+  addTownhallRole(user, townhallLevel)
+}
+
+const addTownhallRole = (user, townhallLevel, guildID) => {
+  if (townhallLevel < 8) return
+  
+  const townhallRoles = getConfig(guildID).townhallRoles
+  if (!townhallRoles) return
+
+  for (const [_, roleID] of Object.entries(townhallRoles)) {
+    if (user.roles.cache.has(roleID)) user.roles.remove(roleID);
   }
 
-  return (
-    (achieved.legends
-      ? `${roles.prestige.legends.icon} <@&${roles.prestige.legends.roleid}> added!\n`
-      : ``) +
-    (achieved.starLord
-      ? `${roles.prestige.starlord.icon} <@&${roles.prestige.starlord.roleid}> added!\n`
-      : ``) +
-    (achieved.farmersRUs
-      ? `${roles.prestige.farmersrus.icon} <@&${roles.prestige.farmersrus.roleid}> added!\n`
-      : ``) +
-    (achieved.masterBuilder
-      ? `${roles.prestige.masterbuilder.icon} <@&${roles.prestige.masterbuilder.roleid}> added!\n`
-      : ``) +
-    (achieved.philanthropist
-      ? `${roles.prestige.philanthropist.icon} <@&${roles.prestige.philanthropist.roleid}> added!\n`
-      : ``) +
-    (achieved.greenThumb
-      ? `${roles.prestige.greenthumb.icon} <@&${roles.prestige.greenthumb.roleid}> added!\n`
-      : ``) +
-    (achieved.masterGamer
-      ? `${roles.prestige.mastergamer.icon} <@&${roles.prestige.mastergamer.roleid}> added!\n`
-      : ``) +
-    (achieved.conqueror
-      ? `${roles.prestige.conqueror.icon} <@&${roles.prestige.conqueror.roleid}> added!\n`
-      : ``) +  
-    (achieved.vanquisher
-      ? `${roles.prestige.vanquisher.icon} <@&${roles.prestige.vanquisher.roleid}> added!\n`
-      : ``) + 
-    (achieved.capitalist
-      ? `${roles.prestige.capitalist.icon} <@&${roles.prestige.capitalist.roleid}> added!\n`
-      : ``) + 
-    (achieved.campaigner
-      ? `${roles.prestige.campaigner.icon} <@&${roles.prestige.campaigner.roleid}> added!\n`
-      : ``) + 
-    (achieved.rockSolid
-      ? `${roles.prestige.rockSolid.icon} <@&${roles.prestige.rockSolid.roleid}> added!\n`
-      : ``) + 
-    (thLevel > 0 ? thEmbedDesc : ``) +
-    (achieved.member
-      ? `${roles.prestige.member.icon} <@&${roles.prestige.member.roleid}> added!\n`
-      : ``) 
-  );
+  const townhallFieldName = `townhall${townhallLevel}`
+  user.roles.add(townhallRoles[townhallFieldName]);
+}
+
+const addAchievementRoles = (user, achieved, guildID) => {
+  const verificationRoles = getConfig(guildID).verificationRoles
+  
+  if (achieved.legends && verificationRoles?.legends) user.roles.add(verificationRoles.legends);
+  if (achieved.starLord && verificationRoles?.starLord) user.roles.add(verificationRoles.starLord);
+  if (achieved.farmersRUs && verificationRoles?.farmersRUs) user.roles.add(verificationRoles.farmersRUs);
+  if (achieved.masterBuilder && verificationRoles?.masterBuilder) user.roles.add(verificationRoles.masterBuilder);
+  if (achieved.philanthropist && verificationRoles?.philanthropist) user.roles.add(verificationRoles.philanthropist);
+  if (achieved.greenThumb && verificationRoles?.greenThumb) user.roles.add(verificationRoles.greenThumb);
+  if (achieved.masterGamer && verificationRoles?.masterGamer) user.roles.add(verificationRoles.masterGamer);
+  if (achieved.conqueror && verificationRoles.conqueror) user.roles.add(verificationRoles.conqueror);
+  if (achieved.vanquisher && verificationRoles?.vanquisher) user.roles.add(verificationRoles.vanquisher);
+  if (achieved.capitalist && verificationRoles?.capitalist) user.roles.add(verificationRoles.capitalist);
+  if (achieved.campaigner && verificationRoles?.campaigner) user.roles.add(verificationRoles.campaigner);
+  if (achieved.rockSolid && verificationRoles?.rockSolid) user.roles.add(verificationRoles.rockSolid);
+  if (achieved.member && verificationRoles?.member) user.roles.add(verificationRoles.member);
 };
 
-const addAchievementRoles = (user, achieved) => {
-  if (achieved.legends) user.roles.add(roles.prestige.legends.roleid);
-  if (achieved.starLord) user.roles.add(roles.prestige.starlord.roleid);
-  if (achieved.farmersRUs) user.roles.add(roles.prestige.farmersrus.roleid);
-  if (achieved.masterBuilder)
-    user.roles.add(roles.prestige.masterbuilder.roleid);
-  if (achieved.philanthropist)
-    user.roles.add(roles.prestige.philanthropist.roleid);
-  if (achieved.greenThumb) user.roles.add(roles.prestige.greenthumb.roleid);
-  if (achieved.masterGamer) user.roles.add(roles.prestige.mastergamer.roleid);
-  if (achieved.conqueror) user.roles.add(roles.prestige.conqueror.roleid);
-  if (achieved.vanquisher) user.roles.add(roles.prestige.vanquisher.roleid);
-  if (achieved.capitalist) user.roles.add(roles.prestige.capitalist.roleid);
-  if (achieved.campaigner) user.roles.add(roles.prestige.campaigner.roleid);
-  if (achieved.rockSolid) user.roles.add(roles.prestige.rockSolid.roleid);
-  if (achieved.member) user.roles.add(roles.prestige.member.roleid);
-};
-
-const addTownhall = (player, user) => {
+const getMaxTownhallLevel = (player, user) => {
   const oldThLevel = getOldThLevel(user);
 
   const newThLevel = player.townHallLevel;
 
-  if (newThLevel > oldThLevel) {
-    removeTH(user, player.townHallLevel);
-
-    for (let thRole in roles.townhall) {
-      if (roles.townhall[thRole].lvl === newThLevel) {
-        user.roles.add(roles.townhall[thRole].roleid);
-        return newThLevel;
-      }
-    }
-  }
-
-  return 0;
+  return Math.max(oldThLevel, newThLevel)
 };
 
 const getOldThLevel = (user) => {
+  // TODO: The correct way should be to check max from verifications in DB (will require multi requests)
   const user_roles = user.roles.cache;
   for (let i in roles.townhall) {
     if (user_roles.has(roles.townhall[i].roleid)) return roles.townhall[i].lvl;
@@ -153,5 +101,10 @@ const removeTH = (user, lvl) => {
 };
 
 module.exports = {
-  setRoles,
+  getAchievements,
+  setTownhallRoles,
+  hasAnyRoles,
+  addAchievementRoles,
+  getMaxTownhallLevel,
+  addRoles
 };

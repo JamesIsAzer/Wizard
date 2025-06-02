@@ -5,7 +5,7 @@ const { parseTag, isTagValid } = require('../../../utils/arguments/tagHandling')
 const { findProfile } = require('../../../dao/clash/verification');
 const { getInvalidTagEmbed } = require('../../../utils/embeds/verify');
 const { getProfileEmbed } = require('../../../utils/embeds/stats')
-const { InteractionContextType } = require('discord.js');
+const { InteractionContextType, MessageFlags } = require('discord.js');
 
 module.exports = {
   mainServerOnly: false,
@@ -43,7 +43,7 @@ module.exports = {
             .setDescription('Remove your default profile.')
       ),
   async execute(interaction) {
-    await interaction.deferReply({ ephemeral: false });
+    await interaction.deferReply();
     if (interaction.options.getSubcommand() === 'show'){
         const unsanitizedTag = interaction.options.getString('tag') ?? await findTag(interaction.member.id)
         
@@ -72,7 +72,9 @@ module.exports = {
         const verified = isOwnerOfAccount(tag, interaction.member.id)
         const playerData = playerResponse.response.data
         
-        interaction.editReply({embeds: [getProfileEmbed(playerData, await verified)], ephemeral: true})
+        interaction.editReply({
+					embeds: [getProfileEmbed(playerData, await verified)]
+				})
     } else if (interaction.options.getSubcommand() === 'save') {
         const tag = parseTag(interaction.options.getString('tag'))
         if (!isTagValid(tag)) {
@@ -113,6 +115,5 @@ module.exports = {
 };
 
 const sendInvalidTagReply = async(interaction) => await interaction.editReply({
-    embeds: [getInvalidTagEmbed()],
-    ephemeral: true,
+    embeds: [getInvalidTagEmbed()]
 });

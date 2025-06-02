@@ -6,12 +6,15 @@ const fs = require('fs');
 
 const loadCommands = (client) => {
     client.commands = new Collection();
-    const commandsPath = path.join(__dirname, './commands');
-    const commandFolders = fs.readdirSync(commandsPath);
-  
+    const commandsPath = __dirname;
+    const commandFolders = fs.readdirSync(commandsPath, {withFileTypes: true})
+      .filter(child => child.isDirectory())
+      .map(child => child.name)
+
     for (const folder of commandFolders) {
       const folderPath = path.join(commandsPath, folder);
-      const commandFiles = fs.readdirSync(folderPath).filter(file => file.endsWith('.js'));
+      const commandFiles = fs.readdirSync(folderPath)
+        .filter(file => file.endsWith('.js'));
   
       for (const file of commandFiles) {
         const filePath = path.join(folderPath, file);

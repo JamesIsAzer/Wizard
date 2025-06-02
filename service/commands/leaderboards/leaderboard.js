@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { ComponentType, InteractionContextType } = require('discord.js');
+const { ComponentType, InteractionContextType, MessageFlags } = require('discord.js');
 const { getLegendaryLeaderboard, getBuilderLeaderboard } = require('../../../utils/embeds/leaderboard')
 const { getLeaderboardSnapshotsLegendary, getLeaderboardSnapshotsBuilder } = require('../../../dao/mongo/leaderboardSnapshot/queries')
 const { getRow } = require('../../../utils/rows/pagination')
@@ -51,7 +51,10 @@ module.exports = {
         const leaderboardSize = participants.length 
 
         if (participants.length <= 0) {
-            interaction.reply({content: `No participants currently on this leaderboard`, ephemeral: false})
+            interaction.reply({
+                content: `No participants currently on this leaderboard`, 
+                flags: MessageFlags.Ephemeral
+            })
             return
         }
 

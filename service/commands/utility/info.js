@@ -12,6 +12,8 @@ module.exports = {
     .setDescription('Gives information about the bot!')
     .setContexts(InteractionContextType.Guild, InteractionContextType.BotDM),
   async execute(interaction) {
-    interaction.reply({embeds: [getInfo()], ephemeral: false})
+    interaction.reply({
+      embeds: [getInfo()]
+    })
   },
 };

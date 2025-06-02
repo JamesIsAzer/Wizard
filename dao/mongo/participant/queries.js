@@ -1,9 +1,9 @@
 const participants = require('./modal');
 
-const getLeaderboardAccounts = async () => 
-    participants.find().then((result) => result)
+const getLeaderboardAccounts = async ( guildID ) => 
+    participants.find({ guildID }).then((result) => result)
 
-const checkIfCompetingInBoth = async (tag, discordID) => 
+const checkIfCompetingInBoth = async ( tag, discordID ) => 
     participants.findOne({
         discordID,
         playerTag: tag,
@@ -31,7 +31,7 @@ const uncompeteAnyone = async ( tag ) =>
         else return false
     })
 
-const uncompeteAllAccounts = async ( discordID ) =>
+const uncompeteAllAccountsForUser = async ( discordID ) =>
     participants.deleteMany({
         discordID
     }).then(result => result)
@@ -47,6 +47,6 @@ module.exports = {
     updateLeaderboardParticipation,
     uncompete,
     uncompeteAnyone,
-    uncompeteAllAccounts,
+    uncompeteAllAccountsForUser,
     resetLeaderboards
 }

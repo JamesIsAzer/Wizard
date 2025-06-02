@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { ComponentType, InteractionContextType } = require('discord.js');
 const { IDs } = require('../../../config.json')
-const client = require('../../../utils/client')
+const client = require('../../../client')
 const { hasMediumPerms } = require('../../../utils/permissions');
 const { verificationPageEmbed } = require('../../../utils/embeds/userinfo/infoPage')
 const { getVerifications } = require('../../../dao/mongo/verification/queries')
@@ -25,7 +25,7 @@ const paginateVerifications = (acc, verifications) => {
 }
 
 module.exports = {
-    mainServerOnly: false,
+    mainServerOnly: true,
     requiresConfigSetup: true,
     data: new SlashCommandBuilder()
       .setName('userinfo')
@@ -38,15 +38,17 @@ module.exports = {
         .setRequired(true)
       ),
     async execute(interaction) {
-        if (!hasMediumPerms(interaction.member)) return interaction.reply({content: `You do not have permission to use this command.`, ephemeral: false})
+        if (!hasMediumPerms(interaction.member)) return interaction.reply({
+            content: `You do not have permission to use this command.`
+        })
 
         const targetUserID = interaction.options.getString('id')
-        if (!containsOnlyNumbers(targetUserID)) return interaction.reply({content: `Invalid ID format.`, ephemeral: false})
+        if (!containsOnlyNumbers(targetUserID)) return interaction.reply({content: `Invalid ID format.`})
+
         const userVerifications = await getVerifications(targetUserID)
-        if (userVerifications.length <= 0) {
-            interaction.reply({content: `No verifications found for user <@${targetUserID}>.`, ephemeral: false})
-            return
-        }
+        if (userVerifications.length <= 0) return interaction.reply({
+            content: `No verifications found for user <@${targetUserID}>.`
+        })
 
         let index = 0
         const verificationsPaginated = paginateVerifications([], userVerifications)

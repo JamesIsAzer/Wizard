@@ -3,7 +3,7 @@ const { hasMediumPerms } = require('../../../utils/permissions');
 const { getInvalidTagEmbed } = require('../../../utils/embeds/verify');
 const { parseTag, isTagValid } = require('../../../utils/arguments/tagHandling');
 const { saveLeaderboardRestriction } = require('../../../dao/mongo/restriction/queries')
-const { InteractionContextType } = require('discord.js');
+const { InteractionContextType, MessageFlags } = require('discord.js');
 
 module.exports = {
   mainServerOnly: true,
@@ -34,7 +34,7 @@ module.exports = {
         .setRequired(true)
     ),
   async execute(interaction) {
-    await interaction.deferReply({ ephemeral: false });
+    await interaction.deferReply();
     
     if(!hasMediumPerms(interaction.member)) {
       await interaction.editReply(`Insufficient permissions to use this command.`)
@@ -44,8 +44,7 @@ module.exports = {
     const tag = parseTag(interaction.options.getString('tag'))
     if (!isTagValid(tag)) {
       await interaction.editReply({
-        embeds: [getInvalidTagEmbed()],
-        ephemeral: true,
+        embeds: [getInvalidTagEmbed()]
       });
       return;
     }

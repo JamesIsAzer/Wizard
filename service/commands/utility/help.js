@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const {
     getGeneralHelp, getVerificationHelp, getColoursHelp, getStatsHelp, getLeaderboardHelp
   } = require('../../../utils/embeds/help');
-const { InteractionContextType } = require('discord.js');
+const { InteractionContextType, MessageFlags } = require('discord.js');
 
 module.exports = {
   mainServerOnly: false,
@@ -26,19 +26,34 @@ module.exports = {
   async execute(interaction) {
     switch(interaction.options.getString('command')){
         case 'verification':
-        await interaction.reply({embeds: [getVerificationHelp()], ephemeral: true,})
+        await interaction.reply({
+          embeds: [getVerificationHelp()], 
+          flags: MessageFlags.Ephemeral
+        })
         return
         case 'colours':
-        await interaction.reply({embeds: [getColoursHelp()], ephemeral: true,})
+        await interaction.reply({
+          embeds: [getColoursHelp()], 
+          flags: MessageFlags.Ephemeral
+        })
         return
         case 'stats':
-        await interaction.reply({embeds: [getStatsHelp()], ephemeral: true,})
+        await interaction.reply({
+          embeds: [getStatsHelp()], 
+          flags: MessageFlags.Ephemeral
+        })
         return
         case 'leaderboards':
-        await interaction.reply({embeds: [getLeaderboardHelp()], ephemeral: true,})
+        await interaction.reply({
+          embeds: [getLeaderboardHelp()], 
+          flags: MessageFlags.Ephemeral
+        })
         return
         default:
-        await interaction.reply({embeds: [getGeneralHelp()], ephemeral: true,})
+        await interaction.reply({
+          embeds: [getGeneralHelp()], 
+          flags: MessageFlags.Ephemeral
+        })
         return
     }
   },

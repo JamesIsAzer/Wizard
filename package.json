@@ -17,17 +17,18 @@
   },
   "homepage": "https://github.com/JamesAUre/WizardBot#readme",
   "dependencies": {
-    "@discordjs/rest": "^1.0.1",
+    "@discordjs/rest": "^1.2.0",
     "axios": "^1.9.0",
     "bluebird": "^3.7.2",
     "bottleneck": "^2.19.5",
     "cron": "^2.1.0",
     "discord.js": "^14.18.0",
-    "dotenv": "^16.0.1",
-    "mongoose": "^6.5.0"
+    "dotenv": "^16.0.3",
+    "mongoose": "^6.6.3",
+    "node-cache": "^5.1.2"
   },
   "devDependencies": {
-    "eslint": "^8.20.0",
+    "eslint": "^8.24.0",
     "nodemon": "^3.1.10"
   }
 }

@@ -8,7 +8,7 @@ const {
   getInvalidTagEmbed,
 } = require('../../../utils/embeds/verify');
 const { parseTag, isTagValid } = require('../../../utils/arguments/tagHandling');
-const { InteractionContextType } = require('discord.js');
+const { InteractionContextType, MessageFlags } = require('discord.js');
 
 module.exports = {
   mainServerOnly: true,
@@ -24,17 +24,15 @@ module.exports = {
         .setRequired(true)
     ),
   async execute(interaction) {
-    await interaction.deferReply({ ephemeral: false });
+    await interaction.deferReply();
     
     const tag = parseTag(interaction.options.getString('tag'))
     const id = interaction.member.id
 
     if (!isTagValid(tag)) {
-        await interaction.editReply({
-          embeds: [getInvalidTagEmbed()],
-          ephemeral: true,
+        return interaction.editReply({
+          embeds: [getInvalidTagEmbed()]
         });
-        return;
     }
 
     const success = hasMediumPerms(interaction.member) ? await uncompeteAnyone(tag) : await uncompete(tag, id)

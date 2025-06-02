@@ -1,10 +1,10 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { hasMediumPerms } = require('../../../utils/permissions');
 const { unverifyUser } = require('../../../dao/mongo/verification/queries');
-const { uncompeteAllAccounts } = require('../../../dao/mongo/participant/queries');
+const { uncompeteAllAccountsForUser } = require('../../../dao/mongo/participant/queries');
 const { removeRoles } = require('../../../utils/removeRoles')
 const { getUnverifiedEmbed } = require('../../../utils/embeds/verify')
-const { InteractionContextType } = require('discord.js');
+const { InteractionContextType, MessageFlags } = require('discord.js');
 
 module.exports = {
   mainServerOnly: false,
@@ -20,7 +20,9 @@ module.exports = {
         .setRequired(false)
     ),
   async execute(interaction) {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ 
+      flags: MessageFlags.Ephemeral
+     });
 
     if (interaction.options.getString('id') && !hasMediumPerms(interaction.member)) {
         interaction.editReply('Insufficient permissions to unverify other users.')
@@ -29,7 +31,7 @@ module.exports = {
     
     const discordID = interaction.options.getString('id') ?? interaction.member.id
 
-    uncompeteAllAccounts(discordID)
+    uncompeteAllAccountsForUser(discordID)
 
     interaction.guild.members.fetch(discordID)
         .then(member => unverifyOnServer(member, interaction))
@@ -41,7 +43,10 @@ const unverifyOnServer = async (member, interaction) => {
     const result = await unverifyUser(member.id)
     if (result.deletedCount > 0) {
         const rolesRemoved = removeRoles(member)
-        interaction.editReply({embeds: [getUnverifiedEmbed(rolesRemoved)], ephemeral: true})
+        interaction.editReply({
+          embeds: [getUnverifiedEmbed(rolesRemoved)], 
+          flags: MessageFlags.Ephemeral
+        })
     } else interaction.editReply('User does not have a verification.')
 }
 

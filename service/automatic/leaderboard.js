@@ -1,5 +1,5 @@
 const { getLeaderboardAccounts } = require('../../dao/mongo/participant/queries');
-const { refreshLeaderboardSnapshot } = require('../../dao/mongo/leaderboard_snapshot/queries');
+const { refreshLeaderboardSnapshot } = require('../../dao/mongo/leaderboardSnapshot/queries');
 const { findProfile } = require('../../dao/clash/verification');
 const { getLegendaryLeaderboard, getBuilderLeaderboard } = require('../../utils/embeds/leaderboard')
 const { getHowToCompete } = require('../../utils/buttons/leaderboard')

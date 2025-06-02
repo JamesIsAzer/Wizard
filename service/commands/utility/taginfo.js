@@ -7,7 +7,7 @@ const { hasMediumPerms } = require('../../../utils/permissions');
 const { InteractionContextType } = require('discord.js');
 
 module.exports = {
-  mainServerOnly: false,
+  mainServerOnly: true,
   requiresConfigSetup: true,
   data: new SlashCommandBuilder()
     .setName('taginfo')
@@ -19,8 +19,7 @@ module.exports = {
   async execute(interaction) {
     if (!hasMediumPerms(interaction.member))
       return interaction.reply({
-        content: `You do not have permission to use this command.`,
-        ephemeral: false,
+        content: `You do not have permission to use this command.`
       });
     const targetPlayerTag = parseTag(
       interaction.options.getString('playertag')
@@ -28,8 +27,7 @@ module.exports = {
     const playersDiscordID = await getDiscordOfTag(targetPlayerTag);
     if (!playersDiscordID) {
       return interaction.reply({
-        content: `No verifications found for tag ${targetPlayerTag}.`,
-        ephemeral: false,
+        content: `No verifications found for tag ${targetPlayerTag}.`
       });
     }
 

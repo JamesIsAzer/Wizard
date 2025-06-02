@@ -4,7 +4,7 @@ const { tagVerifiedBySameUser } = require('../../../dao/mongo/verification/queri
 const { getInvalidTagEmbed } = require('../../../utils/embeds/verify');
 const { parseTag, isTagValid } = require('../../../utils/arguments/tagHandling');
 const { setRoles } = require('../../../utils/setRoles');
-const { InteractionContextType } = require('discord.js');
+const { InteractionContextType, MessageFlags } = require('discord.js');
 
 module.exports = {
   mainServerOnly: false,
@@ -20,13 +20,15 @@ module.exports = {
         .setRequired(true)
     ),
   async execute(interaction) {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ 
+      flags: MessageFlags.Ephemeral 
+    });
     const tag = parseTag(interaction.options.getString('tag'));
     const discordID = interaction.member.id;
     if (!isTagValid(tag)) {
       await interaction.editReply({
         embeds: [getInvalidTagEmbed()],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral
       });
       return;
     }
@@ -35,7 +37,7 @@ module.exports = {
       const profileData = findProfileResponse.response.data;
       await interaction.editReply({
         embeds: [setRoles(profileData, interaction.member)],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral
       });
       return;
     } else {

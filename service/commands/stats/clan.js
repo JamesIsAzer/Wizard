@@ -3,7 +3,7 @@ const { getClanEmbed } = require('../../../utils/embeds/stats');
 const { getInvalidTagEmbed } = require('../../../utils/embeds/clanTag')
 const { parseTag, isTagValid } = require('../../../utils/arguments/tagHandling');
 const { findClan } = require('../../../dao/clash/clans')
-const { InteractionContextType } = require('discord.js');
+const { InteractionContextType, MessageFlags } = require('discord.js');
 
 module.exports = {
   mainServerOnly: false,
@@ -19,7 +19,7 @@ module.exports = {
         .setRequired(true)
     ),
   async execute(interaction) {
-    await interaction.deferReply({ ephemeral: false });
+    await interaction.deferReply();
     
     const tag = parseTag(interaction.options.getString('tag'))
 
@@ -27,11 +27,11 @@ module.exports = {
         sendInvalidTagReply(interaction)
         return
     }
+    
     const clanResponse = await findClan(tag)
 
     if (!clanResponse.response) {
-        await interaction.editReply(`An error occured: ${clanResponse.error}`)
-        return
+        return interaction.editReply(`An error occured: ${clanResponse.error}`)
     }
 
     if (!clanResponse.response.found) {
@@ -41,8 +41,12 @@ module.exports = {
 
     const clanData = clanResponse.response.data
 
-    interaction.editReply({embeds: [getClanEmbed(clanData)], ephemeral: true})
+    interaction.editReply({
+      embeds: [getClanEmbed(clanData)]
+    })
   }
 };
 
-const sendInvalidTagReply = async(interaction) => await interaction.editReply({embeds: [ getInvalidTagEmbed()], ephemeral: true});
+const sendInvalidTagReply = async(interaction) => await interaction.editReply({
+  embeds: [ getInvalidTagEmbed()]
+});
