@@ -24,10 +24,8 @@ module.exports = {
       flags: MessageFlags.Ephemeral
      });
 
-    if (interaction.options.getString('id') && !hasMediumPerms(interaction.member)) {
-        interaction.editReply('Insufficient permissions to unverify other users.')
-        return
-    }
+    if (interaction.options.getString('id') && !hasMediumPerms(interaction.member)) 
+      return interaction.editReply('Insufficient permissions to unverify other users.')
     
     const discordID = interaction.options.getString('id') ?? interaction.member.id
 
@@ -42,7 +40,7 @@ module.exports = {
 const unverifyOnServer = async (member, interaction) => {
     const result = await unverifyUser(member.id)
     if (result.deletedCount > 0) {
-        const rolesRemoved = removeRoles(member)
+        const rolesRemoved = removeRoles(member, interaction.guildId)
         interaction.editReply({
           embeds: [getUnverifiedEmbed(rolesRemoved)], 
           flags: MessageFlags.Ephemeral

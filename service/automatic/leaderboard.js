@@ -13,7 +13,7 @@ const MAX_LEADERBOARD_PARTICIPANTS = 5
 const limiter = new Bottleneck({
     maxConcurrent: 40,
     minTime: 25
-  });
+});
   
 const createLeaderboard = async() => {
     const participants = await getLeaderboardAccounts()
@@ -64,7 +64,7 @@ const filterInvalidAccounts = (participants) =>
     participants.filter((participant) => participant.discordUsername)
 
 const fetchAllAccounts = (participants) => 
-    promiseAllProps(participantDatas = participants.map((participant) => 
+    promiseAllProps(participants.map((participant) => 
         limiter.schedule(() => ({
             discordUsername: participant.discordUsername,
             clash: findProfile(participant.playerTag),

@@ -47,6 +47,8 @@ module.exports = {
         const capitalistRoleID = config?.verificationRoles?.capitalist
         const campaignerRoleID = config?.verificationRoles?.campaigner
         const rockSolidRoleID = config?.verificationRoles?.rockSolid
+        const vipRoleID = config?.verificationRoles?.vip
+        const goldRoleID = config?.verificationRoles?.gold
 
         // Colour roles
         const defaultColourRoleID = config?.colourRoles?.default
@@ -62,6 +64,8 @@ module.exports = {
         const capitalistColourRoleID = config?.colourRoles?.capitalist
         const campaignerColourRoleID = config?.colourRoles?.campaigner
         const rockSolidColourRoleID = config?.colourRoles?.rockSolid
+        const vipColourRoleID = config?.colourRoles?.vip
+        const goldColourRoleID = config?.colourRoles?.gold
 
         // Townhall roles
         const townhall8 = config?.townhallRoles?.townhall8
@@ -94,6 +98,8 @@ module.exports = {
             displayRole('Capitalist', capitalistRoleID) +
             displayRole('Campaigner', campaignerRoleID) +
             displayRole('Rock Solid', rockSolidRoleID) +
+            displayRole('VIP', vipRoleID) +
+            displayRole('Gold', goldRoleID) +
             `\n__Colour role IDs__\n` +
             displayRole('Default', defaultColourRoleID) +
             displayRole('Legends', legendsColourRoleID) +
@@ -108,6 +114,8 @@ module.exports = {
             displayRole('Capitalist', capitalistColourRoleID) +
             displayRole('Campaigner', campaignerColourRoleID) +
             displayRole('Rock Solid', rockSolidColourRoleID) +
+            displayRole('VIP', vipColourRoleID) +
+            displayRole('Gold', goldColourRoleID) +
             `\n__Townhall role IDs__\n` +
             displayRole('Townhall 8', townhall8) +
             displayRole('Townhall 9', townhall9) +

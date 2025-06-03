@@ -8,6 +8,7 @@ const {
 } = require('../../../utils/embeds/colour');
 const colours = IDs.verificationRoles.colour;
 const { InteractionContextType, MessageFlags } = require('discord.js');
+const { getConfig } = require('../../../config');
 
 module.exports = {
   mainServerOnly: false,
@@ -45,7 +46,9 @@ module.exports = {
         )
     )
     .addSubcommand((subcommand) =>
-      subcommand.setName('remove').setDescription('Remove colour overrides.')
+      subcommand
+        .setName('remove')
+        .setDescription('Remove colour overrides.')
     )
     .addSubcommand((subcommand) =>
       subcommand
@@ -61,13 +64,18 @@ module.exports = {
     await interaction.deferReply({ 
       flags: MessageFlags.Ephemeral 
     });
+
+    const config = await getConfig(interaction.guildId)
+    const verificationRoles = config.verificationRoles
+    const colourRoles = config.colourRoles
+
     if (interaction.options.getSubcommand() === 'remove') {
-      await removeColourRoles(interaction.member);
+      await removeColourRoles(colourRoles, interaction.member);
       await interaction.editReply(`Removed colour override!`);
       return;
     } else if (interaction.options.getSubcommand() === 'add') {
       const colour = interaction.options.getString('colour');
-      await setColorRoles(colour, interaction);
+      await setColorRoles(colour, verificationRoles, colourRoles, interaction);
       return;
     } else if (interaction.options.getSubcommand() === 'list') {
       if (interaction.options.getBoolean('onlyavailable')) {
@@ -85,48 +93,36 @@ module.exports = {
   },
 };
 
-const setColorRoles = async (colour, interaction) => {
-  const user = interaction.member;
-  const userRoles = user.roles.cache;
-  for (let l in colours.norequirement) {
-    if (colour == colours.norequirement[l].arg) {
-      await interaction.editReply({
-        embeds: [getSuccessfulColourEmbed(colours.norequirement[l].colourid)],
-      });
-      await successfulColour(user, colours.norequirement[l].colourid);
-      return;
-    }
-  }
-  for (let i in colours.requirement) {
-    if (colour == colours.requirement[i].arg) {
-      const wantedColorRoleReq = colours.requirement[i].roleid;
-      if (userRoles.has(wantedColorRoleReq)) {
-        await interaction.editReply({
-          embeds: [getSuccessfulColourEmbed(colours.requirement[i].colourid)],
-        });
-        await successfulColour(user, colours.requirement[i].colourid);
-      } else {
-        await interaction.editReply({
-          embeds: [getUnsatisfiedRequirementEmbed(wantedColorRoleReq)],
-        });
-      }
-
-      break;
-    }
+const removeColourRoles = async (colourRoles, user) => {
+  for (const [_, roleID] of Object.entries(colourRoles)) {
+    if (user.roles.cache.has(roleID)) interaction.member.roles.remove(roleID);
   }
 };
 
-const successfulColour = async (user, colorToAdd) => {
-  await removeColourRoles(user);
-  await user.roles.add(colorToAdd);
-};
-const removeColourRoles = async (user) => {
-  const removeableRoles = [];
-  for (let k in colours.requirement) {
-    removeableRoles.push(colours.requirement[k].colourid);
+const setColorRoles = async (colour, verificationRoles, colourRoles, interaction) => {
+  const addRoleIfRequirementMet = async (colourRoleID, achievementRoleID) => {
+    if(!achievementRoleID || interaction.member.cache.roles.has(achievementRoleID)) {
+      removeColourRoles(colour, interaction.member)
+      interaction.member.roles.add(colourRoleID)
+      return interaction.editReply({embeds: [getSuccessfulColourEmbed(colourRoleID)]})
+    }
+    return interaction.editReply({
+      embeds: [getUnsatisfiedRequirementEmbed(wantedColorRoleReq)],
+    });
   }
-  for (let k in colours.norequirement) {
-    removeableRoles.push(colours.norequirement[k].colourid);
-  }
-  await user.roles.remove(removeableRoles);
+
+  if (colour == "PURPLE") addRoleIfRequirementMet(colourRoles?.legends, verificationRoles?.legends)
+  if (colour == "YELLOW") addRoleIfRequirementMet(colourRoles?.starLord, verificationRoles?.starLord)
+  if (colour == "FARMERPINK") addRoleIfRequirementMet(colourRoles?.farmersRUs, verificationRoles?.farmersRUs)
+  if (colour == "BLUE") addRoleIfRequirementMet(colourRoles?.masterBuilder, verificationRoles?.masterBuilder)
+  if (colour == "PINK") addRoleIfRequirementMet(colourRoles?.philanthropist, verificationRoles?.philanthropist)
+  if (colour == "GOLD") addRoleIfRequirementMet(colourRoles?.gold, verificationRoles?.gold)
+  if (colour == "VIPRED") addRoleIfRequirementMet(colourRoles?.vip, verificationRoles?.vip)
+  if (colour == "GREEN") addRoleIfRequirementMet(colourRoles?.greenThumb, verificationRoles?.greenThumb)
+  if (colour == "MINT") addRoleIfRequirementMet(colourRoles?.masterGamer, verificationRoles?.masterGamer)
+  if (colour == "RED") addRoleIfRequirementMet(colourRoles?.conqueror, verificationRoles?.conqueror)
+  if (colour == "TURQUOISE") addRoleIfRequirementMet(colourRoles?.vanquisher, verificationRoles?.vanquisher)
+  if (colour == "BLACK") addRoleIfRequirementMet(colourRoles?.capitalist, verificationRoles?.capitalist)
+  if (colour == "WHITE") addRoleIfRequirementMet(colourRoles?.default, null)
 };
+

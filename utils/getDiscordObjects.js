@@ -1,4 +1,4 @@
-const { client } = require('../client')
+const client = require('../client')
 
 const getGuild = async (guildID) => {
     let guild = client.guilds.cache.get(guildID);
@@ -10,6 +10,8 @@ const getGuild = async (guildID) => {
             return null;
         }
     }
+
+    return guild
 }
 
 const getChannel = async (guild, channelID) => {
@@ -22,6 +24,8 @@ const getChannel = async (guild, channelID) => {
             return null;
         }
     }
+    
+    return logChannel
 }
 
 

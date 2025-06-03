@@ -23,12 +23,12 @@ const getInvalidApiTokenEmbed = () => new EmbedBuilder()
       'https://media.discordapp.net/attachments/582092054264545280/813606623519703070/image0.png?width=1440&height=665'
     )
 
-const getValidVerificationEmbed = (achieved, thLevel, anyRoles, guildID) => new EmbedBuilder()
+const getValidVerificationEmbed = (achieved, thLevel, anyRoles, config) => new EmbedBuilder()
     .setTitle('Verification successful! ✅')
     .setColor('#00DE30')
     .addFields({
         name: 'Roles added',
-        value: getSuccessfulVerificationEmbedDescription(achieved, thLevel, anyRoles, guildID)
+        value: getSuccessfulVerificationEmbedDescription(achieved, thLevel, anyRoles, config)
     })
     
 const getUnverifiedEmbed = rolesRemoved => new EmbedBuilder()
@@ -49,14 +49,12 @@ const alertAttemptNewVerification = (newUserId, tag) => new EmbedBuilder()
     .setColor('00DE30')
     .setDescription(`User <@${newUserId}> (${newUserId}) verified a new account under the tag \`#${tag}\``)
 
-const getSuccessfulVerificationEmbedDescription = async (achieved, thLevel, anyRoles, guildID) => {
+const getSuccessfulVerificationEmbedDescription = (achieved, thLevel, anyRoles, config) => {
     if (!anyRoles) return `• Not eligible for any roles\n`;
-
-    const config = await getConfig(guildID)
 
     const verificationRoles = config.verificationRoles
     const townhallRoles = config.townhallRoles
-  
+
     return (
         displayRow("<:xp:1379105235204833442>", achieved.member, verificationRoles?.member) +
         displayRow("<:legend:1379105324660818060>", achieved.legends, verificationRoles?.legends) +
@@ -89,7 +87,7 @@ const getThLevelDescription = (thLevel, townhallRoles) => {
     if (thLevel == 15) return displayRow("<:th15:1379105622435565699>", true, townhallRoles?.townhall15)
     if (thLevel == 16) return displayRow("<:th16:1379105633886015510>", true, townhallRoles?.townhall16)
     if (thLevel == 17) return displayRow("<:th17:1379105644304535624>", true, townhallRoles?.townhall17)
-
+    return ""
 }
 
 module.exports = {

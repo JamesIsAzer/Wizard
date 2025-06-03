@@ -1,7 +1,14 @@
 const { IDs } = require('../config.json');
-const { user } = require('../client');
 const { getConfig } = require('../config');
+const { getVerifications } = require('../dao/mongo/verification/queries');
 const roles = IDs.verificationRoles;
+const Bottleneck = require('bottleneck');
+const { findProfile } = require('../dao/clash/verification');
+
+const limiter = new Bottleneck({
+    maxConcurrent: 10,
+    minTime: 25
+});
 
 const getAchievements = (playerData) => {
   const playerAchievement = playerData.achievements;
@@ -33,16 +40,14 @@ const setTownhallRoles = () => addTownhall(playerData, user);
 
 const hasAnyRoles = (thLevel) => thLevel !== 0 || Object.values(achieved).some((val) => val === true);
 
-const addRoles = (anyRoles, achieved, townhallLevel, user) => {
+const addRoles = (anyRoles, achieved, townhallLevel, user, config) => {
   if (!anyRoles) return
-  addAchievementRoles(user, achieved)
-  addTownhallRole(user, townhallLevel)
+  addAchievementRoles(user, achieved, config.verificationRoles)
+  addTownhallRole(user, townhallLevel, config.townhallRoles)
 }
 
-const addTownhallRole = (user, townhallLevel, guildID) => {
+const addTownhallRole = (user, townhallLevel, townhallRoles) => {
   if (townhallLevel < 8) return
-  
-  const townhallRoles = getConfig(guildID).townhallRoles
   if (!townhallRoles) return
 
   for (const [_, roleID] of Object.entries(townhallRoles)) {
@@ -53,9 +58,7 @@ const addTownhallRole = (user, townhallLevel, guildID) => {
   user.roles.add(townhallRoles[townhallFieldName]);
 }
 
-const addAchievementRoles = (user, achieved, guildID) => {
-  const verificationRoles = getConfig(guildID).verificationRoles
-  
+const addAchievementRoles = (user, achieved, verificationRoles) => {
   if (achieved.legends && verificationRoles?.legends) user.roles.add(verificationRoles.legends);
   if (achieved.starLord && verificationRoles?.starLord) user.roles.add(verificationRoles.starLord);
   if (achieved.farmersRUs && verificationRoles?.farmersRUs) user.roles.add(verificationRoles.farmersRUs);
@@ -71,33 +74,33 @@ const addAchievementRoles = (user, achieved, guildID) => {
   if (achieved.member && verificationRoles?.member) user.roles.add(verificationRoles.member);
 };
 
-const getMaxTownhallLevel = (player, user) => {
-  const oldThLevel = getOldThLevel(user);
+const getMaxTownhallLevel = async (player, user) => {
+  const oldThLevel = await getOldThLevel(user);
 
   const newThLevel = player.townHallLevel;
+
+  console.log(oldThLevel)
+  console.log(newThLevel)
 
   return Math.max(oldThLevel, newThLevel)
 };
 
-const getOldThLevel = (user) => {
-  // TODO: The correct way should be to check max from verifications in DB (will require multi requests)
-  const user_roles = user.roles.cache;
-  for (let i in roles.townhall) {
-    if (user_roles.has(roles.townhall[i].roleid)) return roles.townhall[i].lvl;
-  }
-  return 0;
-};
+const getOldThLevel = async (user) => {
+  const tags = (await getVerifications(user.id)).map((verification) => verification.playerTag)
 
-const removeTH = (user, lvl) => {
-  const user_roles = user.roles.cache;
-  for (let i in roles.townhall) {
-    if (
-      user_roles.has(roles.townhall[i].roleid) &&
-      roles.townhall[i].lvl < lvl
-    ) {
-      user.roles.remove(roles.townhall[i].roleid);
-    }
-  }
+  const townhallLevels = await Promise.all(
+    tags.map((tag) =>
+      limiter.schedule(async () => {
+        const account = await findProfile(tag)
+        if (!account.response?.found) return 0
+        return account.response.data.townHallLevel
+      })
+    )
+  )
+
+  console.log(tags)
+  console.log(townhallLevels)
+  return Math.max(...townhallLevels)
 };
 
 module.exports = {

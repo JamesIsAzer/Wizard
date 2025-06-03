@@ -33,10 +33,10 @@ const findProfileRequest = async ({ tag }) =>
   .catch((error) => error.response )
 
 const findProfile = async( tag ) => {
-const response = await findProfileRequest({ tag })
-if (response.status === SUCCESS) return responseObject ({found: true, data: response.data}, null)
-if (response.status === NOT_FOUND) return responseObject ({found: false}, null)
-return responseObject(null, parseClashStatus(response.status))
+  const response = await findProfileRequest({ tag })
+  if (response.status === SUCCESS) return responseObject ({found: true, data: response.data}, null)
+  if (response.status === NOT_FOUND) return responseObject ({found: false}, null)
+  return responseObject(null, parseClashStatus(response.status))
 }
 
 module.exports = {

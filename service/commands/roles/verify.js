@@ -22,6 +22,7 @@ const { IDs } = require('../../../config.json')
 const { getNewVerifationID, getCrossVerificationIDs } = require('../../../utils/buttons/getID')
 const { InteractionContextType, MessageFlags } = require('discord.js');
 const { getGuild, getChannel } = require('../../../utils/getDiscordObjects');
+const { getConfig } = require('../../../config');
 
 module.exports = {
   mainServerOnly: false,
@@ -50,8 +51,10 @@ module.exports = {
     const tag = parseTag(interaction.options.getString('tag'))
     const token = interaction.options.getString('token');
 
-    const ownerGuild = getGuild(IDs.ownerGuild)
+    const ownerGuild = await getGuild(IDs.ownerGuild)
 
+    const config = await getConfig(interaction.guildId)
+    
     if (!ownerGuild) 
       return interaction.editReply("Something went wrong, if this keeps happening please contact \`azerfrost\`!")
 
@@ -108,9 +111,11 @@ module.exports = {
     }
 
     const achieved = getAchievements(profileData, interaction.member)
-    const townhallLevel = getMaxTownhallLevel(profileData, interaction.member)
-    const anyRoles = hasAnyRoles(townhall)
+    const townhallLevel = await getMaxTownhallLevel(profileData, interaction.member)
+    const anyRoles = hasAnyRoles(townhallLevel)
 
+    console.log("TTT")
+    console.log(townhallLevel)
     if (await tagVerified(tag)) {
       if (await alreadyTaken(tag, interaction.member.id)) {
         const originalAccountId = await getDiscordOfTag(tag)
@@ -118,20 +123,20 @@ module.exports = {
         await crossVerifyLogChannel.send({embeds: [alertAttemptCrossVerification(memberId, originalAccountId, tag)], components: [getCrossVerificationIDs(memberId, originalAccountId)]})
         return;
       } else {
-        addRoles(anyRoles, achieved, townhallLevel, interaction.member)
-        
+        addRoles(anyRoles, achieved, townhallLevel, interaction.member, config)
+
         await interaction.editReply({
-          embeds: [getValidVerificationEmbed(achieved, townhallLevel, anyRoles, interaction.guildId)],
+          embeds: [getValidVerificationEmbed(achieved, townhallLevel, anyRoles, config)],
           flags: MessageFlags.Ephemeral
         });
         return;
       }
     } else {
       insertVerification(tag, memberId);
-      addRoles(anyRoles, achieved, townhallLevel, interaction.member)
+      addRoles(anyRoles, achieved, townhallLevel, interaction.member, config)
 
       await interaction.editReply({
-        embeds: [getValidVerificationEmbed(achieved, townhallLevel, anyRoles, interaction.guildId)],
+        embeds: [getValidVerificationEmbed(achieved, townhallLevel, anyRoles, config)],
         flags: MessageFlags.Ephemeral
       });
       console.log(`${new Date().toString()} - User ${memberId} verified with the tag ${tag}`);

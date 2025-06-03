@@ -108,6 +108,18 @@ module.exports = {
                         .setDescription('Rock Solid role ID.')
                         .setRequired(false)
                 ) 
+                .addStringOption((option) =>
+                    option
+                        .setName('vip_role_id')
+                        .setDescription('VIP role ID.')
+                        .setRequired(false)
+                )
+                .addStringOption((option) =>
+                    option
+                        .setName('gold_role_id')
+                        .setDescription('Gold role ID.')
+                        .setRequired(false)
+                )
         )
         .addSubcommand((subcommand) => 
             subcommand
@@ -183,6 +195,18 @@ module.exports = {
                     option
                         .setName('rock_solid_colour_role_id')
                         .setDescription('Rock Solid colour role ID.')
+                        .setRequired(false)
+                )
+                .addStringOption((option) =>
+                    option
+                        .setName('vip_colour_role_id')
+                        .setDescription('VIP colour role ID.')
+                        .setRequired(false)
+                )
+                .addStringOption((option) =>
+                    option
+                        .setName('gold_colour_role_id')
+                        .setDescription('Gold colour role ID.')
                         .setRequired(false)
                 )
                 .addStringOption((option) =>
@@ -279,6 +303,8 @@ module.exports = {
         const capitalistRoleInputID = interaction.options.getString('capitalist_role_id')
         const campaignerRoleInputID = interaction.options.getString('campaigner_role_id')
         const rockSolidRoleInputID = interaction.options.getString('rock_solid_role_id')
+        const vipRoleInputID = interaction.options.getString('vip_role_id')
+        const goldRoleInputID = interaction.options.getString('gold_role_id')
         const legendsColourRoleInputID = interaction.options.getString('legends_colour_role_id')
         const starLordColourRoleInputID = interaction.options.getString('star_lord_colour_role_id')
         const farmersRUsColourRoleInputID = interaction.options.getString('farmers_r_us_colour_role_id')
@@ -291,6 +317,8 @@ module.exports = {
         const capitalistColourRoleInputID = interaction.options.getString('capitalist_colour_role_id')
         const campaignerColourRoleInputID = interaction.options.getString('campaigner_colour_role_id')
         const rockSolidColourRoleInputID = interaction.options.getString('rock_solid_colour_role_id')
+        const vipColourRoleInputID = interaction.options.getString('vip_colour_role_id')
+        const goldColourRoleInputID = interaction.options.getString('gold_colour_role_id')
         const defaultColourRoleInputID = interaction.options.getString('default_colour_role_id')
         const townhall8RoleID = interaction.options.getString('townhall_8_id')
         const townhall9RoleID = interaction.options.getString('townhall_9_id')
@@ -325,7 +353,9 @@ module.exports = {
                 vanquisher: vanquisherRoleInputID ? vanquisherRoleInputID : config?.verificationRoles?.vanquisher,
                 capitalist: capitalistRoleInputID ? capitalistRoleInputID : config?.verificationRoles?.capitalist,
                 campaigner: campaignerRoleInputID ? campaignerRoleInputID : config?.verificationRoles?.campaigner,
-                rockSolid: rockSolidRoleInputID ? rockSolidRoleInputID : config?.verificationRoles?.rockSolid
+                rockSolid: rockSolidRoleInputID ? rockSolidRoleInputID : config?.verificationRoles?.rockSolid,
+                vip: vipRoleInputID ? vipRoleInputID : config?.verificationRoles?.vip,
+                gold: goldRoleInputID ? goldRoleInputID : config?.verificationRoles?.gold
             },
             colourRoles: {
                 default: defaultColourRoleInputID ? defaultColourRoleInputID : config?.colourRoles?.default,
@@ -340,7 +370,9 @@ module.exports = {
                 vanquisher: vanquisherColourRoleInputID ? vanquisherColourRoleInputID : config?.colourRoles?.vanquisher,
                 capitalist: capitalistColourRoleInputID ? capitalistColourRoleInputID : config?.colourRoles?.capitalist,
                 campaigner: campaignerColourRoleInputID ? campaignerColourRoleInputID : config?.colourRoles?.campaigner,
-                rockSolid: rockSolidColourRoleInputID ? rockSolidColourRoleInputID : config?.colourRoles?.rockSolid
+                rockSolid: rockSolidColourRoleInputID ? rockSolidColourRoleInputID : config?.colourRoles?.rockSolid,
+                vip: vipColourRoleInputID ? vipColourRoleInputID : config?.colourRoles?.vip,
+                gold: goldColourRoleInputID ? goldColourRoleInputID : config?.colourRoles?.gold
             },
             townhallRoles: {
                 townhall8: townhall8RoleID ? townhall8RoleID : config?.townhallRoles?.townhall8,
