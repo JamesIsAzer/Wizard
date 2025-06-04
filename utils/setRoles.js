@@ -79,9 +79,6 @@ const getMaxTownhallLevel = async (player, user) => {
 
   const newThLevel = player.townHallLevel;
 
-  console.log(oldThLevel)
-  console.log(newThLevel)
-
   return Math.max(oldThLevel, newThLevel)
 };
 
@@ -98,8 +95,6 @@ const getOldThLevel = async (user) => {
     )
   )
 
-  console.log(tags)
-  console.log(townhallLevels)
   return Math.max(...townhallLevels)
 };
 

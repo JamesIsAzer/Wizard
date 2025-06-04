@@ -335,6 +335,7 @@ module.exports = {
 
         const config = await getConfig(guildID)
 
+        console.log(goldColourRoleInputID)
         const newConfigConstructor = () => ({
             leaderboardChannels: {
                 legendary: legendaryChannelInputID ? legendaryChannelInputID : config?.leaderboardChannels?.legendary,

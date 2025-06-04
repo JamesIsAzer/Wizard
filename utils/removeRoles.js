@@ -1,9 +1,5 @@
 
-const { getConfig } = require('../config');
-
-const removeRoles = async (user, guildID) => {
-    const config = await getConfig(guildID)
-
+const removeRoles = async (user, config) => {
     const roleIDsRemoved = []
     const removeRolesInList = (user, roles) => {
         for (const [_, roleID] of Object.entries(roles)) {
@@ -20,6 +16,7 @@ const removeRoles = async (user, guildID) => {
 
     return roleIDsRemoved
 }
+
 
 module.exports = {
     removeRoles

@@ -14,11 +14,11 @@ const getGuild = async (guildID) => {
     return guild
 }
 
-const getChannel = async (guild, channelID) => {
-    let logChannel = guild.channels.cache.get(channelID);
+const getChannel = async (channelID) => {
+    let logChannel = client.channels.cache.get(channelID);
     if (!logChannel) {
         try {
-            logChannel = await guild.channels.fetch(channelID);
+            logChannel = await client.channels.fetch(channelID);
         } catch (error) {
             console.error(`Failed to fetch channel ${channelID}:`, error);
             return null;

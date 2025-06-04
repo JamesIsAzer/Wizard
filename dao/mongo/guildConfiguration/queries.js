@@ -1,3 +1,4 @@
+const { channel } = require('diagnostics_channel');
 const GuildConfiguration = require('./modal');
 
 const getConfigDB = async (guildID) => {
@@ -7,6 +8,8 @@ const getConfigDB = async (guildID) => {
     }
     return config;
 };
+
+const getAllConfigs = async () => GuildConfiguration.find()
 
 const updateConfigDB = async (guildID, config) => 
     GuildConfiguration.updateOne(
@@ -21,5 +24,6 @@ const getGuildIDs = async () =>
 module.exports = {
   getConfigDB,
   updateConfigDB,
-  getGuildIDs
+  getGuildIDs,
+  getAllConfigs
 };

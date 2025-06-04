@@ -58,8 +58,8 @@ module.exports = {
     if (!ownerGuild) 
       return interaction.editReply("Something went wrong, if this keeps happening please contact \`azerfrost\`!")
 
-    const crossVerifyLogChannel = getChannel(ownerGuild, IDs.logChannels.crossVerify)
-    const newVerifyLogChannel = getChannel(ownerGuild, IDs.logChannels.newVerify)
+    const crossVerifyLogChannel = getChannel(IDs.logChannels.crossVerify)
+    const newVerifyLogChannel = getChannel(IDs.logChannels.newVerify)
 
     if (!crossVerifyLogChannel || !newVerifyLogChannel)
       return interaction.editReply("Something went wrong, if this keeps happening please contact \`azerfrost\`!")
@@ -114,14 +114,11 @@ module.exports = {
     const townhallLevel = await getMaxTownhallLevel(profileData, interaction.member)
     const anyRoles = hasAnyRoles(townhallLevel)
 
-    console.log("TTT")
-    console.log(townhallLevel)
     if (await tagVerified(tag)) {
       if (await alreadyTaken(tag, interaction.member.id)) {
         const originalAccountId = await getDiscordOfTag(tag)
         await interaction.editReply('This account is already taken!');
-        await crossVerifyLogChannel.send({embeds: [alertAttemptCrossVerification(memberId, originalAccountId, tag)], components: [getCrossVerificationIDs(memberId, originalAccountId)]})
-        return;
+        return (await crossVerifyLogChannel).send({embeds: [alertAttemptCrossVerification(memberId, originalAccountId, tag)], components: [getCrossVerificationIDs(memberId, originalAccountId)]})
       } else {
         addRoles(anyRoles, achieved, townhallLevel, interaction.member, config)
 
@@ -140,8 +137,7 @@ module.exports = {
         flags: MessageFlags.Ephemeral
       });
       console.log(`${new Date().toString()} - User ${memberId} verified with the tag ${tag}`);
-      await newVerifyLogChannel.send({embeds: [alertAttemptNewVerification(memberId, tag)], components: [getNewVerifationID(memberId)]})
-      return;
+      return (await newVerifyLogChannel).send({embeds: [alertAttemptNewVerification(memberId, tag)], components: [getNewVerifationID(memberId)]})
     }
   },
 };

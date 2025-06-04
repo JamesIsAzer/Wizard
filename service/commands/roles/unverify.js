@@ -5,6 +5,9 @@ const { uncompeteAllAccountsForUser } = require('../../../dao/mongo/participant/
 const { removeRoles } = require('../../../utils/removeRoles')
 const { getUnverifiedEmbed } = require('../../../utils/embeds/verify')
 const { InteractionContextType, MessageFlags } = require('discord.js');
+const { getGuild } = require('../../../utils/getDiscordObjects');
+const client = require('../../../client');
+const { getConfig } = require('../../../config');
 
 module.exports = {
   mainServerOnly: false,
@@ -31,25 +34,29 @@ module.exports = {
 
     uncompeteAllAccountsForUser(discordID)
 
-    interaction.guild.members.fetch(discordID)
-        .then(member => unverifyOnServer(member, interaction))
-        .catch(_ => unverifyOffServer(discordID, interaction))
+    const sharedGuilds = [];
+
+    for (const guild of client.guilds.cache.values()) {
+      let member = guild.members.cache.get(interaction.member.id);
+
+      if (!member)
+        member = await guild.members.fetch(interaction.member.id).catch(() => null);
+      
+      if (member) 
+        sharedGuilds.push(guild);
+    }
+
+    unverifyUser(interaction.member.id)
+
+    // make async
+    sharedGuilds.forEach(async (guild) => {
+      const configForSharedGuild = await getConfig(guild.id)
+      removeRoles(interaction.member, configForSharedGuild)
+    })
+
+    interaction.editReply({
+      embeds: [getUnverifiedEmbed()], 
+      flags: MessageFlags.Ephemeral
+    })
   },
 };
-
-const unverifyOnServer = async (member, interaction) => {
-    const result = await unverifyUser(member.id)
-    if (result.deletedCount > 0) {
-        const rolesRemoved = removeRoles(member, interaction.guildId)
-        interaction.editReply({
-          embeds: [getUnverifiedEmbed(rolesRemoved)], 
-          flags: MessageFlags.Ephemeral
-        })
-    } else interaction.editReply('User does not have a verification.')
-}
-
-const unverifyOffServer = async (id, interaction) => {
-    const result = await unverifyUser(id)
-    if (result.deletedCount > 0) interaction.editReply('User not on server, unverified from database.')
-    else interaction.editReply('Could not find user from database.')
-}

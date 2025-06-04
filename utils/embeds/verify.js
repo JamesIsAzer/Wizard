@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
 const { getConfig } = require('../../config');
+const { displayRow } = require('./verification/displayRoleInfo');
 
 const getInvalidTagEmbed = () => new EmbedBuilder()
     .setTitle('Invalid Tag! ❌')
@@ -31,13 +32,10 @@ const getValidVerificationEmbed = (achieved, thLevel, anyRoles, config) => new E
         value: getSuccessfulVerificationEmbedDescription(achieved, thLevel, anyRoles, config)
     })
     
-const getUnverifiedEmbed = rolesRemoved => new EmbedBuilder()
+const getUnverifiedEmbed = () => new EmbedBuilder()
     .setTitle('Unverification successful! ✅')
     .setColor('#00DE30')
-    .addFields({
-        name: 'Roles removed',
-        value: rolesRemoved.reduce((acc, x) => acc += `${x.icon ?? '•'} <@&${x.id}> removed!\n` , '') ?? '• No roles to remove'
-    });
+    .setDescription('Unverified all accounts linked to you and removed achievement roles in all servers.');
 
 const alertAttemptCrossVerification = (newUserId, originalOwnerId, tag) => new EmbedBuilder()
     .setTitle('Attempted cross verification⚠️')
@@ -72,8 +70,6 @@ const getSuccessfulVerificationEmbedDescription = (achieved, thLevel, anyRoles, 
         getThLevelDescription(thLevel, townhallRoles)
     );
 }
-
-const displayRow = (icon, achieved, roleID) => achieved && roleID ? `${icon} <@&${roleID}> added!\n` : ``
 
 const getThLevelDescription = (thLevel, townhallRoles) => {
     if (thLevel < 8) return ''

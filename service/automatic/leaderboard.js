@@ -7,6 +7,9 @@ const { IDs } = require('../../config.json')
 const Bottleneck = require('bottleneck');
 const client = require('../../client')
 const {Promise} = require('bluebird');
+const { promiseAllProps } = require('../../utils/promiseHelpers');
+const { getAllLeaderboards } = require('../../config');
+const { getGuild, getChannel } = require('../../utils/getDiscordObjects');
 
 const MAX_LEADERBOARD_PARTICIPANTS = 5
 
@@ -16,6 +19,7 @@ const limiter = new Bottleneck({
 });
   
 const createLeaderboard = async() => {
+    const leaderboards = getAllLeaderboards()
     const participants = await getLeaderboardAccounts()
     const discordData = await appendDiscordData(participants)
     const filteredDiscordData = filterInvalidAccounts(discordData)
@@ -29,14 +33,28 @@ const createLeaderboard = async() => {
     const legendParticipantCount = participantsSplit.legendParticipants.length
     const builderParticipantCount = participantsSplit.builderParticipants.length
 
-    const legendsChannel = client.channels.cache.get(IDs.leaderboardChannels.legendary)
-    const builderChannel = client.channels.cache.get(IDs.leaderboardChannels.builder)
+    const { legendsChannelIDs, builderChannelIDs } = findLeaderboardChannels(await leaderboards)
 
     refreshLeaderboardSnapshot(playerData)
-
-    legendsChannel.send({embeds: [getLegendaryLeaderboard(formatToSnapshot(topLegends), legendParticipantCount, 0, MAX_LEADERBOARD_PARTICIPANTS)], components: [getHowToCompete()] })
-    builderChannel.send({embeds: [getBuilderLeaderboard(formatToSnapshot(topBuilders), builderParticipantCount, 0, MAX_LEADERBOARD_PARTICIPANTS)], components: [getHowToCompete()] })
+    
+    legendsChannelIDs.forEach(async (legendsChannelID) => {
+        const legendsChannel = await getChannel(legendsChannelID)
+        legendsChannel.send({embeds: [getLegendaryLeaderboard(formatToSnapshot(topLegends), legendParticipantCount, 0, MAX_LEADERBOARD_PARTICIPANTS)], components: [getHowToCompete()] })
+    })
+    builderChannelIDs.forEach(async (builderChannelID) => {
+        const builderChannel = await getChannel(builderChannelID)
+        builderChannel.send({embeds: [getBuilderLeaderboard(formatToSnapshot(topBuilders), builderParticipantCount, 0, MAX_LEADERBOARD_PARTICIPANTS)], components: [getHowToCompete()] })
+    })
 }
+
+const findLeaderboardChannels = (leaderboards) => 
+    leaderboards.reduce((acc, { legendary, builder }) => {
+          if (legendary) acc.legendsChannelIDs.push(legendary);
+          if (builder) acc.builderChannelIDs.push(builder);
+          return acc;
+        },
+        { legendsChannelIDs: [], builderChannelIDs: [] }
+      );
 
 const appendDiscordData = async(participants) => {
     const participantsIDs = participants.map((participant) => participant.discordID)
@@ -96,9 +114,6 @@ const sortBuilders = (builderParticipants) =>
         .slice(0, MAX_LEADERBOARD_PARTICIPANTS)
 
 const takeTopPlayers = (participants) => participants.slice(0, MAX_LEADERBOARD_PARTICIPANTS)
-
-const promiseAllProps = (arrayOfObjects) => 
-    Promise.map(arrayOfObjects, (obj) => Promise.props(obj));
 
 const chunk = (arr, size) =>
     Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>

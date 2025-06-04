@@ -35,7 +35,9 @@ const guildConfigurationSchema = Schema({
         vanquisher: { type: String, required: false },
         capitalist: { type: String, required: false },
         campaigner: { type: String, required: false },
-        rockSolid: { type: String, required: false }
+        rockSolid: { type: String, required: false },
+        vip: { type: String, required: false },
+        gold: { type: String, required: false }
     },
     townhallRoles: {
         townhall8: { type: String, required: false },

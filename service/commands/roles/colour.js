@@ -80,12 +80,12 @@ module.exports = {
     } else if (interaction.options.getSubcommand() === 'list') {
       if (interaction.options.getBoolean('onlyavailable')) {
         await interaction.editReply({
-          embeds: [getAvailableColoursListEmbed(interaction.member)],
+          embeds: [getAvailableColoursListEmbed(interaction.member, colourRoles, verificationRoles)],
         });
         return;
       } else {
         await interaction.editReply({
-          embeds: [getColoursListEmbed()],
+          embeds: [getColoursListEmbed(colourRoles, verificationRoles)],
         });
         return;
       }
@@ -101,13 +101,16 @@ const removeColourRoles = async (colourRoles, user) => {
 
 const setColorRoles = async (colour, verificationRoles, colourRoles, interaction) => {
   const addRoleIfRequirementMet = async (colourRoleID, achievementRoleID) => {
-    if(!achievementRoleID || interaction.member.cache.roles.has(achievementRoleID)) {
+    if (!colourRoleID) 
+      return interaction.editReply('This colour role is not configured.')
+
+    if(!achievementRoleID || interaction.member.roles.cache.has(achievementRoleID)) {
       removeColourRoles(colour, interaction.member)
       interaction.member.roles.add(colourRoleID)
       return interaction.editReply({embeds: [getSuccessfulColourEmbed(colourRoleID)]})
     }
     return interaction.editReply({
-      embeds: [getUnsatisfiedRequirementEmbed(wantedColorRoleReq)],
+      embeds: [getUnsatisfiedRequirementEmbed(achievementRoleID)],
     });
   }
 
