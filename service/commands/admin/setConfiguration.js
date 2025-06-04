@@ -19,7 +19,7 @@ module.exports = {
                         .setDescription('Channel ID where the legendary leaderboard will be posted.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -27,7 +27,7 @@ module.exports = {
                         .setDescription('Channel ID where the builder leaderboard will be posted.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
         )
         .addSubcommand((subcommand) => 
@@ -40,7 +40,7 @@ module.exports = {
                         .setDescription('Member role ID.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -48,7 +48,7 @@ module.exports = {
                         .setDescription('Legends role ID.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -56,7 +56,7 @@ module.exports = {
                         .setDescription('Star Lord role ID.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -64,7 +64,7 @@ module.exports = {
                         .setDescription('Farmers R Us role ID.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -72,7 +72,7 @@ module.exports = {
                         .setDescription('Master Builder role ID.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -80,7 +80,7 @@ module.exports = {
                         .setDescription('Philanthropist role ID.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -88,7 +88,7 @@ module.exports = {
                         .setDescription('Green Thumb role ID.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -96,7 +96,7 @@ module.exports = {
                         .setDescription('Master Gamer role ID.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -104,7 +104,7 @@ module.exports = {
                         .setDescription('Conqueror role ID.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -112,7 +112,7 @@ module.exports = {
                         .setDescription('Vanquisher role ID.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -120,7 +120,7 @@ module.exports = {
                         .setDescription('Capitalist role ID.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -128,7 +128,7 @@ module.exports = {
                         .setDescription('Campaigner role ID.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -136,7 +136,7 @@ module.exports = {
                         .setDescription('Rock Solid role ID.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 ) 
                 .addStringOption((option) =>
                     option
@@ -144,7 +144,7 @@ module.exports = {
                         .setDescription('VIP role ID.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -152,7 +152,7 @@ module.exports = {
                         .setDescription('Gold role ID.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
         )
         .addSubcommand((subcommand) => 
@@ -165,7 +165,7 @@ module.exports = {
                         .setDescription('Legends colour role ID.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -173,7 +173,7 @@ module.exports = {
                         .setDescription('Star Lord colour role ID.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -181,7 +181,7 @@ module.exports = {
                         .setDescription('Farmers R Us colour role ID.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -189,7 +189,7 @@ module.exports = {
                         .setDescription('Master Builder colour role ID.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -197,7 +197,7 @@ module.exports = {
                         .setDescription('Philanthropist colour role ID.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -205,7 +205,7 @@ module.exports = {
                         .setDescription('Green Thumb colour role ID.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -213,7 +213,7 @@ module.exports = {
                         .setDescription('Master Gamer colour role ID.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -221,7 +221,7 @@ module.exports = {
                         .setDescription('Conqueror colour role ID')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -229,7 +229,7 @@ module.exports = {
                         .setDescription('Vanquisher colour role ID.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -237,7 +237,7 @@ module.exports = {
                         .setDescription('Capitalist colour role ID.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -245,7 +245,7 @@ module.exports = {
                         .setDescription('Campaigner colour role ID.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -253,7 +253,7 @@ module.exports = {
                         .setDescription('Rock Solid colour role ID.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -261,7 +261,7 @@ module.exports = {
                         .setDescription('VIP colour role ID.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -269,7 +269,7 @@ module.exports = {
                         .setDescription('Gold colour role ID.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -277,7 +277,7 @@ module.exports = {
                         .setDescription('Default colour role ID.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
         )
         .addSubcommand((subcommand) => 
@@ -290,7 +290,7 @@ module.exports = {
                         .setDescription('Role ID for townhall 8.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -298,7 +298,7 @@ module.exports = {
                         .setDescription('Role ID for townhall 9.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -306,7 +306,7 @@ module.exports = {
                         .setDescription('Role ID for townhall 10.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -314,7 +314,7 @@ module.exports = {
                         .setDescription('Role ID for townhall 11.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -322,7 +322,7 @@ module.exports = {
                         .setDescription('Role ID for townhall 12.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -330,7 +330,7 @@ module.exports = {
                         .setDescription('Role ID for townhall 13.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -338,7 +338,7 @@ module.exports = {
                         .setDescription('Role ID for townhall 14.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -346,7 +346,7 @@ module.exports = {
                         .setDescription('Role ID for townhall 15.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -354,7 +354,7 @@ module.exports = {
                         .setDescription('Role ID for townhall 16.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
                 .addStringOption((option) =>
                     option
@@ -362,7 +362,7 @@ module.exports = {
                         .setDescription('Role ID for townhall 17.')
                         .setRequired(false)
                         .setMinLength(17)
-                        .setMaxLength(18)
+                        .setMaxLength(19)
                 )
         ),
     async execute(interaction) {

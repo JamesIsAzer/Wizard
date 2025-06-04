@@ -1,7 +1,8 @@
 const { EmbedBuilder } = require('discord.js');
-const client = require('../../client')
+const client = require('../../client');
+const { prettyNumbers } = require('../format');
 
-const getInfo = () => new EmbedBuilder()
+const getInfo = (verificationCount) => new EmbedBuilder()
     .setTitle("Wizard")
     .setColor('#34C6EB')
     .setDescription(
@@ -17,7 +18,13 @@ const getInfo = () => new EmbedBuilder()
         name: 'Source code',
         value: '[Click to view](https://github.com/AzerFrostt/Wizard)',
         inline: true
-    })
+    },
+    {
+        name: 'Verifications',
+        value: `${prettyNumbers(verificationCount)}`,
+        inline: true
+    }
+)
     .setFooter({text: 'Show support by using code Azer', iconURL: 'https://www.deckshop.pro/img/creatorcode/creator_code.png'})
 
 module.exports = {

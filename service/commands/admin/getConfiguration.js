@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { getConfig } = require('../../../config');
-const { InteractionContextType } = require('discord.js');
+const { InteractionContextType, MessageFlags } = require('discord.js');
 
 module.exports = {
     mainServerOnly: false,
@@ -21,10 +21,10 @@ module.exports = {
         const config = await getConfig(guildID)
         
         const formatConfigValue = (configValue) =>
-            configValue ? `\`${configValue}\`` : 'Not set'
+            configValue ? `<#${configValue}>` : 'Not set'
 
         const displayRole = (name, role) => {
-            if (role) return `- ${name}: \`${role}\`\n` 
+            if (role) return `- ${name}: <@&${role}>\n` 
             else return ''
         }
             
@@ -79,7 +79,7 @@ module.exports = {
         const townhall16 = config?.townhallRoles?.townhall16
         const townhall17 = config?.townhallRoles?.townhall17
 
-        await interaction.reply(
+        await interaction.reply({ content: 
             `**Guild configurations**\n` +
             `__Leaderboard channel IDs__\n` +
             `- Legendary leaderboard: ${formatConfigValue(legendaryChannelID)}\n` +
@@ -126,8 +126,9 @@ module.exports = {
             displayRole('Townhall 14', townhall14) +
             displayRole('Townhall 15', townhall15) +
             displayRole('Townhall 16', townhall16) +
-            displayRole('Townhall 17', townhall17)
-        )
+            displayRole('Townhall 17', townhall17),
+            flags: MessageFlags.Ephemeral
+        })
     },
   };
   

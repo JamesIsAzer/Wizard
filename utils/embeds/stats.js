@@ -1,6 +1,7 @@
 const { EmbedBuilder } = require('discord.js')
 const MAX_MEMBERS = 3
-const { IDs } = require('../../config.json') 
+const { IDs } = require('../../config.json'); 
+const { prettyNumbers } = require('../format');
 const getProfileEmbed = (profile, verified) => {
     const embed = new EmbedBuilder()
     .setTitle(`${getLeagueEmote(profile.trophies)} ${profile.name} ${profile.tag}`)
@@ -214,7 +215,6 @@ function getWarLeagueEmote(warLeagueId){
     else return "<:unranked:1379728083749175347>"
 }
 
-const prettyNumbers = (number) => number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 const getURLTag = (profile) => profile.tag.substr(1)
 const getURLName = (profile) => encodeURIComponent(profile.name.replace(/\s+/g, '-').toLowerCase())
 const getURLPlayerClanTag = (profile) => profile?.clan?.tag?.substr(1)
@@ -228,6 +228,7 @@ const getTopMemberTrophies = (clan) => fillEmptyString(getTopMembers(clan.member
 const getTopMembers = (memberList) => memberList.slice(0, MAX_MEMBERS)
 
 const fillEmptyString = (str) => str == '' ? '-' : str
+
 module.exports = {
     getProfileEmbed,
     getClanEmbed
