@@ -9,7 +9,7 @@ const client = require('../../client')
 const {Promise} = require('bluebird');
 const { promiseAllProps } = require('../../utils/promiseHelpers');
 const { getAllLeaderboards } = require('../../config');
-const { getGuild, getChannel } = require('../../utils/getDiscordObjects');
+const { getChannel } = require('../../utils/getDiscordObjects');
 
 const MAX_LEADERBOARD_PARTICIPANTS = 5
 
@@ -38,12 +38,21 @@ const createLeaderboard = async() => {
     refreshLeaderboardSnapshot(playerData)
     
     legendsChannelIDs.forEach(async (legendsChannelID) => {
-        const legendsChannel = await getChannel(legendsChannelID)
-        legendsChannel.send({embeds: [getLegendaryLeaderboard(formatToSnapshot(topLegends), legendParticipantCount, 0, MAX_LEADERBOARD_PARTICIPANTS)], components: [getHowToCompete()] })
+        try {
+            const legendsChannel = await getChannel(legendsChannelID)
+            legendsChannel.send({embeds: [getLegendaryLeaderboard(formatToSnapshot(topLegends), legendParticipantCount, 0, MAX_LEADERBOARD_PARTICIPANTS)], components: [getHowToCompete()] })
+        } catch (e) {
+            console.error(`Invalid legendary leaderboard channel ID: ${legendsChannelID}`)
+        }
+        
     })
     builderChannelIDs.forEach(async (builderChannelID) => {
-        const builderChannel = await getChannel(builderChannelID)
-        builderChannel.send({embeds: [getBuilderLeaderboard(formatToSnapshot(topBuilders), builderParticipantCount, 0, MAX_LEADERBOARD_PARTICIPANTS)], components: [getHowToCompete()] })
+        try {
+            const builderChannel = await getChannel(builderChannelID)
+            builderChannel.send({embeds: [getBuilderLeaderboard(formatToSnapshot(topBuilders), builderParticipantCount, 0, MAX_LEADERBOARD_PARTICIPANTS)], components: [getHowToCompete()] })
+        } catch (e) {
+            console.error(`Invalid builder leaderboard channel ID: ${builderChannelID}`)
+        }
     })
 }
 
@@ -75,7 +84,7 @@ const appendDiscordData = async(participants) => {
 
 const findDiscordUsername = (participant, memberData) => {
     const discordUser = memberData.get(participant.discordID)?.user
-    return discordUser ? `${discordUser.username}#${discordUser.discriminator}` : null
+    return discordUser ? `${discordUser.username}` : null
 }
 
 const filterInvalidAccounts = (participants) => 

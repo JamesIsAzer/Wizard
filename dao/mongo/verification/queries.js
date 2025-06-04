@@ -35,7 +35,7 @@ const insertVerification = async (tag, discordID) =>
     verifation.create({
         discordID,
         playerTag: tag
-    }).catch((e) => console.log(e))
+    }).catch((e) => console.error(e))
     
 const tagVerifiedBySameUser = async (tag, discordID) => 
     verifation.findOne({
@@ -51,7 +51,7 @@ const unverifyUser = async (discordID) =>
     verifation.deleteMany({
         discordID: discordID
     }).then(result => result)
-    .catch((e) => console.log(e))
+    .catch((e) => console.error(e))
 
 const getVerifications = async (discordID) =>
     verifation.find({discordID})

@@ -1,12 +1,10 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { IDs } = require('../../../config.json');
 const {
   getSuccessfulColourEmbed,
   getUnsatisfiedRequirementEmbed,
   getColoursListEmbed,
   getAvailableColoursListEmbed,
 } = require('../../../utils/embeds/colour');
-const colours = IDs.verificationRoles.colour;
 const { InteractionContextType, MessageFlags } = require('discord.js');
 const { getConfig } = require('../../../config');
 
@@ -95,8 +93,10 @@ module.exports = {
 
 const removeColourRoles = async (colourRoles, user) => {
   for (const [_, roleID] of Object.entries(colourRoles)) {
-    if (user.roles.cache.has(roleID)) interaction.member.roles.remove(roleID);
-  }
+    if (user.roles.cache.has(roleID)) 
+      interaction.member.roles.remove(roleID)
+        .catch(_ => console.error(`${new Date().toString()} - Failed to remove colour role ${roleID}.`));
+  } 
 };
 
 const setColorRoles = async (colour, verificationRoles, colourRoles, interaction) => {
@@ -105,27 +105,32 @@ const setColorRoles = async (colour, verificationRoles, colourRoles, interaction
       return interaction.editReply('This colour role is not configured.')
 
     if(!achievementRoleID || interaction.member.roles.cache.has(achievementRoleID)) {
-      removeColourRoles(colour, interaction.member)
-      interaction.member.roles.add(colourRoleID)
-      return interaction.editReply({embeds: [getSuccessfulColourEmbed(colourRoleID)]})
+        removeColourRoles(colour, interaction.member)
+        interaction.member.roles.add(colourRoleID)
+          .catch(_ => console.error(`${new Date().toString()} - Failed to add colour role ${roleID}.`))
+        return interaction.editReply({embeds: [getSuccessfulColourEmbed(colourRoleID)]})
     }
     return interaction.editReply({
       embeds: [getUnsatisfiedRequirementEmbed(achievementRoleID)],
     });
   }
 
-  if (colour == "PURPLE") addRoleIfRequirementMet(colourRoles?.legends, verificationRoles?.legends)
-  if (colour == "YELLOW") addRoleIfRequirementMet(colourRoles?.starLord, verificationRoles?.starLord)
-  if (colour == "FARMERPINK") addRoleIfRequirementMet(colourRoles?.farmersRUs, verificationRoles?.farmersRUs)
-  if (colour == "BLUE") addRoleIfRequirementMet(colourRoles?.masterBuilder, verificationRoles?.masterBuilder)
-  if (colour == "PINK") addRoleIfRequirementMet(colourRoles?.philanthropist, verificationRoles?.philanthropist)
-  if (colour == "GOLD") addRoleIfRequirementMet(colourRoles?.gold, verificationRoles?.gold)
-  if (colour == "VIPRED") addRoleIfRequirementMet(colourRoles?.vip, verificationRoles?.vip)
-  if (colour == "GREEN") addRoleIfRequirementMet(colourRoles?.greenThumb, verificationRoles?.greenThumb)
-  if (colour == "MINT") addRoleIfRequirementMet(colourRoles?.masterGamer, verificationRoles?.masterGamer)
-  if (colour == "RED") addRoleIfRequirementMet(colourRoles?.conqueror, verificationRoles?.conqueror)
-  if (colour == "TURQUOISE") addRoleIfRequirementMet(colourRoles?.vanquisher, verificationRoles?.vanquisher)
-  if (colour == "BLACK") addRoleIfRequirementMet(colourRoles?.capitalist, verificationRoles?.capitalist)
-  if (colour == "WHITE") addRoleIfRequirementMet(colourRoles?.default, null)
+  try {
+    if (colour == "PURPLE") addRoleIfRequirementMet(colourRoles?.legends, verificationRoles?.legends)
+    if (colour == "YELLOW") addRoleIfRequirementMet(colourRoles?.starLord, verificationRoles?.starLord)
+    if (colour == "FARMERPINK") addRoleIfRequirementMet(colourRoles?.farmersRUs, verificationRoles?.farmersRUs)
+    if (colour == "BLUE") addRoleIfRequirementMet(colourRoles?.masterBuilder, verificationRoles?.masterBuilder)
+    if (colour == "PINK") addRoleIfRequirementMet(colourRoles?.philanthropist, verificationRoles?.philanthropist)
+    if (colour == "GOLD") addRoleIfRequirementMet(colourRoles?.gold, verificationRoles?.gold)
+    if (colour == "VIPRED") addRoleIfRequirementMet(colourRoles?.vip, verificationRoles?.vip)
+    if (colour == "GREEN") addRoleIfRequirementMet(colourRoles?.greenThumb, verificationRoles?.greenThumb)
+    if (colour == "MINT") addRoleIfRequirementMet(colourRoles?.masterGamer, verificationRoles?.masterGamer)
+    if (colour == "RED") addRoleIfRequirementMet(colourRoles?.conqueror, verificationRoles?.conqueror)
+    if (colour == "TURQUOISE") addRoleIfRequirementMet(colourRoles?.vanquisher, verificationRoles?.vanquisher)
+    if (colour == "BLACK") addRoleIfRequirementMet(colourRoles?.capitalist, verificationRoles?.capitalist)
+    if (colour == "WHITE") addRoleIfRequirementMet(colourRoles?.default, null)
+  } catch (e) {
+    return interaction.editReply("Error configuring colour roles, please make sure the IDs are set correctly. You can see them by typing `\/config`\.")
+  }  
 };
 

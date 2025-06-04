@@ -38,23 +38,22 @@ module.exports = {
       const profileData = findProfileResponse.response.data;
 
       const achieved = getAchievements(profileData, interaction.member)
-      const townhallLevel = await getMaxTownhallLevel(profileData, interaction.member)
+      const townhallLevel = await getMaxTownhallLevel(profileData, interaction.member).catch(_ => {
+        console.error(`${new Date().toString()} - Failed on trying to find max townhall level.`)
+        return interaction.editReply("Error trying to retrieve your max townhall level. This could be due to a Clash API error. Please try again later.")
+      })
       const anyRoles = hasAnyRoles(townhallLevel)
 
       const config = await getConfig(interaction.guildId)
 
       addRoles(anyRoles, achieved, townhallLevel, interaction.member, config)
 
-      await interaction.editReply({
-        embeds: [getValidVerificationEmbed(achieved, townhallLevel, anyRoles, config)],
-        flags: MessageFlags.Ephemeral
+      return interaction.editReply({
+        embeds: [getValidVerificationEmbed(achieved, townhallLevel, anyRoles, config)]
       });
-      return;
+      
     } else {
-      await interaction.editReply(
-        'You did not verify under this tag, to verify use the /verify command.'
-      );
-      return;
+      return interaction.editReply('You did not verify under this tag, to verify use the \`/verify\` command.');
     }
   },
 };

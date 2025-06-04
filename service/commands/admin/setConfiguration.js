@@ -18,12 +18,16 @@ module.exports = {
                         .setName('legendary_channel_id')
                         .setDescription('Channel ID where the legendary leaderboard will be posted.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('builder_channel_id')
                         .setDescription('Channel ID where the builder leaderboard will be posted.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
         )
         .addSubcommand((subcommand) => 
@@ -35,90 +39,120 @@ module.exports = {
                         .setName('member_role_id')
                         .setDescription('Member role ID.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('legends_role_id')
                         .setDescription('Legends role ID.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('star_lord_role_id')
                         .setDescription('Star Lord role ID.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('farmers_r_us_role_id')
                         .setDescription('Farmers R Us role ID.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('master_builder_role_id')
                         .setDescription('Master Builder role ID.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('philanthropist_role_id')
                         .setDescription('Philanthropist role ID.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('green_thumb_role_id')
                         .setDescription('Green Thumb role ID.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('master_gamer_role_id')
                         .setDescription('Master Gamer role ID.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('conqueror_role_id')
                         .setDescription('Conqueror role ID.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('vanquisher_role_id')
                         .setDescription('Vanquisher role ID.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('capitalist_role_id')
                         .setDescription('Capitalist role ID.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('campaigner_role_id')
                         .setDescription('Campaigner role ID.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('rock_solid_role_id')
                         .setDescription('Rock Solid role ID.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 ) 
                 .addStringOption((option) =>
                     option
                         .setName('vip_role_id')
                         .setDescription('VIP role ID.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('gold_role_id')
                         .setDescription('Gold role ID.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
         )
         .addSubcommand((subcommand) => 
@@ -130,90 +164,120 @@ module.exports = {
                         .setName('legends_colour_role_id')
                         .setDescription('Legends colour role ID.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('star_lord_colour_role_id')
                         .setDescription('Star Lord colour role ID.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('farmers_r_us_colour_role_id')
                         .setDescription('Farmers R Us colour role ID.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('master_builder_colour_role_id')
                         .setDescription('Master Builder colour role ID.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('philanthropist_colour_role_id')
                         .setDescription('Philanthropist colour role ID.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('green_thumb_colour_role_id')
                         .setDescription('Green Thumb colour role ID.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('master_gamer_colour_role_id')
                         .setDescription('Master Gamer colour role ID.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('conqueror_colour_role_id')
                         .setDescription('Conqueror colour role ID')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('vanquisher_colour_role_id')
                         .setDescription('Vanquisher colour role ID.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('capitalist_colour_role_id')
                         .setDescription('Capitalist colour role ID.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('campaigner_colour_role_id')
                         .setDescription('Campaigner colour role ID.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('rock_solid_colour_role_id')
                         .setDescription('Rock Solid colour role ID.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('vip_colour_role_id')
                         .setDescription('VIP colour role ID.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('gold_colour_role_id')
                         .setDescription('Gold colour role ID.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('default_colour_role_id')
                         .setDescription('Default colour role ID.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
         )
         .addSubcommand((subcommand) => 
@@ -225,60 +289,80 @@ module.exports = {
                         .setName('townhall_8_id')
                         .setDescription('Role ID for townhall 8.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('townhall_9_id')
                         .setDescription('Role ID for townhall 9.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('townhall_10_id')
                         .setDescription('Role ID for townhall 10.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('townhall_11_id')
                         .setDescription('Role ID for townhall 11.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('townhall_12_id')
                         .setDescription('Role ID for townhall 12.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('townhall_13_id')
                         .setDescription('Role ID for townhall 13.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('townhall_14_id')
                         .setDescription('Role ID for townhall 14.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('townhall_15_id')
                         .setDescription('Role ID for townhall 15.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('townhall_16_id')
                         .setDescription('Role ID for townhall 16.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
                 .addStringOption((option) =>
                     option
                         .setName('townhall_17_id')
                         .setDescription('Role ID for townhall 17.')
                         .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(18)
                 )
         ),
     async execute(interaction) {
@@ -335,7 +419,6 @@ module.exports = {
 
         const config = await getConfig(guildID)
 
-        console.log(goldColourRoleInputID)
         const newConfigConstructor = () => ({
             leaderboardChannels: {
                 legendary: legendaryChannelInputID ? legendaryChannelInputID : config?.leaderboardChannels?.legendary,

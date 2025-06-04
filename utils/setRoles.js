@@ -1,7 +1,5 @@
 const { IDs } = require('../config.json');
-const { getConfig } = require('../config');
 const { getVerifications } = require('../dao/mongo/verification/queries');
-const roles = IDs.verificationRoles;
 const Bottleneck = require('bottleneck');
 const { findProfile } = require('../dao/clash/verification');
 
@@ -51,27 +49,37 @@ const addTownhallRole = (user, townhallLevel, townhallRoles) => {
   if (!townhallRoles) return
 
   for (const [_, roleID] of Object.entries(townhallRoles)) {
-    if (user.roles.cache.has(roleID)) user.roles.remove(roleID);
+    if (user.roles.cache.has(roleID)) 
+      user.roles.remove(roleID)
+        .catch((_) => console.error(`${new Date().toString()} - Error removing role with role ID: ${roleID}`) )
   }
 
   const townhallFieldName = `townhall${townhallLevel}`
-  user.roles.add(townhallRoles[townhallFieldName]);
+  const roleID = townhallRoles[townhallFieldName]
+  user.roles.add(roleID)
+    .catch((_) => console.error(`${new Date().toString()} - Error adding role with role ID: ${roleID}`) )
 }
 
 const addAchievementRoles = (user, achieved, verificationRoles) => {
-  if (achieved.legends && verificationRoles?.legends) user.roles.add(verificationRoles.legends);
-  if (achieved.starLord && verificationRoles?.starLord) user.roles.add(verificationRoles.starLord);
-  if (achieved.farmersRUs && verificationRoles?.farmersRUs) user.roles.add(verificationRoles.farmersRUs);
-  if (achieved.masterBuilder && verificationRoles?.masterBuilder) user.roles.add(verificationRoles.masterBuilder);
-  if (achieved.philanthropist && verificationRoles?.philanthropist) user.roles.add(verificationRoles.philanthropist);
-  if (achieved.greenThumb && verificationRoles?.greenThumb) user.roles.add(verificationRoles.greenThumb);
-  if (achieved.masterGamer && verificationRoles?.masterGamer) user.roles.add(verificationRoles.masterGamer);
-  if (achieved.conqueror && verificationRoles.conqueror) user.roles.add(verificationRoles.conqueror);
-  if (achieved.vanquisher && verificationRoles?.vanquisher) user.roles.add(verificationRoles.vanquisher);
-  if (achieved.capitalist && verificationRoles?.capitalist) user.roles.add(verificationRoles.capitalist);
-  if (achieved.campaigner && verificationRoles?.campaigner) user.roles.add(verificationRoles.campaigner);
-  if (achieved.rockSolid && verificationRoles?.rockSolid) user.roles.add(verificationRoles.rockSolid);
-  if (achieved.member && verificationRoles?.member) user.roles.add(verificationRoles.member);
+  const addAchievementRole = (achieved, roleID) => {
+    if (achieved && roleID) 
+      user.roles.add(roleID)
+        .catch((_) => console.error(`${new Date().toString()} - Error adding role with role ID: ${roleID}`))
+  }
+
+  addAchievementRole(achieved.legends, verificationRoles?.legends)
+  addAchievementRole(achieved.starLord, verificationRoles?.starLord)
+  addAchievementRole(achieved.farmersRUs, verificationRoles?.farmersRUs)
+  addAchievementRole(achieved.masterBuilder, verificationRoles?.masterBuilder)
+  addAchievementRole(achieved.philanthropist, verificationRoles?.philanthropist)
+  addAchievementRole(achieved.greenThumb, verificationRoles?.greenThumb)
+  addAchievementRole(achieved.masterGamer, verificationRoles?.masterGamer)
+  addAchievementRole(achieved.conqueror, verificationRoles?.conqueror)
+  addAchievementRole(achieved.vanquisher, verificationRoles?.vanquisher)
+  addAchievementRole(achieved.capitalist, verificationRoles?.capitalist)
+  addAchievementRole(achieved.campaigner, verificationRoles?.campaigner)
+  addAchievementRole(achieved.rockSolid, verificationRoles?.rockSolid)
+  addAchievementRole(achieved.member, verificationRoles?.member)
 };
 
 const getMaxTownhallLevel = async (player, user) => {

@@ -47,12 +47,15 @@ module.exports = {
     }
 
     unverifyUser(interaction.member.id)
-
-    // make async
-    sharedGuilds.forEach(async (guild) => {
-      const configForSharedGuild = await getConfig(guild.id)
-      removeRoles(interaction.member, configForSharedGuild)
-    })
+    
+    for (const sharedGuild of sharedGuilds) {
+      try {
+        const configForSharedGuild = await getConfig(sharedGuild.id);
+        await removeRoles(interaction.member, configForSharedGuild);
+      } catch (error) {
+        console.error(`Error processing guild ${sharedGuild.id}:`, error);
+      }
+    }
 
     interaction.editReply({
       embeds: [getUnverifiedEmbed()], 

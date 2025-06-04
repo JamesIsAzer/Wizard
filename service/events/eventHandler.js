@@ -45,7 +45,7 @@ module.exports = {
       if (interaction.isModalSubmit()) return getHandlerExecute(modalHandlers)
       if (interaction.isStringSelectMenu()) return getHandlerExecute(selectMenuHandlers)
     } catch(e) {
-      console.log(`${new Date().toString()} - ${e}`);
+      console.error(`${new Date().toString()} - ${e}`);
       await interaction.editReply({
         content: 'There was an error while executing this command!',
         flags: MessageFlags.Ephemeral

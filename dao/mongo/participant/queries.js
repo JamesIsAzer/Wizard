@@ -35,10 +35,10 @@ const uncompeteAllAccountsForUser = async ( discordID ) =>
     participants.deleteMany({
         discordID
     }).then(result => result)
-    .catch((e) => console.log(e))
+    .catch((e) => console.error(e))
 
 const resetLeaderboards = async () =>
-    participants.deleteMany( { } ).catch(e => console.log(e))
+    participants.deleteMany( { } ).catch(e => console.error(e))
 
 
 module.exports = {

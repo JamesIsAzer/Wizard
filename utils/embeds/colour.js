@@ -1,7 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
 const { IDs } = require('../../config.json');
-const { displayRow, displayRowColour, displayRowColourRequirements } = require('./verification/displayRoleInfo');
-const colours = IDs.verificationRoles.colour;
+const { displayRowColour, displayRowColourRequirements } = require('./verification/displayRoleInfo');
 const getSuccessfulColourEmbed = (roleID) =>
   new EmbedBuilder()
     .setTitle('🔥 Color override added! 🔥')

@@ -1,6 +1,6 @@
 {
-    "prefix": "!!",
     "IDs": {
+        "ownerGuild": "582085045561458692",
         "guild": "582085045561458692",
         "client": "691118910631575613",
         "leaderboardChannels": {
@@ -11,6 +11,7 @@
             "newVerify": "582092054264545280",
             "crossVerify": "582092054264545280"
         },
+        "leaderboardContest": "1233223359924404285",
         "verificationRoles": {
             "prestige": {
                 "member": {"name": "Member", "roleid": "1222098445389529088", "icon": "<:xp:935754903882702938>"},
@@ -23,7 +24,9 @@
                 "mastergamer": {"name": "Master Gamer", "roleid": "935653392028692530", "icon": "<:clangames:927703762561286176>"},
                 "conqueror": {"name": "Conqueror", "roleid": "1040742997228257401", "icon": "<:legend_trophy:935757690020429844>"},
                 "vanquisher": {"name": "Vanquisher", "roleid": "1176120858415222824", "icon": "<:DiamondLeague:1108318143425814591>"},
-                "capitalist": {"name": "Capitalist", "roleid": "1176120907094315028", "icon": "<:capitalgold:980717889285939210>"}
+                "capitalist": {"name": "Capitalist", "roleid": "1176120907094315028", "icon": "<:capitalgold:980717889285939210>"},
+                "campaigner": {"name": "Capitalist", "roleid": "1176120907094315028", "icon": "<:capitalgold:980717889285939210>"},
+                "rockSolid": {"name": "Capitalist", "roleid": "1176120907094315028", "icon": "<:capitalgold:980717889285939210>"}
             },
             "colour": {
                 "requirement" : {
@@ -38,7 +41,9 @@
                     "mastergamer": {"arg": "MINT",       "name": "Gamer mint",         "colourid": "935655105569624095", "roleid": "935653392028692530", "icon": "<:clangames:927703762561286176>"},
                     "conqueror": {"arg": "RED",       "name": "Conqueror red",         "colourid": "1040743016970862772", "roleid": "1040742997228257401", "icon": "<:legend_trophy:935757690020429844>"},
                     "vanquisher": {"arg": "TURQUOISE",       "name": "Vanquisher turqoise",         "colourid": "1176120964891815947", "roleid": "1176120858415222824", "icon": "<:DiamondLeague:1108318143425814591>"},
-                    "capitalist": {"arg": "BLACK",       "name": "Capitalist black",         "colourid": "935654258710286356", "roleid": "1176120907094315028", "icon": "<:capitalgold:980717889285939210>"}
+                    "capitalist": {"arg": "BLACK",       "name": "Capitalist black",         "colourid": "935654258710286356", "roleid": "1176120907094315028", "icon": "<:capitalgold:980717889285939210>"},
+                    "campaigner": {"arg": "BLACK",       "name": "Capitalist black",         "colourid": "935654258710286356", "roleid": "1176120907094315028", "icon": "<:capitalgold:980717889285939210>"},
+                    "rockSolid": {"arg": "BLACK",       "name": "Capitalist black",         "colourid": "935654258710286356", "roleid": "1176120907094315028", "icon": "<:capitalgold:980717889285939210>"}
                 },
                 "norequirement" : {
                     "default": {"arg": "WHITE",       "name": "Default white",         "colourid": "935655174641451018"}
@@ -53,7 +58,8 @@
                 "TH13": {"name": "Townhall 13", "roleid": "892969469922668614", "lvl": 13, "icon": "<:th13:651100997367627823>"},
                 "TH14": {"name": "Townhall 14", "roleid": "892969502881484850", "lvl": 14, "icon": "<:th14:829099837034070027>"},
                 "TH15": {"name": "Townhall 15", "roleid": "1013013266286510100", "lvl": 15, "icon": "<:th15:1027192859130069062>"},
-                "TH16": {"name": "Townhall 16", "roleid": "1181977338565644358", "lvl": 16, "icon": "<:th16:1181986502473961503>"}
+                "TH16": {"name": "Townhall 16", "roleid": "1372150046409097316", "lvl": 16, "icon": "<:th16:1372150046409097316>"},
+                "TH17": {"name": "Townhall 17", "roleid": "1372150091871158273", "lvl": 17, "icon": "<:th17:1372150091871158273>"}
             }
         },
         "mediumPermRoles" : ["761865691904606228", "621998190601961473"],

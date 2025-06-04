@@ -10,12 +10,20 @@ const interactionEvent = require('./service/events/eventHandler');
 
 interactionCommand.loadCommands(client);
 
+//process.on('uncaughtException', (error) => {
+//  console.error(`Uncaught exception at ${new Date().toString()} - ${error}`)
+//})
+
+//process.on('unhandledRejection', (reason, promise) => {
+//  console.error(`Unhandled Rejection at: ${promise}, reason: ${reason}`)
+//})
+
 client.on('interactionCreate', async (interaction) => {
   try {
-    if (interaction.isCommand()) return interactionCommand.execute(interaction)
-    return interactionEvent.execute(interaction)
+    if (interaction.isCommand()) return await interactionCommand.execute(interaction)
+    return await interactionEvent.execute(interaction)
   } catch (e) {
-    console.log(`${new Date().toString()} - ${e}`);
+    console.error(`[INTERACTION ERROR]: ${new Date().toString()} - ${e}`);
     await interaction.editReply({
       content: 'There was an error while executing this command!',
       flags: MessageFlags.Ephemeral

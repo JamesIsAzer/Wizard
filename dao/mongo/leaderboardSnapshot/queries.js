@@ -18,7 +18,7 @@ const refreshLeaderboardSnapshot = async (participants) => {
             trophiesBuilders: participant.builderleaderboard ? participant.clash.response.data.builderBaseTrophies : null
         })))
     })
-    .catch(e => console.log(e))
+    .catch(e => console.error(e))
 }
 
 module.exports = {
