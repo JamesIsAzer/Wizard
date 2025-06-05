@@ -8,8 +8,8 @@ const modalHandlers = new Map();
 const selectMenuHandlers = new Map();
 
 const BUTTON_DIRECTORY = 'buttons'
-const MODAL_DIRECTORY = 'modals'
-const SELECT_MENU_DIRECTORY = 'selectMenus'
+//const MODAL_DIRECTORY = 'modals'
+//const SELECT_MENU_DIRECTORY = 'selectMenus'
 
 const loadHandlers = (eventHandler, directory) => {
   const eventPath = path.join(__dirname, `./${directory}`);
@@ -22,8 +22,8 @@ const loadHandlers = (eventHandler, directory) => {
 }
 
 loadHandlers(buttonHandlers, BUTTON_DIRECTORY)
-loadHandlers(modalHandlers, MODAL_DIRECTORY)
-loadHandlers(selectMenuHandlers, SELECT_MENU_DIRECTORY)
+//loadHandlers(modalHandlers, MODAL_DIRECTORY)
+//loadHandlers(selectMenuHandlers, SELECT_MENU_DIRECTORY)
 
 module.exports = {
   name: 'interactionCreate',
