@@ -40,7 +40,7 @@ This bot was originally intended for usage in the Clash of Clans Discord server,
 
 Join us at the [Clash of Clans Discord Server](https://discord.com/invite/clashofclans)!
 
-# How to create new instance
+# How to create a new instance
 
 Directions on creating an app and getting credentials may be found [here](https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token).
 
