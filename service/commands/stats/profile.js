@@ -5,7 +5,7 @@ const { parseTag, isTagValid } = require('../../../utils/arguments/tagHandling')
 const { findProfile } = require('../../../dao/clash/verification');
 const { getInvalidTagEmbed } = require('../../../utils/embeds/verify');
 const { getProfileEmbed } = require('../../../utils/embeds/stats')
-const { InteractionContextType, MessageFlags, ApplicationIntegrationType } = require('discord.js');
+const { InteractionContextType, ApplicationIntegrationType } = require('discord.js');
 
 module.exports = {
   mainServerOnly: false,
@@ -14,7 +14,7 @@ module.exports = {
     .setName('profile')
     .setDescription('Get information about players in-game stats.')
     .setContexts(InteractionContextType.Guild, InteractionContextType.PrivateChannel, InteractionContextType.BotDM)
-    .setIntegrationTypes(ApplicationIntegrationType.UserInstall)
+    .setIntegrationTypes(ApplicationIntegrationType.UserInstall, ApplicationIntegrationType.GuildInstall)
     .addSubcommand((subcommand) => 
         subcommand
           .setName('show')

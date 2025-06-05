@@ -12,7 +12,7 @@ module.exports = {
     .setName('clan')
     .setDescription('Get information about a clans in-game stats.')
     .setContexts(InteractionContextType.Guild, InteractionContextType.PrivateChannel, InteractionContextType.BotDM)
-    .setIntegrationTypes(ApplicationIntegrationType.UserInstall)
+    .setIntegrationTypes(ApplicationIntegrationType.UserInstall, ApplicationIntegrationType.GuildInstall)
     .addStringOption((option) =>
         option
         .setName('tag')
