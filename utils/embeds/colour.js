@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-const { IDs } = require('../../config.json');
+const emojis = require('../../emojis.json');
 const { displayRowColour, displayRowColourRequirements } = require('./verification/displayRoleInfo');
 const getSuccessfulColourEmbed = (roleID) =>
   new EmbedBuilder()
@@ -20,21 +20,21 @@ const getColourList = (user, colourRoles, verificationRoles) => {
   }
 
   return (
-    displayRowColour("<:legend:1379105324660818060>", shouldDisplayRole(colourRoles?.legends, verificationRoles?.legends), colourRoles?.legends) +
-    displayRowColour("<:star:1379105336174186536>", shouldDisplayRole(colourRoles?.starLord, verificationRoles?.starLord), colourRoles?.starLord) +
-    displayRowColour("<:loot:1379105350200070164>", shouldDisplayRole(colourRoles?.farmersRUs, verificationRoles?.farmersRUs), colourRoles?.farmersRUs) +
-    displayRowColour("<:masterbuilder:1379105361004335174>", shouldDisplayRole(colourRoles?.masterBuilder, verificationRoles?.masterBuilder), colourRoles?.masterBuilder) +
-    displayRowColour("<:clancastle:1379105390565916824>", shouldDisplayRole(colourRoles?.philanthropist, verificationRoles?.philanthropist), colourRoles?.philanthropist) +
-    displayRowColour("<:bush:1379105776790016095>", shouldDisplayRole(colourRoles?.greenThumb, verificationRoles?.greenThumb), colourRoles?.greenThumb) +
-    displayRowColour("<:clangames:1379105895153270855>", shouldDisplayRole(colourRoles?.masterGamer, verificationRoles?.masterGamer), colourRoles?.masterGamer) +
-    displayRowColour("<:legendtrophy:1379105415656112229>", shouldDisplayRole(colourRoles?.conqueror, verificationRoles?.conqueror), colourRoles?.conqueror) +
-    displayRowColour("<:diamondleague:1379105433486098595>", shouldDisplayRole(colourRoles?.vanquisher, verificationRoles?.vanquisher), colourRoles?.vanquisher) +
-    displayRowColour("<:capitalgold:1379105449357476012>", shouldDisplayRole(colourRoles?.capitalist, verificationRoles?.capitalist), colourRoles?.capitalist) +
-    displayRowColour("<:goblin:1379121226013741086>", shouldDisplayRole(colourRoles?.campaigner, verificationRoles?.campaigner), colourRoles?.campaigner) +
-    displayRowColour("<:rock:1379120933096259787>", shouldDisplayRole(colourRoles?.rockSolid, verificationRoles?.rockSolid), colourRoles?.rockSolid) +
-    displayRowColour("<:heart:1379105474275705012>", shouldDisplayRole(colourRoles?.vip, verificationRoles?.vip), colourRoles?.vip) +
-    displayRowColour("<:gold:1379105463102341190>", shouldDisplayRole(colourRoles?.gold, verificationRoles?.gold), colourRoles?.gold) +
-    displayRowColour("<:unranked:935678512822616074>", true, colourRoles?.default)
+    displayRowColour(emojis.legend, shouldDisplayRole(colourRoles?.legends, verificationRoles?.legends), colourRoles?.legends) +
+    displayRowColour(emojis.star, shouldDisplayRole(colourRoles?.starLord, verificationRoles?.starLord), colourRoles?.starLord) +
+    displayRowColour(emojis.loot, shouldDisplayRole(colourRoles?.farmersRUs, verificationRoles?.farmersRUs), colourRoles?.farmersRUs) +
+    displayRowColour(emojis.masterbuilder, shouldDisplayRole(colourRoles?.masterBuilder, verificationRoles?.masterBuilder), colourRoles?.masterBuilder) +
+    displayRowColour(emojis.clancastle, shouldDisplayRole(colourRoles?.philanthropist, verificationRoles?.philanthropist), colourRoles?.philanthropist) +
+    displayRowColour(emojis.bush, shouldDisplayRole(colourRoles?.greenThumb, verificationRoles?.greenThumb), colourRoles?.greenThumb) +
+    displayRowColour(emojis.clangames, shouldDisplayRole(colourRoles?.masterGamer, verificationRoles?.masterGamer), colourRoles?.masterGamer) +
+    displayRowColour(emojis.legendtrophy, shouldDisplayRole(colourRoles?.conqueror, verificationRoles?.conqueror), colourRoles?.conqueror) +
+    displayRowColour(emojis.diamondleague, shouldDisplayRole(colourRoles?.vanquisher, verificationRoles?.vanquisher), colourRoles?.vanquisher) +
+    displayRowColour(emojis.capitalgold, shouldDisplayRole(colourRoles?.capitalist, verificationRoles?.capitalist), colourRoles?.capitalist) +
+    displayRowColour(emojis.goblin, shouldDisplayRole(colourRoles?.campaigner, verificationRoles?.campaigner), colourRoles?.campaigner) +
+    displayRowColour(emojis.rock, shouldDisplayRole(colourRoles?.rockSolid, verificationRoles?.rockSolid), colourRoles?.rockSolid) +
+    displayRowColour(emojis.heart, shouldDisplayRole(colourRoles?.vip, verificationRoles?.vip), colourRoles?.vip) +
+    displayRowColour(emojis.gold, shouldDisplayRole(colourRoles?.gold, verificationRoles?.gold), colourRoles?.gold) +
+    displayRowColour(emojis.unranked, true, colourRoles?.default)
   )
 }
 

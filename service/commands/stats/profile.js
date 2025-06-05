@@ -5,7 +5,7 @@ const { parseTag, isTagValid } = require('../../../utils/arguments/tagHandling')
 const { findProfile } = require('../../../dao/clash/verification');
 const { getInvalidTagEmbed } = require('../../../utils/embeds/verify');
 const { getProfileEmbed } = require('../../../utils/embeds/stats')
-const { InteractionContextType, MessageFlags } = require('discord.js');
+const { InteractionContextType, MessageFlags, ApplicationIntegrationType } = require('discord.js');
 
 module.exports = {
   mainServerOnly: false,
@@ -13,7 +13,8 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('profile')
     .setDescription('Get information about players in-game stats.')
-		.setContexts(InteractionContextType.Guild, InteractionContextType.PrivateChannel, InteractionContextType.BotDM)
+    .setContexts(InteractionContextType.Guild, InteractionContextType.PrivateChannel, InteractionContextType.BotDM)
+    .setIntegrationTypes(ApplicationIntegrationType.UserInstall)
     .addSubcommand((subcommand) => 
         subcommand
           .setName('show')
@@ -45,7 +46,8 @@ module.exports = {
   async execute(interaction) {
     await interaction.deferReply();
     if (interaction.options.getSubcommand() === 'show'){
-        const unsanitizedTag = interaction.options.getString('tag') ?? await findTag(interaction.member.id)
+
+        const unsanitizedTag = interaction.options.getString('tag') ?? await findTag(interaction.user.id)
         
         if (!unsanitizedTag) {
             await interaction.editReply(`You have not set a default profile. To do so type \`/profile save <player tag>\``)
@@ -69,7 +71,7 @@ module.exports = {
             return
         }
 
-        const verified = isOwnerOfAccount(tag, interaction.member.id)
+        const verified = isOwnerOfAccount(tag, interaction.user.id)
         const playerData = playerResponse.response.data
         
         interaction.editReply({
@@ -94,10 +96,10 @@ module.exports = {
             return
         }
 
-        const verified = isOwnerOfAccount(tag, interaction.member.id)
+        const verified = isOwnerOfAccount(tag, interaction.user.id)
 
         if (await verified) {
-            saveDefaultProfile(tag, interaction.member.id)
+            saveDefaultProfile(tag, interaction.user.id)
             await interaction.editReply(`I have successfully saved your profile #${tag} as the default one!`)
             return
         }
@@ -106,7 +108,7 @@ module.exports = {
             return
         }
     } else if ( interaction.options.getSubcommand() === 'remove') {
-        const foundDefaultProfile = await removeDefaultProfile(interaction.member.id)
+        const foundDefaultProfile = await removeDefaultProfile(interaction.user.id)
         if (foundDefaultProfile) await interaction.editReply(`I have removed your default profile.`)
         else await interaction.editReply(`You don't have a default profile to remove!`)
         return

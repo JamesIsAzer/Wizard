@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { updateConfig, getConfig } = require('../../../config');
-const { InteractionContextType } = require('discord.js');
+const { InteractionContextType, PermissionFlagsBits } = require('discord.js');
 
 module.exports = {
     mainServerOnly: false,
@@ -9,6 +9,7 @@ module.exports = {
         .setName('setconfiguration')
         .setDescription('Admin only - set guild configuration for bot (must fill all to run bot).')
         .setContexts(InteractionContextType.Guild)
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addSubcommand((subcommand) => 
             subcommand
                 .setName('leaderboard_channels')
@@ -366,7 +367,7 @@ module.exports = {
                 )
         ),
     async execute(interaction) {
-        if (!interaction.member.permissions.has('Administrator')) {
+        if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
             return interaction.reply({
               content: "You do not have permission to use this command."
             });

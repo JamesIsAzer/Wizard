@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { ComponentType, InteractionContextType } = require('discord.js');
-const { IDs } = require('../../../config.json')
+const { ownerGuildID } = require('../../../config.json')
 const client = require('../../../client')
 const { hasMediumPerms } = require('../../../utils/permissions');
 const { verificationPageEmbed } = require('../../../utils/embeds/userinfo/infoPage')
@@ -54,7 +54,7 @@ module.exports = {
         const verificationsPaginated = paginateVerifications([], userVerifications)
         const numberOfPages = verificationsPaginated.length
 
-        const guildID = IDs.guild
+        const guildID = ownerGuildID
         const guild = client.guilds.cache.get(guildID)
         const targetUserData = await guild.members.fetch({ user: targetUserID }).catch(_ => null)
 

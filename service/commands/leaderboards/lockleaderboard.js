@@ -3,7 +3,7 @@ const { hasMediumPerms } = require('../../../utils/permissions');
 const {
   toggleLeaderboard,
 } = require('../../../dao/mongo/toggle/queries');
-const { InteractionContextType } = require('discord.js');
+const { InteractionContextType, MessageFlags } = require('discord.js');
 
 module.exports = {
   mainServerOnly: true,
@@ -19,7 +19,7 @@ module.exports = {
         .setRequired(true)
     ),
   async execute(interaction) {
-    await interaction.deferReply({ ephemeral: false });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
     if(hasMediumPerms(interaction.member)){
       const shouldLock = interaction.options.getBoolean('lock');
       toggleLeaderboard(shouldLock)

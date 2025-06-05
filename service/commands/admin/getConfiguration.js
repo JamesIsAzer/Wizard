@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { getConfig } = require('../../../config');
-const { InteractionContextType, MessageFlags } = require('discord.js');
+const { InteractionContextType, MessageFlags, PermissionFlagsBits } = require('discord.js');
 
 module.exports = {
     mainServerOnly: false,
@@ -8,9 +8,10 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('configuration')
         .setDescription('Admin only - get current guild configurations for bot.')
-        .setContexts(InteractionContextType.Guild),
+        .setContexts(InteractionContextType.Guild)
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
     async execute(interaction) {
-        if (!interaction.member.permissions.has('Administrator')) {
+        if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
             return interaction.reply({
               content: "You do not have permission to use this command."
             });

@@ -10,7 +10,7 @@ const addRows = (vericationsPage, embedTemplate, pageCount, pageSize) => {
 
 const verificationPageEmbed = (targetUserData, verificationsPage, index, pageSize) => {
     const embedTemplate = new EmbedBuilder()
-    .setTitle(`Verifications for ${targetUserData ? targetUserData.user.username + `#` + targetUserData.user.discriminator : `[Can't find user]`} - Page ${index + 1}`)
+    .setTitle(`Verifications for ${targetUserData ? targetUserData.user.username : `Can't find user data`} - Page ${index + 1}`)
     .setColor('#34C6EB')
     return addRows(verificationsPage, embedTemplate, index, pageSize)
 }

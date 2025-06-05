@@ -1,4 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
+const emojis = require('../../emojis.json')
 
 const getGeneralHelp = () => new EmbedBuilder()
     .setTitle("Guide to use wizard")
@@ -7,10 +8,10 @@ const getGeneralHelp = () => new EmbedBuilder()
         `Wizard enables you to verify and connect your Clash of Clans account to the discord server! To get more information on a specific feature, type \`/help command\` and enter one of the subcommands below.`)
     .addFields({
         name: 'Help subcommands',
-        value: `<:bullet:1379718041293688862> \`verification\` - How to verify your account\n`+
-        `<:bullet:1379718041293688862> \`colours\` - Information about setting your name color\n` +
-        `<:bullet:1379718041293688862> \`stats\` - Displaying your in-game statistics\n` +
-        `<:bullet:1379718041293688862> \`leaderboards\` - Competing with other players on the server leaderboard\n`,
+        value: `${emojis.bullet} \`verification\` - How to verify your account\n`+
+        `${emojis.bullet} \`colours\` - Information about setting your name color\n` +
+        `${emojis.bullet} \`stats\` - Displaying your in-game statistics\n` +
+        `${emojis.bullet} \`leaderboards\` - Competing with other players on the server leaderboard\n`,
     })
   
 const getVerificationHelp = () => new EmbedBuilder()
@@ -20,7 +21,7 @@ const getVerificationHelp = () => new EmbedBuilder()
         `Verification allows Wizard to know you own the corresponding Clash of Clans account. A list of commands for verifying can be found below:`)
     .addFields({
         name: '/verify <player tag> <API token>',
-        value: `Your in-game tag can be found on your profile page in clash of clans and your API token is found in the in-game settings <:bullet:1379718041293688862> more settings <:bullet:1379718041293688862> show API token.`,
+        value: `Your in-game tag can be found on your profile page in clash of clans and your API token is found in the in-game settings ${emojis.bullet} more settings ${emojis.bullet} show API token.`,
     },
     {
         name: '/unverify',

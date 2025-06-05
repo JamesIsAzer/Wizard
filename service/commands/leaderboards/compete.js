@@ -9,7 +9,7 @@ const { isLeaderboardRestricted } = require('../../../dao/mongo/restriction/quer
 const { isLeaderboardLocked } = require('../../../dao/mongo/toggle/queries')
 const { getInvalidTagEmbed } = require('../../../utils/embeds/verify');
 const { parseTag, isTagValid } = require('../../../utils/arguments/tagHandling');
-const { IDs } = require("../../../config.json");
+const { leaderboardContestID } = require("../../../config.json");
 const { InteractionContextType, MessageFlags } = require('discord.js');
 
 const LEGENDARY_MINIMUM = 5000
@@ -91,7 +91,7 @@ module.exports = {
 
     if (legends || builder) {
       updateLeaderboardParticipation(tag, id, legends, builder)
-      interaction.member.roles.add(IDs.leaderboardContest);
+      interaction.member.roles.add(leaderboardContestID);
     }
 
     const msg = x => `You are now competing under the ${x}, good luck!`

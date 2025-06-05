@@ -3,7 +3,7 @@ const { getClanEmbed } = require('../../../utils/embeds/stats');
 const { getInvalidTagEmbed } = require('../../../utils/embeds/clanTag')
 const { parseTag, isTagValid } = require('../../../utils/arguments/tagHandling');
 const { findClan } = require('../../../dao/clash/clans')
-const { InteractionContextType, MessageFlags } = require('discord.js');
+const { InteractionContextType, ApplicationIntegrationType } = require('discord.js');
 
 module.exports = {
   mainServerOnly: false,
@@ -12,6 +12,7 @@ module.exports = {
     .setName('clan')
     .setDescription('Get information about a clans in-game stats.')
     .setContexts(InteractionContextType.Guild, InteractionContextType.PrivateChannel, InteractionContextType.BotDM)
+    .setIntegrationTypes(ApplicationIntegrationType.UserInstall)
     .addStringOption((option) =>
         option
         .setName('tag')

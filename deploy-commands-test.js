@@ -12,10 +12,11 @@ const commandFolders = fs.readdirSync('./service/commands', {withFileTypes: true
 for (const folder of commandFolders) {
     const commandFiles = fs.readdirSync(`./service/commands/${folder}`)
 		.filter(file => file.endsWith('.js'))
+		
 
     for (const file of commandFiles) {
       const command = require(`./service/commands/${folder}/${file}`)
-      commands.push(command)
+      commands.push(command.data.toJSON())
     }
 }
 
@@ -25,17 +26,9 @@ const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 	try {
 		console.log('Started refreshing application (/) commands.')
 
-		const globalCommands = commands.filter(cmd => !cmd.mainServerOnly)
-		const mainServerCommands = commands.filter(cmd => cmd.mainServerOnly)
-
-		await rest.put(
-			Routes.applicationCommands(clientID),
-			{ body: globalCommands.map(cmd => cmd.data.toJSON()) },
-		)
-
 		await rest.put(
 			Routes.applicationGuildCommands(clientID, ownerGuildID),
-			{ body: mainServerCommands.map(cmd => cmd.data.toJSON()) },
+			{ body: commands },
 		)
 
 		console.log('Successfully reloaded application (/) commands.')

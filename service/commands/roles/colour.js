@@ -94,7 +94,7 @@ module.exports = {
 const removeColourRoles = async (colourRoles, user) => {
   for (const [_, roleID] of Object.entries(colourRoles)) {
     if (user.roles.cache.has(roleID)) 
-      interaction.member.roles.remove(roleID)
+      user.roles.remove(roleID)
         .catch(_ => console.error(`${new Date().toString()} - Failed to remove colour role ${roleID}.`));
   } 
 };

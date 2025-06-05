@@ -3,7 +3,7 @@ const { refreshLeaderboardSnapshot } = require('../../dao/mongo/leaderboardSnaps
 const { findProfile } = require('../../dao/clash/verification');
 const { getLegendaryLeaderboard, getBuilderLeaderboard } = require('../../utils/embeds/leaderboard')
 const { getHowToCompete } = require('../../utils/buttons/leaderboard')
-const { IDs } = require('../../config.json')
+const { ownerGuildID } = require('../../config.json')
 const Bottleneck = require('bottleneck');
 const client = require('../../client')
 const {Promise} = require('bluebird');
@@ -67,7 +67,7 @@ const findLeaderboardChannels = (leaderboards) =>
 
 const appendDiscordData = async(participants) => {
     const participantsIDs = participants.map((participant) => participant.discordID)
-    const guild = client.guilds.cache.get(IDs.guild)
+    const guild = client.guilds.cache.get(ownerGuildID)
     
     const participantIDChunks = chunk(participantsIDs, 100)
 

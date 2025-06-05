@@ -17,8 +17,8 @@ const {
   getValidVerificationEmbed
 } = require('../../../utils/embeds/verify');
 const { parseTag, isTagValid } = require('../../../utils/arguments/tagHandling');
-const { getAchievements, setTownhallRoles, hasAnyRoles, getMaxTownhallLevel, addRoles } = require('../../../utils/setRoles');
-const { IDs } = require('../../../config.json')
+const { getAchievements, hasAnyRoles, getMaxTownhallLevel, addRoles } = require('../../../utils/setRoles');
+const { logChannels } = require('../../../config.json')
 const { getNewVerifationID, getCrossVerificationIDs } = require('../../../utils/buttons/getID')
 const { InteractionContextType, MessageFlags } = require('discord.js');
 const { getGuild, getChannel } = require('../../../utils/getDiscordObjects');
@@ -51,15 +51,10 @@ module.exports = {
     const tag = parseTag(interaction.options.getString('tag'))
     const token = interaction.options.getString('token');
 
-    const ownerGuild = await getGuild(IDs.ownerGuild)
-
     const config = await getConfig(interaction.guildId)
     
-    if (!ownerGuild) 
-      return interaction.editReply("Something went wrong, if this keeps happening please contact \`azerfrost\`!")
-
-    const crossVerifyLogChannel = getChannel(IDs.logChannels.crossVerify)
-    const newVerifyLogChannel = getChannel(IDs.logChannels.newVerify)
+    const crossVerifyLogChannel = getChannel(logChannels.crossVerify)
+    const newVerifyLogChannel = getChannel(logChannels.newVerify)
 
     if (!crossVerifyLogChannel || !newVerifyLogChannel)
       return interaction.editReply("Something went wrong, if this keeps happening please contact \`azerfrost\`!")

@@ -1,4 +1,3 @@
-const { IDs } = require('../config.json');
 const { getVerifications } = require('../dao/mongo/verification/queries');
 const Bottleneck = require('bottleneck');
 const { findProfile } = require('../dao/clash/verification');
