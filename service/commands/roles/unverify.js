@@ -5,9 +5,9 @@ const { uncompeteAllAccountsForUser } = require('../../../dao/mongo/participant/
 const { removeRoles } = require('../../../utils/removeRoles')
 const { getUnverifiedEmbed } = require('../../../utils/embeds/verify')
 const { InteractionContextType, MessageFlags } = require('discord.js');
-const { getGuild } = require('../../../utils/getDiscordObjects');
 const client = require('../../../client');
 const { getConfig } = require('../../../config');
+const { ownerGuildID } = require('../../../config.json');
 
 module.exports = {
   mainServerOnly: false,
@@ -27,8 +27,13 @@ module.exports = {
       flags: MessageFlags.Ephemeral
      });
 
-    if (interaction.options.getString('id') && !hasMediumPerms(interaction.member)) 
-      return interaction.editReply('Insufficient permissions to unverify other users.')
+    if (interaction.options.getString('id')) {
+      if (interaction.guildId != ownerGuildID)
+        return interaction.editReply('This command can only be run from the main Discord server.')
+
+      if(!hasMediumPerms(interaction.member))
+        return interaction.editReply('Insufficient permissions to unverify other users.')
+    }
     
     const discordID = interaction.options.getString('id') ?? interaction.member.id
 
