@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 const { MessageFlags } = require('discord.js');
-const { isConfigComplete } = require('../../config');
 
 const buttonHandlers = new Map();
 const modalHandlers = new Map();
@@ -28,10 +27,6 @@ loadHandlers(buttonHandlers, BUTTON_DIRECTORY)
 module.exports = {
   name: 'interactionCreate',
   async execute(interaction) {
-    const completedConfig = interaction.guildId ? await isConfigComplete(interaction.guildId) : true
-
-    if (!completedConfig) return interaction.reply("Configuration not yet complete. An admin must use \`/setconfiguration\` first.")
-
     const getHandlerExecute = (eventHandlers) => {
       for (const [prefix, handler] of eventHandlers) {
         if (interaction.customId.startsWith(prefix)) {
@@ -46,7 +41,7 @@ module.exports = {
       if (interaction.isStringSelectMenu()) return getHandlerExecute(selectMenuHandlers)
     } catch(e) {
       console.error(`${new Date().toString()} - ${e}`);
-      await interaction.editReply({
+      await interaction.reply({
         content: 'There was an error while executing this command!',
         flags: MessageFlags.Ephemeral
       });

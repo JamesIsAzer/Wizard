@@ -3,7 +3,7 @@ const { hasMediumPerms } = require('../../../utils/permissions');
 const { getInvalidTagEmbed } = require('../../../utils/embeds/verify');
 const { parseTag, isTagValid } = require('../../../utils/arguments/tagHandling');
 const { saveLeaderboardRestriction } = require('../../../dao/mongo/restriction/queries')
-const { InteractionContextType, MessageFlags } = require('discord.js');
+const { InteractionContextType } = require('discord.js');
 
 module.exports = {
   mainServerOnly: true,

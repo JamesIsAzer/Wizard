@@ -1,5 +1,4 @@
 const client = require('../../client')
-//const { isConfigComplete } = require('../config');
 const { Collection } = require('discord.js');
 const path = require('path');
 const fs = require('fs');
