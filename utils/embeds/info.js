@@ -16,7 +16,7 @@ const getInfo = (verificationCount) => new EmbedBuilder()
     },
     {
         name: 'Source code',
-        value: '[Click to view](https://github.com/AzerFrostt/Wizard)',
+        value: '[Click to view](https://github.com/JamesIsAzer/Wizard)',
         inline: true
     },
     {

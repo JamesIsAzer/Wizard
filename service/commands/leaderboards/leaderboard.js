@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { ComponentType, InteractionContextType, MessageFlags } = require('discord.js');
+const { ComponentType, InteractionContextType, MessageFlags, ApplicationIntegrationType } = require('discord.js');
 const { getLegendaryLeaderboard, getBuilderLeaderboard } = require('../../../utils/embeds/leaderboard')
 const { getLeaderboardSnapshotsLegendary, getLeaderboardSnapshotsBuilder } = require('../../../dao/mongo/leaderboardSnapshot/queries')
 const { getRow } = require('../../../utils/rows/pagination')
@@ -32,7 +32,8 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('leaderboard')
         .setDescription('Check the standings of the last leaderboard snapshot.')
-        .setContexts(InteractionContextType.Guild, InteractionContextType.BotDM)
+        .setContexts(InteractionContextType.Guild, InteractionContextType.PrivateChannel, InteractionContextType.BotDM)
+        .setIntegrationTypes(ApplicationIntegrationType.UserInstall, ApplicationIntegrationType.GuildInstall)
         .addStringOption((option) =>
           option
             .setName('type')
