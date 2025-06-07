@@ -1,21 +1,24 @@
 
 const removeRoles = async (user, config) => {
-    const roleIDsRemoved = []
     const removeRolesInList = (user, roles) => {
-        for (const [_, roleID] of Object.entries(roles)) {
+        for (const roleID of roles) {
             if (user.roles.cache.has(roleID)) {
                 user.roles.remove(roleID)
                     .catch(_ => console.error(`${new Date().toString()} - Error removing role with role ID: ${roleID}`))
-                roleIDsRemoved.push(roleID)
             }
         }
     }
 
-    removeRolesInList(user, config.verificationRoles)
-    removeRolesInList(user, config.colourRoles)
-    removeRolesInList(user, config.townhallRoles)
+    const verificationRolesList = Object.values(config.verificationRoles)
+    const colourRolesList = Object.values(config.colourRoles)
+    const townhallRolesList = Object.values(config.townhallRoles)
 
-    return roleIDsRemoved
+    const removableVerificationRolesList = verificationRolesList
+        .filter((role) => role != config.verificationRoles.vip && role != config.verificationRoles.gold)
+
+    removeRolesInList(user, removableVerificationRolesList)
+    removeRolesInList(user, colourRolesList)
+    removeRolesInList(user, townhallRolesList)
 }
 
 
