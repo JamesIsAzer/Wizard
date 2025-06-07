@@ -39,6 +39,8 @@ module.exports = {
               { name: 'Conqueror Red', value: 'RED' },
               { name: 'Vanquisher Turqoise', value: 'TURQUOISE' },
               { name: 'Capitalist Black', value: 'BLACK' },
+              { name: 'Rock Solid Beige', value: 'BEIGE' },
+              { name: 'Campaigner Olive', value: 'OLIVE' },
               { name: 'Default White', value: 'WHITE' }
             )
         )
@@ -128,6 +130,8 @@ const setColorRoles = async (colour, verificationRoles, colourRoles, interaction
     if (colour == "RED") addRoleIfRequirementMet(colourRoles?.conqueror, verificationRoles?.conqueror)
     if (colour == "TURQUOISE") addRoleIfRequirementMet(colourRoles?.vanquisher, verificationRoles?.vanquisher)
     if (colour == "BLACK") addRoleIfRequirementMet(colourRoles?.capitalist, verificationRoles?.capitalist)
+    if (colour == "BEIGE") addRoleIfRequirementMet(colourRoles?.rockSolid, verificationRoles?.rockSolid)
+    if (colour == "OLIVE") addRoleIfRequirementMet(colourRoles?.campaigner, verificationRoles?.campaigner)
     if (colour == "WHITE") addRoleIfRequirementMet(colourRoles?.default, null)
   } catch (e) {
     return interaction.editReply("Error configuring colour roles, please make sure the IDs are set correctly. You can see them by typing `\/config`\.")
