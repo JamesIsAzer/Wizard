@@ -4,9 +4,12 @@ const { isOwnerOfAccount } = require('../../../dao/mongo/verification/queries');
 const { parseTag, isTagValid } = require('../../../utils/arguments/tagHandling');
 const { findProfile } = require('../../../dao/clash/verification');
 const { getInvalidTagEmbed } = require('../../../utils/embeds/verify');
-const { getProfileEmbed } = require('../../../utils/embeds/stats')
-const { InteractionContextType, ApplicationIntegrationType } = require('discord.js');
-const { getProfileImage } = require('../../../utils/canvas/profile');
+const { getProfileEmbed, getTroopShowcaseEmbed } = require('../../../utils/embeds/stats')
+const { InteractionContextType, ApplicationIntegrationType, ComponentType, AttachmentBuilder } = require('discord.js');
+const { profileOptions } = require('../../../utils/selections/profileOptions');
+const { expiredOptions } = require('../../../utils/selections/expiredOptions');
+const { EmbedBuilder } = require('@discordjs/builders');
+const { getLoadingEmbed } = require('../../../utils/embeds/loading');
 
 module.exports = {
   mainServerOnly: false,
@@ -75,7 +78,65 @@ module.exports = {
         const verified = isOwnerOfAccount(tag, interaction.user.id)
         const playerData = playerResponse.response.data
         
-        interaction.editReply({content: 'test', files: [await getProfileImage(playerData, await verified)]})
+        const profile = await getProfileEmbed(playerData, await verified);
+        const army = await getTroopShowcaseEmbed(playerData, await verified);
+
+        const dataOptions = {
+            'profile': profile,
+            'army': army
+        };
+
+        const profileMenu = profileOptions('profile')
+
+        const attachment = new AttachmentBuilder(profile.buffer, {
+            name: profile.fileName
+        });
+
+        const message = await interaction.editReply({ 
+            embeds: [profile.embed], 
+            files: [attachment], 
+            components: [profileMenu]
+        })
+
+        const collector = message.createMessageComponentCollector({
+            componentType: ComponentType.StringSelect,
+            time: 60_000
+        });
+
+        collector.on('collect', async (selectInteraction) => {
+            const selected = selectInteraction.values[0];
+            const selectedData = dataOptions[selected];
+
+            if (!selectedData) {
+                return await selectInteraction.reply({
+                    content: 'Invalid selection.',
+                    ephemeral: true
+                });
+            }
+
+            await selectInteraction.deferUpdate();
+
+            await selectInteraction.editReply({
+                embeds: [getLoadingEmbed()],
+                files: [],
+                components: [profileOptions(selected, true)]
+            });
+            
+            const attachment = new AttachmentBuilder(selectedData.buffer, {
+                name: selectedData.fileName
+            });
+
+            await selectInteraction.editReply({
+                embeds: [selectedData.embed],
+                files: [attachment],
+                components: [profileOptions(selected)]
+            });
+        });
+
+        collector.on('end', async () => {
+            await interaction.editReply({ components: [expiredOptions()] });
+        });
+
     } else if (interaction.options.getSubcommand() === 'save') {
         const tag = parseTag(interaction.options.getString('tag'))
         if (!isTagValid(tag)) {
