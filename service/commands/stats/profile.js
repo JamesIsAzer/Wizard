@@ -6,6 +6,7 @@ const { findProfile } = require('../../../dao/clash/verification');
 const { getInvalidTagEmbed } = require('../../../utils/embeds/verify');
 const { getProfileEmbed } = require('../../../utils/embeds/stats')
 const { InteractionContextType, ApplicationIntegrationType } = require('discord.js');
+const { getProfileImage } = require('../../../utils/canvas/profile');
 
 module.exports = {
   mainServerOnly: false,
@@ -74,9 +75,7 @@ module.exports = {
         const verified = isOwnerOfAccount(tag, interaction.user.id)
         const playerData = playerResponse.response.data
         
-        interaction.editReply({
-					embeds: [getProfileEmbed(playerData, await verified)]
-				})
+        interaction.editReply({content: 'test', files: [await getProfileImage(playerData, await verified)]})
     } else if (interaction.options.getSubcommand() === 'save') {
         const tag = parseTag(interaction.options.getString('tag'))
         if (!isTagValid(tag)) {

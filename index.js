@@ -10,9 +10,9 @@ const interactionEvent = require('./service/events/eventHandler');
 
 interactionCommand.loadCommands(client);
 
-process.on('uncaughtException', (error) => {
-  console.error(`Uncaught exception at ${new Date().toString()} - ${error}`)
-})
+//process.on('uncaughtException', (error) => {
+///  console.error(`Uncaught exception at ${new Date().toString()} - ${error}`)
+//})
 
 client.on('interactionCreate', async (interaction) => {
   try {
