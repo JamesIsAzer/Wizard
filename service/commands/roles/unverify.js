@@ -36,27 +36,29 @@ module.exports = {
     }
     
     const discordID = interaction.options.getString('id') ?? interaction.member.id
-
+    
     uncompeteAllAccountsForUser(discordID)
 
     const sharedGuilds = [];
 
     for (const guild of client.guilds.cache.values()) {
-      let member = guild.members.cache.get(interaction.member.id);
+      let member = guild.members.cache.get(discordID);
 
       if (!member)
-        member = await guild.members.fetch(interaction.member.id).catch(() => null);
+        member = await guild.members.fetch(discordID).catch(() => null);
       
       if (member) 
         sharedGuilds.push(guild);
     }
 
-    unverifyUser(interaction.member.id)
+    unverifyUser(discordID)
     
     for (const sharedGuild of sharedGuilds) {
       try {
-        const configForSharedGuild = await getConfig(sharedGuild.id);
-        await removeRoles(interaction.member, configForSharedGuild);
+        const configForSharedGuild = getConfig(sharedGuild.id);
+        const member = sharedGuild.members.fetch(discordID)
+
+        await removeRoles(await member, await configForSharedGuild);
       } catch (error) {
         console.error(`Error processing guild ${sharedGuild.id}:`, error);
       }
