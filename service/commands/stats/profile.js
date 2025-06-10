@@ -5,11 +5,12 @@ const { parseTag, isTagValid } = require('../../../utils/arguments/tagHandling')
 const { findProfile } = require('../../../dao/clash/verification');
 const { getInvalidTagEmbed } = require('../../../utils/embeds/verify');
 const { getProfileEmbed, getTroopShowcaseEmbed } = require('../../../utils/embeds/stats')
-const { InteractionContextType, ApplicationIntegrationType, ComponentType, AttachmentBuilder } = require('discord.js');
+const { InteractionContextType, ApplicationIntegrationType, ComponentType, AttachmentBuilder, MessageFlags } = require('discord.js');
 const { profileOptions } = require('../../../utils/selections/profileOptions');
 const { expiredOptions } = require('../../../utils/selections/expiredOptions');
 const { EmbedBuilder } = require('@discordjs/builders');
 const { getLoadingEmbed } = require('../../../utils/embeds/loading');
+const { getNotYourInteractionProfileEmbed } = require('../../../utils/embeds/safety/notYourInteractionProfile');
 
 module.exports = {
   mainServerOnly: false,
@@ -104,13 +105,20 @@ module.exports = {
         });
 
         collector.on('collect', async (selectInteraction) => {
+            if (selectInteraction.user.id !== interaction.user.id) {
+                return await selectInteraction.reply({
+                    embeds: [getNotYourInteractionProfileEmbed()],
+                    flags: MessageFlags.Ephemeral
+                });
+            }
+    
             const selected = selectInteraction.values[0];
             const selectedData = dataOptions[selected];
 
             if (!selectedData) {
                 return await selectInteraction.reply({
                     content: 'Invalid selection.',
-                    ephemeral: true
+                    flags: MessageFlags.Ephemeral
                 });
             }
 
