@@ -2,29 +2,54 @@ const { loadImage } = require('canvas');
 const path = require('path');
 
 const sectionTitleFont = (ctx, message, x, y, fontSize = '80') => {
-  ctx.font = `${fontSize}px ClashFont`;
+    ctx.font = `${fontSize}px ClashFont`;
 
-  // Add shadow
-  ctx.shadowColor = '#000000';
-  ctx.shadowBlur = 4;
-  ctx.shadowOffsetX = 0;
-  ctx.shadowOffsetY = 2;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'alphabetic';
+    // Add shadow
+    ctx.shadowColor = '#000000';
+    ctx.shadowBlur = 4;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 2;
 
-  // Stroke (black border)
-  ctx.lineWidth = 2;
-  ctx.strokeStyle = '#000000';
-  ctx.strokeText(message, x, y);
+    // Stroke (black border)
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#000000';
+    ctx.strokeText(message, x, y);
 
-  // Fill (white text)
-  ctx.fillStyle = '#ffffff';
-  ctx.fillText(message, x, y);
+    // Fill (white text)
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(message, x, y);
 
-  // Reset shadow (optional cleanup)
-  ctx.shadowColor = 'transparent';
-  ctx.shadowBlur = 0;
-  ctx.shadowOffsetX = 0;
-  ctx.shadowOffsetY = 0;
+    // Reset shadow (optional cleanup)
+    ctx.shadowColor = 'transparent';
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
 };
+
+const clashFontScaled = (ctx, message, x, y, maxWidth, maxHeight, centered = false) => {
+    let fontSize = maxHeight; 
+    ctx.font = `${fontSize}px ClashFont`;
+
+    while (true) {
+        const metrics = ctx.measureText(message);
+        const textWidth = metrics.width;
+        const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+
+        if (textWidth <= maxWidth && textHeight <= maxHeight) {
+            break;
+        }
+
+        fontSize -= 1;
+        if (fontSize <= 5) break;
+
+        ctx.font = `${fontSize}px ClashFont`; // Update the font after shrinking
+    }
+
+    // Now draw with the final font size
+    clashFont(ctx, message, x, y, fontSize, centered);
+}
 
 const clashFont = (ctx, message, x, y, fontSize = '80', centered = false) => {
     ctx.font = `${fontSize}px ClashFont`;
@@ -127,7 +152,12 @@ const getTrophyLeagueImagePath = (trophies) => {
     if (trophies >= 1400) return getImagePath('Icon_HV_League_Gold')
     if (trophies >= 800) return getImagePath('Icon_HV_League_Silver')
     if (trophies >= 400) return getImagePath('Icon_HV_League_Bronze')
-    return getImagePath('Icon_HV_League_Unranked')
+    return getImagePath('Icon_HV_League_None')
+}
+
+const getTownhallPath = (townhallLevel) => {
+    const townhallCapped = Math.min(17, townhallLevel)
+    return getImagePath(`Building_HV_Town_Hall_level_${townhallCapped}`)
 }
 
 const getFontPath = (fontName) => {
@@ -147,6 +177,13 @@ const getLeagueName = (league) => {
     return league.name
 }
 
+function formatDateYearMonth(dateStr) {
+    const [year, month] = dateStr.split('-');
+    const date = new Date(year, month - 1); // JS months are 0-based
+    const monthName = date.toLocaleString('default', { month: 'long' });
+    return `${monthName} ${year}`;
+}
+
 module.exports = { 
     sectionTitleFont, 
     drawRoundedRectPath, 
@@ -154,9 +191,12 @@ module.exports = {
     signature,
     getImagePath,
     getFontPath,
+    getTownhallPath,
     clashFont,
     tagFont,
     mapClanRoles,
     getTrophyLeagueImagePath,
-    getLeagueName
+    getLeagueName,
+    formatDateYearMonth,
+    clashFontScaled
 };

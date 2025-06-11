@@ -102,7 +102,7 @@ const petSection = async(ctx, x, y, pets) => {
 
   ctx.fillStyle = '#636e8f';
 
-  drawRoundedRectPath(ctx,x, y, width, height, radius)
+  drawRoundedRectPath(ctx, x, y, width, height, radius)
 
   ctx.fill()
 

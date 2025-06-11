@@ -5,10 +5,11 @@ const emojis = require('../../emojis.json');
 const { getTroopShowcaseImage } = require('../canvas/troopShowcase');
 const { getProfileImage } = require('../canvas/profile');
 const NodeCache = require('node-cache');
+const { parseTag } = require('../arguments/tagHandling');
 const troopShowcaseImageCache = new NodeCache({ stdTTL: 300 });
 const profileImageCache = new NodeCache({ stdTTL: 300 });
 
-const getTroopShowcaseEmbed = async (profile, verified) => {
+const getTroopShowcaseEmbed = async (profile, verified, endTimestamp) => {
     const key = profile.tag.replace(/[^a-zA-Z0-9-_]/g, '')
     let image = troopShowcaseImageCache.get(key);
 
@@ -19,16 +20,23 @@ const getTroopShowcaseEmbed = async (profile, verified) => {
 
     const { buffer, fileName } = image
 
+    const descriptionLines = [
+        `**Player tag:** \`${profile.tag}\``,
+        `${emojis.link} **[View profile in-game](https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=${parseTag(profile.tag)})**`,
+        `${emojis.clock} ${ endTimestamp ? `Menu timeout <t:${endTimestamp}:R>` : `Calculating menu timeout...`}`
+    ];
+
     const embed = new EmbedBuilder()
-        .setTitle(`${getLeagueEmote(profile.trophies)} ${profile.name} ${profile.tag} • Army`)
+        .setTitle(`${getLeagueEmote(profile.trophies)} ${profile.name} • Army showcase`)
         .setURL(`https://www.clashofstats.com/players/${getURLName(profile)}-${getURLTag(profile)}/summary`)
         .setColor('#33E3FF')
+        .setDescription(descriptionLines.join('\n'))
         .setImage(`attachment://${fileName}`)
     if (verified) embed.setFooter({text: 'Verified under this account', iconURL: "https://media.discordapp.net/attachments/582092054264545280/935702845183918160/check-mark_2714-fe0f.png"})
     return { embed, fileName, buffer }
 }
 
-const getProfileEmbed = async (profile, verified) => {
+const getProfileEmbed = async (profile, verified, endTimestamp) => {
     const key = profile.tag.replace(/[^a-zA-Z0-9-_]/g, '')
 
     let image = profileImageCache.get(key);
@@ -40,10 +48,17 @@ const getProfileEmbed = async (profile, verified) => {
 
     const { buffer, fileName } = image
 
+    const descriptionLines = [
+        `**Player tag:** \`${profile.tag}\``,
+        `${emojis.link} **[View profile in-game](https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=${parseTag(profile.tag)})**`,
+        `${emojis.clock} ${ endTimestamp ? `Menu timeout <t:${endTimestamp}:R>` : `Calculating menu timeout...`}`
+    ];
+
     const embed = new EmbedBuilder()
-        .setTitle(`${getLeagueEmote(profile.trophies)} ${profile.name} ${profile.tag}`)
+        .setTitle(`${getLeagueEmote(profile.trophies)} ${profile.name} • Profile overview`)
         .setURL(`https://www.clashofstats.com/players/${getURLName(profile)}-${getURLTag(profile)}/summary`)
         .setColor('#33E3FF')
+        .setDescription(descriptionLines.join('\n'))
         .setImage(`attachment://${fileName}`);
 
     if (verified) {

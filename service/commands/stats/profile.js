@@ -79,13 +79,9 @@ module.exports = {
         const verified = isOwnerOfAccount(tag, interaction.user.id)
         const playerData = playerResponse.response.data
         
-        const profile = await getProfileEmbed(playerData, await verified);
-        const army = await getTroopShowcaseEmbed(playerData, await verified);
+        const timeoutMs = 300_000
 
-        const dataOptions = {
-            'profile': profile,
-            'army': army
-        };
+        const profile = await getProfileEmbed(playerData, await verified);
 
         const profileMenu = profileOptions('profile')
 
@@ -101,9 +97,24 @@ module.exports = {
 
         const collector = message.createMessageComponentCollector({
             componentType: ComponentType.StringSelect,
-            time: 60_000
+            time: timeoutMs
         });
 
+        const endTimestamp = Math.floor((Date.now() + timeoutMs) / 1000);
+
+        const timestampedProfile = await getProfileEmbed(playerData, await verified, endTimestamp)
+        const timestampedTroopShowcase = await getTroopShowcaseEmbed(playerData, await verified, endTimestamp)
+
+        const dataOptions = {
+            'profile': timestampedProfile,
+            'army': timestampedTroopShowcase
+        }
+
+        await interaction.editReply({
+            embeds: [timestampedProfile.embed],
+            components: [profileMenu]
+        });
+        
         collector.on('collect', async (selectInteraction) => {
             if (selectInteraction.user.id !== interaction.user.id) {
                 return await selectInteraction.reply({
