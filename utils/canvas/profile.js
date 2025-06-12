@@ -188,7 +188,7 @@ const trophyLegendarySection = async (season, ctx, x, y, type) => {
     const rank = season?.rank
     const trophies = season?.trophies
 
-    const date = '2025-05'
+    const date = season?.id
 
     if (season) {
         const legendImagePath = getImagePath("Icon_HV_League_Legend");
