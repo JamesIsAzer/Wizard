@@ -131,7 +131,7 @@ module.exports = {
         embeds: [getValidVerificationEmbed(achieved, townhallLevel, anyRoles, config)],
         flags: MessageFlags.Ephemeral
       });
-      console.error(`${new Date().toString()} - User ${memberId} verified with the tag ${tag}`);
+      console.log(`${new Date().toString()} - User ${memberId} verified with the tag ${tag}`);
       return (await newVerifyLogChannel).send({embeds: [alertAttemptNewVerification(memberId, tag)], components: [getNewVerifationID(memberId)]})
     }
   },

@@ -4,8 +4,13 @@ const { isOwnerOfAccount } = require('../../../dao/mongo/verification/queries');
 const { parseTag, isTagValid } = require('../../../utils/arguments/tagHandling');
 const { findProfile } = require('../../../dao/clash/verification');
 const { getInvalidTagEmbed } = require('../../../utils/embeds/verify');
-const { getProfileEmbed } = require('../../../utils/embeds/stats')
-const { InteractionContextType, ApplicationIntegrationType } = require('discord.js');
+const { getProfileEmbed, getTroopShowcaseEmbed } = require('../../../utils/embeds/stats')
+const { InteractionContextType, ApplicationIntegrationType, ComponentType, AttachmentBuilder, MessageFlags } = require('discord.js');
+const { profileOptions } = require('../../../utils/selections/profileOptions');
+const { expiredOptions } = require('../../../utils/selections/expiredOptions');
+const { EmbedBuilder } = require('@discordjs/builders');
+const { getLoadingEmbed } = require('../../../utils/embeds/loading');
+const { getNotYourInteractionProfileEmbed } = require('../../../utils/embeds/safety/notYourInteractionProfile');
 
 module.exports = {
   mainServerOnly: false,
@@ -74,9 +79,83 @@ module.exports = {
         const verified = isOwnerOfAccount(tag, interaction.user.id)
         const playerData = playerResponse.response.data
         
-        interaction.editReply({
-					embeds: [getProfileEmbed(playerData, await verified)]
-				})
+        const timeoutMs = 300_000
+
+        const profile = await getProfileEmbed(playerData, await verified);
+
+        const profileMenu = profileOptions('profile')
+
+        const attachment = new AttachmentBuilder(profile.buffer, {
+            name: profile.fileName
+        });
+
+        const message = await interaction.editReply({ 
+            embeds: [profile.embed], 
+            files: [attachment], 
+            components: [profileMenu]
+        })
+
+        const collector = message.createMessageComponentCollector({
+            componentType: ComponentType.StringSelect,
+            time: timeoutMs
+        });
+
+        const endTimestamp = Math.floor((Date.now() + timeoutMs) / 1000);
+
+        const timestampedProfile = await getProfileEmbed(playerData, await verified, endTimestamp)
+        const timestampedTroopShowcase = await getTroopShowcaseEmbed(playerData, await verified, endTimestamp)
+
+        const dataOptions = {
+            'profile': timestampedProfile,
+            'army': timestampedTroopShowcase
+        }
+
+        await interaction.editReply({
+            embeds: [timestampedProfile.embed],
+            components: [profileMenu]
+        });
+        
+        collector.on('collect', async (selectInteraction) => {
+            if (selectInteraction.user.id !== interaction.user.id) {
+                return await selectInteraction.reply({
+                    embeds: [getNotYourInteractionProfileEmbed()],
+                    flags: MessageFlags.Ephemeral
+                });
+            }
+    
+            const selected = selectInteraction.values[0];
+            const selectedData = dataOptions[selected];
+
+            if (!selectedData) {
+                return await selectInteraction.reply({
+                    content: 'Invalid selection.',
+                    flags: MessageFlags.Ephemeral
+                });
+            }
+
+            await selectInteraction.deferUpdate();
+
+            await selectInteraction.editReply({
+                embeds: [getLoadingEmbed()],
+                files: [],
+                components: [profileOptions(selected, true)]
+            });
+            
+            const attachment = new AttachmentBuilder(selectedData.buffer, {
+                name: selectedData.fileName
+            });
+
+            await selectInteraction.editReply({
+                embeds: [selectedData.embed],
+                files: [attachment],
+                components: [profileOptions(selected)]
+            });
+        });
+
+        collector.on('end', async () => {
+            await interaction.editReply({ components: [expiredOptions()] });
+        });
+
     } else if (interaction.options.getSubcommand() === 'save') {
         const tag = parseTag(interaction.options.getString('tag'))
         if (!isTagValid(tag)) {

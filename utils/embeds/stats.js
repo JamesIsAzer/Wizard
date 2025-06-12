@@ -1,96 +1,74 @@
 const { EmbedBuilder } = require('discord.js')
 const MAX_MEMBERS = 3
 const { prettyNumbers } = require('../format');
-const emojis = require('../../emojis.json')
+const emojis = require('../../emojis.json');
+const { getTroopShowcaseImage } = require('../canvas/troopShowcase');
+const { getProfileImage } = require('../canvas/profile');
+const NodeCache = require('node-cache');
+const { parseTag } = require('../arguments/tagHandling');
+const troopShowcaseImageCache = new NodeCache({ stdTTL: 300 });
+const profileImageCache = new NodeCache({ stdTTL: 300 });
 
-const getProfileEmbed = (profile, verified) => {
+const getTroopShowcaseEmbed = async (profile, verified, endTimestamp) => {
+    const key = profile.tag.replace(/[^a-zA-Z0-9-_]/g, '')
+    let image = troopShowcaseImageCache.get(key);
+
+    if (!image) {
+        image = await getTroopShowcaseImage(profile, key);
+        troopShowcaseImageCache.set(key, image);
+    }
+
+    const { buffer, fileName } = image
+
+    const descriptionLines = [
+        `**Player tag:** \`${profile.tag}\``,
+        `${emojis.link} **[View profile in-game](https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=${parseTag(profile.tag)})**`,
+        `${emojis.clock} ${ endTimestamp ? `Menu timeout <t:${endTimestamp}:R>` : `Calculating menu timeout...`}`
+    ];
+
     const embed = new EmbedBuilder()
-    .setTitle(`${getLeagueEmote(profile.trophies)} ${profile.name} ${profile.tag}`)
-    .setURL(`https://www.clashofstats.com/players/${getURLName(profile)}-${getURLTag(profile)}/summary`)
-    .setColor('#33E3FF')
-    .addFields(
-    {
-        name: 'Townhall Level',
-        value: `${getTownhallEmote(profile.townHallLevel)} ${profile.townHallLevel}`,
-        inline: true,
-    },
-    {
-        name: 'Exp Level',
-        value: `${emojis.xp} ${prettyNumbers(profile.expLevel)}`,
-        inline: true,
-    },
-    {
-        name: 'Clan',
-        value: `${emojis.clancastle2} ${isInClan(profile) ? `[${profile.clan.name}](https://www.clashofstats.com/clans/${getURLPlayerClanName(profile)}-${getURLPlayerClanTag(profile)}/summary)` : "No clan found"}`,
-        inline: true,
-    }, 
-    {
-        name: 'Trophies',
-        value: `${emojis.trophy} ${prettyNumbers(profile.trophies)}`,
-        inline: true,
-    }, 
-    {
-        name: 'Personal Best',
-        value: `${emojis.championking} ${prettyNumbers(profile.bestTrophies)}`,
-        inline: true,
-    }, 
-    {
-        name: 'War Stars',
-        value: `${emojis.star} ${prettyNumbers(profile.warStars)}`,
-        inline: true,
-    }, 
-    {
-        name: 'Troop Donations',
-        value: `${emojis.speedup} ${prettyNumbers(profile.achievements[14].value)}`,
-        inline: true,
-    }, 
-    {
-        name: 'Spell Donations',
-        value: `${emojis.haste} ${prettyNumbers(profile.achievements[23].value)}`,
-        inline: true,
-    }, 
-    {
-        name: 'Siege Donations',
-        value: `${emojis.wallwrecker} ${prettyNumbers(profile.achievements[40].value)}`,
-        inline: true,
-    }, 
+        .setTitle(`${getLeagueEmote(profile.trophies)} ${profile.name} • Army showcase`)
+        .setURL(`https://www.clashofstats.com/players/${getURLName(profile)}-${getURLTag(profile)}/summary`)
+        .setColor('#33E3FF')
+        .setDescription(descriptionLines.join('\n'))
+        .setImage(`attachment://${fileName}`)
+    if (verified) embed.setFooter({text: 'Verified under this account', iconURL: "https://media.discordapp.net/attachments/582092054264545280/935702845183918160/check-mark_2714-fe0f.png"})
+    return { embed, fileName, buffer }
+}
 
-    {
-        name: 'Multiplayer Wins',
-        value: `⚔️ ${prettyNumbers(profile.achievements[12].value)}`,
-        inline: true,
-    }, 
-    {
-        name: 'Multiplayer Defenses',
-        value: `🛡️ ${prettyNumbers(profile.achievements[13].value)}`,
-        inline: true,
-    }, 
-    {
-        name: 'Clan Game Points',
-        value: `${emojis.clangames} ${prettyNumbers(profile.achievements[31].value)}`,
-        inline: true,
-    }, 
+const getProfileEmbed = async (profile, verified, endTimestamp) => {
+    const key = profile.tag.replace(/[^a-zA-Z0-9-_]/g, '')
 
-    {
-        name: 'Builderhall Level',
-        value: `${emojis.bh} ${profile.builderHallLevel ? profile.builderHallLevel : 'No builder hall'}`,
-        inline: true,
-    }, 
-    {
-        name: 'Builder Trophies',
-        value: `${emojis.buildertrophy} ${prettyNumbers(profile.builderBaseTrophies)}`,
-        inline: true,
-    }, 
-    {
-        name: 'Builder Personal Best',
-        value: `${emojis.nightwitch} ${prettyNumbers(profile.bestBuilderBaseTrophies)}`,
-        inline: true,
-    });
-    if (profile.legendStatistics?.legendTrophies) embed.addFields({name: 'Legend Trophies', value: `${emojis.legendtrophy} ${prettyNumbers(profile.legendStatistics.legendTrophies)}`, inline: true})
-    if (profile.legendStatistics?.bestSeason) embed.addFields({name: 'Best Legend Rank', value: `${emojis.globe} ${prettyNumbers(profile.legendStatistics.bestSeason.rank)}`, inline: true})
-    if (profile.legendStatistics?.bestBuilderBaseSeason) embed.addFields({name: 'Best Builder Rank', value: `${emojis.globe} ${prettyNumbers(profile.legendStatistics.bestBuilderBaseSeason.rank)}`, inline: true})    
-    if(verified) embed.setFooter({text: 'Verified under this account', iconURL: "https://media.discordapp.net/attachments/582092054264545280/935702845183918160/check-mark_2714-fe0f.png"})
-    return embed
+    let image = profileImageCache.get(key);
+
+    if (!image) {
+        image = await getProfileImage(profile, key);
+        profileImageCache.set(key, image);
+    }
+
+    const { buffer, fileName } = image
+
+    const descriptionLines = [
+        `**Player tag:** \`${profile.tag}\``,
+        `${emojis.link} **[View profile in-game](https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=${parseTag(profile.tag)})**`,
+        `${emojis.clock} ${ endTimestamp ? `Menu timeout <t:${endTimestamp}:R>` : `Calculating menu timeout...`}`
+    ];
+
+    const embed = new EmbedBuilder()
+        .setTitle(`${getLeagueEmote(profile.trophies)} ${profile.name} • Profile overview`)
+        .setURL(`https://www.clashofstats.com/players/${getURLName(profile)}-${getURLTag(profile)}/summary`)
+        .setColor('#33E3FF')
+        .setDescription(descriptionLines.join('\n'))
+        .setImage(`attachment://${fileName}`);
+
+    if (verified) {
+        embed.setFooter({
+            text: 'Verified under this account',
+            iconURL: "https://media.discordapp.net/attachments/582092054264545280/935702845183918160/check-mark_2714-fe0f.png"
+        });
+    }
+
+    return { embed, fileName, buffer };
 }
 
 const getClanEmbed = (clan) => {
@@ -232,5 +210,6 @@ const fillEmptyString = (str) => str == '' ? '-' : str
 
 module.exports = {
     getProfileEmbed,
-    getClanEmbed
+    getClanEmbed,
+    getTroopShowcaseEmbed
 } 
