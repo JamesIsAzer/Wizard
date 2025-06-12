@@ -134,7 +134,7 @@ const drawRightRoundedRectPath = (ctx, x, y, width, height, radius) => {
 }
 
 const signature = async (ctx, x, y) => {
-  const imagePath = path.join(__dirname, '..', 'assets', 'images', 'creatorLogo.png');
+  const imagePath = path.join(__dirname, '..', 'assets', 'images', 'CreatorLogo.png');
 
   const image = await loadImage(imagePath);
 
