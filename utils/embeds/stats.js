@@ -75,7 +75,6 @@ const getClanEmbed = (clan) => {
     const embed = new EmbedBuilder()
         .setTitle(`${emojis.versusbattles} ${clan.name} ${clan.tag}`)
         .setURL(`https://www.clashofstats.com/clans/${getURLClanName(clan)}-${getURLClanTag(clan)}/summary`)
-        .setDescription(clan.description)
         .setThumbnail(clan.badgeUrls.medium)
         .setColor('#33E3FF')
         .addFields(
@@ -143,6 +142,7 @@ const getClanEmbed = (clan) => {
             inline: true
         });
         
+        if (clan.description !== "") embed.setDescription(clan.description)
         if(clan.labels.length > 0) embed.setFooter({text: `${clan.labels[0].name}`, iconURL: `${clan.labels[0].iconUrls.small}` });
         return embed
 }
