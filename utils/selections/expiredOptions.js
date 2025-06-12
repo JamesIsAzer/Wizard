@@ -1,7 +1,10 @@
 const { ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require('discord.js')
+const { cross } = require('../../emojis.json')
 
-const expiredOptions = () => 
-    new ActionRowBuilder().addComponents(
+const expiredOptions = () => {
+    const [ crossname, crossid ] = cross.replace(/[<>]/g, '').split(':')
+
+    return new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId(`Expired`)
             .setPlaceholder('This interaction has expired.')
@@ -11,9 +14,11 @@ const expiredOptions = () =>
                     .setLabel(`Disabled due to timeout...`)
                     .setValue('expired')
                     .setDefault(true)
-                    .setEmoji({name: 'cross', id: '1381545321229713468'})
+                    .setEmoji({ name: crossname, id: crossid })
             )
     )
+}
+    
 
 module.exports = {
     expiredOptions
