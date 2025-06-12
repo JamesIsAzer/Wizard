@@ -163,6 +163,17 @@ const getTrophyLeagueImagePath = (trophies) => {
     return getImagePath('Icon_HV_League_None')
 }
 
+const getLastYearMonth = () => {
+    const now = new Date();
+    
+    now.setMonth(now.getMonth() - 1);
+    
+    const year = now.getFullYear();
+    const month = (now.getMonth() + 1).toString().padStart(2, '0'); // months are 0-based
+
+    return `${year}-${month}`;
+}
+
 const getTownhallPath = (townhallLevel) => {
     const townhallCapped = Math.min(17, townhallLevel)
     return getImagePath(`Building_HV_Town_Hall_level_${townhallCapped}`)
@@ -208,5 +219,6 @@ module.exports = {
     getLeagueName,
     formatDateYearMonth,
     clashFontScaled,
-    formatNumberWithSpaces
+    formatNumberWithSpaces,
+    getLastYearMonth
 };

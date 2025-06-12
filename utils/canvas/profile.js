@@ -1,5 +1,5 @@
 const { createCanvas, loadImage, registerFont } = require('canvas');
-const { getImagePath, getFontPath, clashFont, tagFont, mapClanRoles, getTrophyLeagueImagePath, getLeagueName, drawRoundedRectPath, drawRightRoundedRectPath, getTownhallPath, clashFontScaled, formatDateYearMonth, signature, getAchievementStarsImagePath, formatNumberWithSpaces } = require('./shared');
+const { getImagePath, getFontPath, clashFont, tagFont, mapClanRoles, getTrophyLeagueImagePath, getLeagueName, drawRoundedRectPath, drawRightRoundedRectPath, getTownhallPath, clashFontScaled, formatDateYearMonth, signature, getAchievementStarsImagePath, formatNumberWithSpaces, getLastYearMonth } = require('./shared');
 
 registerFont(getFontPath('Clash_Regular'), { family: 'ClashFont' });
 
@@ -207,7 +207,7 @@ const trophyLegendarySection = async (season, ctx, x, y, type) => {
 
         clashFont(ctx, `Did not place`, x + 300, y + 250, '50', false, '#dde2ff')
 
-        clashFont(ctx, `${type}: ${formatDateYearMonth(date)}`, x + 275, y + 125, '50', false)
+        clashFont(ctx, `${type}: ${formatDateYearMonth(getLastYearMonth())}`, x + 275, y + 125, '50', false)
     }
     
 }
