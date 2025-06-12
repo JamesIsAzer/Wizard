@@ -19,7 +19,7 @@ client.on('interactionCreate', async (interaction) => {
     if (interaction.isCommand()) return await interactionCommand.execute(interaction)
     return await interactionEvent.execute(interaction)
   } catch (e) {
-    console.error(`[INTERACTION ERROR]: ${new Date().toString()} - ${e}`);
+    console.error(`[INTERACTION ERROR]: ${new Date().toString()} - ${e} ${e.stack}`);
     await interaction.editReply({
       content: 'There was an error while executing this command!',
       flags: MessageFlags.Ephemeral
