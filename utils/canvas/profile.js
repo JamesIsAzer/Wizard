@@ -4,7 +4,7 @@ const { getImagePath, getFontPath, clashFont, tagFont, mapClanRoles, getTrophyLe
 registerFont(getFontPath('Clash_Regular'), { family: 'ClashFont' });
 
 const getProfileImage = async (profile, key) => {
-    const hasLegendStats = !!(profile?.legendStatistics)
+    const hasLegendStats = !!(profile?.legendStatistics?.bestSeason)
     
     const width = 3500;
     const height = hasLegendStats ? 2550 : 2125;
