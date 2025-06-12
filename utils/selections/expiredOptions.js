@@ -2,7 +2,7 @@ const { ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder
 const { cross } = require('../../emojis.json')
 
 const expiredOptions = () => {
-    const [ crossname, crossid ] = cross.replace(/[<>]/g, '').split(':')
+    const [, crossname, crossid ] = cross.replace(/[<>]/g, '').split(':')
 
     return new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
