@@ -1,13 +1,13 @@
 const { createCanvas, loadImage, registerFont } = require('canvas');
-const { getImagePath, getFontPath, clashFont, tagFont, mapClanRoles, getTrophyLeagueImagePath, getLeagueName, drawRoundedRectPath, drawRightRoundedRectPath, getTownhallPath, clashFontScaled, formatDateYearMonth, signature } = require('./shared');
+const { getImagePath, getFontPath, clashFont, tagFont, mapClanRoles, getTrophyLeagueImagePath, getLeagueName, drawRoundedRectPath, drawRightRoundedRectPath, getTownhallPath, clashFontScaled, formatDateYearMonth, signature, getAchievementStarsImagePath, formatNumberWithSpaces } = require('./shared');
 
 registerFont(getFontPath('Clash_Regular'), { family: 'ClashFont' });
 
 const getProfileImage = async (profile, key) => {
-    const legends = true
+    const hasLegendStats = !!(profile?.legendStatistics)
     
     const width = 3500;
-    const height = legends ? 2550 : 2125;
+    const height = hasLegendStats ? 2550 : 2125;
     const canvas = createCanvas(width, height);
     const ctx = canvas.getContext('2d');
 
@@ -15,17 +15,22 @@ const getProfileImage = async (profile, key) => {
     
     ctx.fillRect(0, 0, width, height);
 
-    await nameCardSection(ctx, 25, 25)
-    if (legends) {
-        await legendLeagueSection(ctx, 25, 1000)
+    const tasks = [
+        nameCardSection(profile, ctx, 25, 25, ),
+        achievementsSection(profile.achievements, ctx, 75, hasLegendStats ? 1425 : 1000)
+    ]
+
+    await Promise.all(tasks)
+
+    if (hasLegendStats) {
+        await legendLeagueSection(profile.legendStatistics, ctx, 25, 1000)
     }
-    await achievementsSection(ctx, 75, legends ? 1425 : 1000)
     const buffer = canvas.toBuffer('image/png');
     const fileName = `player-profile-${key}.png`
     return { buffer, fileName };
 };
 
-const nameCardSection = async (ctx, x, y) => {
+const nameCardSection = async (profile, ctx, x, y) => {
     const width = 3450
     const height = 950
     const radius = 10
@@ -50,25 +55,23 @@ const nameCardSection = async (ctx, x, y) => {
     drawRoundedRectPath(ctx, x, y, width, height, radius); 
     ctx.stroke();
 
-    await nameSection(ctx, x + paddingLeft, y + paddingTop + 50)
-
     dividerLine(ctx, x + paddingLeft + 1400, x + paddingLeft + 1400, y + paddingTop, y + paddingTop + 700)
-
-    await clanSection(ctx, x + paddingLeft + 1600, y + paddingTop + 100)
-
     dividerLine(ctx, x + paddingLeft + 2300, x + paddingLeft + 2300, y + paddingTop, y + paddingTop + 700)
 
-    await townhallSection(ctx, x + paddingLeft + 2200, y + paddingTop)
-    //await trophiesSection(ctx, x + paddingLeft + 2200, y + paddingTop + 50)
+    const tasks = [
+        nameSection(profile, ctx, x + paddingLeft, y + paddingTop + 50),
+        clanSection(profile, ctx, x + paddingLeft + 1600, y + paddingTop + 100),
+        townhallSection(profile, ctx, x + paddingLeft + 2200, y + paddingTop)
+    ]
+    
+    await Promise.all(tasks)
 
-    addSeasonalSection(ctx, x, y, width, height, radius)
+    addSeasonalSection(profile, ctx, x, y, width, height, radius)
 }
 
-const addSeasonalSection = (ctx, x, y, width, height, radius) => {
-    // Purple bottom section
+const addSeasonalSection = (profile, ctx, x, y, width, height, radius) => {
     const purpleHeight = 125;
     const purpleY = y + height - purpleHeight;
-    const purpleRadius = 10;
 
     ctx.beginPath();
     ctx.moveTo(x, purpleY);
@@ -80,27 +83,32 @@ const addSeasonalSection = (ctx, x, y, width, height, radius) => {
     ctx.lineTo(x, purpleY);
     ctx.closePath();
 
-    ctx.fillStyle = '#4e4d79';  // your purple color
+    ctx.fillStyle = '#4e4d79';
     ctx.fill();
 
     ctx.fillStyle = '#7964a5';
     ctx.fillRect(x, purpleY + 3, width, 5);
 
+    const troopsDonated = profile.donations
+    const troopsReceived = profile.donationsReceived
+    const attacksWon = profile.attackWins
+    const defensesWon = profile.defenseWins
+    
     drawPixelLine(ctx, 100, purpleY + 100, 500)
     clashFont(ctx, 'Troops donated:', 100, purpleY + 50, '50')
-    seasonalStatBox(ctx, 625, purpleY + 20, 40)
+    seasonalStatBox(ctx, 625, purpleY + 20, troopsDonated)
 
     drawPixelLine(ctx, 900, purpleY + 100, 505)
     clashFont(ctx, 'Troops received:', 900, purpleY + 50, '50')
-    seasonalStatBox(ctx, 1425, purpleY + 20, 3242)
+    seasonalStatBox(ctx, 1425, purpleY + 20, troopsReceived)
 
     drawPixelLine(ctx, 1815, purpleY + 100, 390)
     clashFont(ctx, 'Attacks won:', 1815, purpleY + 50, '50')
-    seasonalStatBox(ctx, 2215, purpleY + 20, 1)
+    seasonalStatBox(ctx, 2215, purpleY + 20, attacksWon)
 
     drawPixelLine(ctx, 2615, purpleY + 100, 440)
     clashFont(ctx, 'Defenses won:', 2615, purpleY + 50, '50')
-    seasonalStatBox(ctx, 3065, purpleY + 20, 10000)
+    seasonalStatBox(ctx, 3065, purpleY + 20, defensesWon)
 }
 
 const seasonalStatBox = (ctx, x, y, message) => {
@@ -120,7 +128,11 @@ const drawPixelLine = (ctx, x, y, width) => {
     ctx.fillRect(x, y + 4, width, 4);
 }
 
-const legendLeagueSection = async (ctx, x, y) => {
+const legendLeagueSection = async (legendStats, ctx, x, y) => {
+    const bestSeason = legendStats.bestSeason
+    const previousSeason = legendStats.previousSeason
+    const legendTrophies = legendStats.legendTrophies
+
     const width = 3450
     const height = 400
     const radius = 10
@@ -162,72 +174,151 @@ const legendLeagueSection = async (ctx, x, y) => {
     dividerLine(ctx, x + paddingLeft + 1000, x + paddingLeft + 1000, y + paddingTop + 75, y + paddingTop + 325, "#35304e", "#796fa5")
     dividerLine(ctx, x + paddingLeft + 2175, x + paddingLeft + 2175, y + paddingTop + 75, y + paddingTop + 325, "#35304e", "#796fa5")
 
-    await trophyLegendarySection(ctx, x + paddingLeft, y + (paddingTop/2), 'Best')
-    await trophyLegendarySection(ctx, x + paddingLeft + 1100, y + (paddingTop/2), 'Previous')
-    await legendTrophySection(ctx, x + paddingLeft + 2400, y + (paddingTop/2))
+    const tasks = [
+        trophyLegendarySection(bestSeason, ctx, x + paddingLeft, y + (paddingTop/2), 'Best'),
+        trophyLegendarySection(previousSeason, ctx, x + paddingLeft + 1100, y + (paddingTop/2), 'Previous'),
+        legendTrophySection(legendTrophies, ctx, x + paddingLeft + 2400, y + (paddingTop/2))
+    ]
+    
+    await Promise.all(tasks)
 }
 
-const trophyLegendarySection = async (ctx, x, y, type) => {
+const trophyLegendarySection = async (season, ctx, x, y, type) => {
+
+    const rank = season?.rank
+    const trophies = season?.trophies
+
     const date = '2025-05'
-    const rank = 3144
-    const trophies = 5901
 
-    const legendImagePath = getImagePath("Icon_HV_League_Legend");
-    const legendImage = await loadImage(legendImagePath);
-    ctx.drawImage(legendImage, x, y + 100, 250, 250);
-    clashFontScaled(ctx, rank, x + 125, y + 220, 200, 160, true)
+    if (season) {
+        const legendImagePath = getImagePath("Icon_HV_League_Legend");
+        const legendImage = await loadImage(legendImagePath);
 
-    clashFont(ctx, `${type}: ${formatDateYearMonth(date)}`, x + 275, y + 125, '50', false)
-    statBanner(ctx, x + 275, y + 200, 150, 150, 'trophy', trophies, '#242135')
+        ctx.drawImage(legendImage, x, y + 100, 250, 250);
+        clashFontScaled(ctx, rank, x + 125, y + 220, 200, 160, true)
+        clashFont(ctx, `${type}: ${formatDateYearMonth(date)}`, x + 275, y + 125, '50', false)
+        statBanner(ctx, x + 275, y + 200, 150, 150, 'trophy', trophies, '#242135')
+    }
+    if (!season) {
+        const unrankedImagePath = getImagePath("Icon_HV_League_None");
+        const unrankedImage = await loadImage(unrankedImagePath);
+
+        ctx.drawImage(unrankedImage, x, y + 100, 250, 250);
+
+        clashFont(ctx, `Did not place`, x + 300, y + 250, '50', false, '#dde2ff')
+
+        clashFont(ctx, `${type}: ${formatDateYearMonth(date)}`, x + 275, y + 125, '50', false)
+    }
+    
 }
 
-const legendTrophySection = async (ctx, x, y) => {
-    const legendTrophies = 4444
+const legendTrophySection = async (legendTrophies, ctx, x, y) => {
     clashFont(ctx, `Legend trophies:`, x, y + 125, '50', false)
     statBanner(ctx, x, y + 200, 150, 150, 'legendtrophy', legendTrophies, '#242135')
 }
 
-const personalBestBanner = async (ctx, x, y, emblemWidth, emblemHeight, bestTrophies) => {
-    const emblemCenterY = y + (emblemHeight / 2);
+const achievementBanner = async (ctx, x, y, cellHeight, cellWidth, achievementTitle, achievementIcon, achievement) => {
+    const achievementStars = achievement.stars
+    const achievementValue = achievement.value
+    
+    const achievementIconWidth = 150
+    const achievementIconHeight = 150
+    
     const barHeight = 80;
-    const barRadius = barHeight / 2;
-    const barPadding = 20 + (emblemWidth / 2);
-    const iconSize = 60;
+    const barRadius = barHeight / 5;
+    const barPadding = (achievementIconWidth / 2) + 20;
     const spacingBetween = 20;
 
-    // Draw the league emblem first
-    const trophyLeagueEmblemPath = getTrophyLeagueImagePath(bestTrophies);
-    const emblemImage = await loadImage(trophyLeagueEmblemPath);
+    const starsWidth = 288;
+    const starsHeight = 115;
+    const starsX = x + 30;
+    const starsY = y + (cellHeight / 2) - (starsHeight / 2);
 
-    // Bar should start immediately after the emblem
-    const barX = x + (emblemWidth / 2);
-    const barY = emblemCenterY - (barHeight / 2);
+    const xFromStatIcon = x + starsWidth + 70;
 
-    // Load trophy icon
-    const trophyIconPath = getImagePath('trophy');
-    const trophyIconImage = await loadImage(trophyIconPath);
+    const achievementIconPath = getImagePath(achievementIcon);
+    const achievementIconImage = await loadImage(achievementIconPath);
+    const starsImagePath = getAchievementStarsImagePath(achievementStars);
+    const starsImage = await loadImage(starsImagePath);
 
-    // Estimate bar width based on content (icon + trophies text)
-    const text = bestTrophies.toString();
-    ctx.font = '60px Clash'; // Adjust as needed to match clashFont
+    const iconY = y + (cellHeight / 2) - (achievementIconHeight / 2) + 10;
+    const iconCenterY = iconY + (achievementIconHeight / 2) + 10
+
+    const barX = xFromStatIcon + (achievementIconWidth / 2);
+    const barY = iconCenterY - (barHeight / 2);
+
+
+    ctx.font = '60px Clash';
+    const text = formatNumberWithSpaces(achievementValue.toString())
     const textWidth = ctx.measureText(text).width;
 
-    const barWidth = barPadding + iconSize + spacingBetween + textWidth + 80;
+    const barWidth = Math.max(
+        barPadding + spacingBetween + textWidth + 20,
+        cellWidth - starsWidth - (achievementIconWidth/2) - 300
+    )
 
-    // Draw the rounded bar
     ctx.fillStyle = '#38385c';
     drawRightRoundedRectPath(ctx, barX, barY, barWidth, barHeight, barRadius);
     ctx.fill();
 
-    // Draw the trophy icon inside the bar
     const iconX = barX + barPadding;
-    const iconY = emblemCenterY - (iconSize / 2);
-    ctx.drawImage(trophyIconImage, iconX, iconY, iconSize, iconSize);
-    ctx.drawImage(emblemImage, x, y, emblemWidth, emblemHeight);
 
-    // Draw best trophies text to the right of the icon
-    const textX = iconX + iconSize + spacingBetween;
-    const textY = emblemCenterY - 30
+    ctx.drawImage(achievementIconImage, xFromStatIcon, iconY, achievementIconWidth, achievementIconHeight);
+
+    ctx.drawImage(starsImage, starsX, starsY, starsWidth, starsHeight);
+
+    const textX = iconX + spacingBetween;
+    const textY = iconCenterY - 30;
+    clashFont(ctx, achievementTitle, iconX, textY - 55, '40', false);
+    clashFont(ctx, text, textX, textY, '60', false);
+};
+
+// for later
+const personalBestBanner = async (ctx, x, y, emblemWidth, emblemHeight, bestTrophies, cellHeight) => {
+    const barHeight = 80;
+    const barRadius = barHeight / 5;
+    const barPadding = (emblemWidth / 2) + 20;
+    const spacingBetween = 20;
+
+    const starsWidth = 288;
+    const starsHeight = 115;
+    const starY = y + (cellHeight / 2) - (starsHeight / 2);
+
+    const xFromStatIcon = x + starsWidth + 70;
+
+    const trophyLeagueEmblemPath = getTrophyLeagueImagePath(bestTrophies);
+    const emblemImage = await loadImage(trophyLeagueEmblemPath);
+    const starsImagePath = getImagePath('3star');
+    const starsImage = await loadImage(starsImagePath);
+
+    // Proper emblem vertical centering
+    const emblemY = y + (cellHeight / 2) - (emblemHeight / 2);
+    const emblemCenterY = emblemY + (emblemHeight / 2);
+
+    // Bar Y calculation now based on corrected emblemCenterY
+    const barX = xFromStatIcon + (emblemWidth / 2);
+    const barY = emblemCenterY - (barHeight / 2);
+
+    ctx.font = '60px Clash';
+    const text = bestTrophies.toString();
+    const textWidth = ctx.measureText(text).width;
+    const barWidth = barPadding + spacingBetween + textWidth + 40;
+
+    ctx.fillStyle = '#38385c';
+    drawRightRoundedRectPath(ctx, barX, barY, barWidth, barHeight, barRadius);
+    ctx.fill();
+
+    // Trophy icon inside bar
+    const iconX = barX + barPadding;
+
+    ctx.drawImage(emblemImage, xFromStatIcon, emblemY, emblemWidth, emblemHeight);
+
+    // Star image centered in cell
+    ctx.drawImage(starsImage, x + 30, starY, starsWidth, starsHeight);
+
+    // Trophies text
+    const textX = iconX + spacingBetween;
+    const textY = emblemCenterY - 30;
     clashFont(ctx, 'Personal best:', iconX, textY - 55, '40', false);
     clashFont(ctx, bestTrophies, textX, textY, '60', false);
 };
@@ -240,22 +331,18 @@ const statBanner = async (ctx, x, y, emblemWidth, emblemHeight, imageName, stat,
     const iconSize = 60;
     const spacingBetween = 20;
 
-    // Draw the league emblem first
     const statImagePath = getImagePath(imageName);
     const statImage = await loadImage(statImagePath);
 
-    // Bar should start immediately after the emblem
     const barX = x + (emblemWidth / 2);
     const barY = emblemCenterY - (barHeight / 2);
 
-    // Estimate bar width based on content (icon + trophies text)
     const text = stat.toString();
-    ctx.font = '70px Clash'; // Adjust as needed to match clashFont
+    ctx.font = '70px Clash'; 
     const textWidth = ctx.measureText(text).width;
 
     const barWidth = barPadding + iconSize + spacingBetween + textWidth + 80;
 
-    // Draw the rounded bar
     ctx.fillStyle = statBgColour;
     drawRightRoundedRectPath(ctx, barX, barY, barWidth, barHeight, barRadius);
     ctx.fill();
@@ -270,12 +357,12 @@ const statBanner = async (ctx, x, y, emblemWidth, emblemHeight, imageName, stat,
 
 const leagueTrophyBanner = async (ctx, x, y, emblemWidth, emblemHeight, trophies, league) => {
     const lineStartFromEmblemX = x + (emblemWidth / 2);
-    const lineEndX = x + emblemWidth + 750; // Extend lines further right and fade out
+    const lineEndX = x + emblemWidth + 750; 
     const emblemCenterY = y + (emblemHeight / 2);
-    const line1Y = emblemCenterY - 55; // Position above emblem center
+    const line1Y = emblemCenterY - 55; 
     const gradient1 = ctx.createLinearGradient(lineStartFromEmblemX, 0, lineEndX, 0);
-    gradient1.addColorStop(0, 'rgba(0, 0, 0, 0.8)');     // Fully opaque black at start
-    gradient1.addColorStop(1, 'rgba(0, 0, 0, 0)');     // Fully transparent black at end
+    gradient1.addColorStop(0, 'rgba(0, 0, 0, 0.8)');   
+    gradient1.addColorStop(1, 'rgba(0, 0, 0, 0)');     
 
     ctx.beginPath();
     ctx.strokeStyle = gradient1;
@@ -299,24 +386,25 @@ const leagueTrophyBanner = async (ctx, x, y, emblemWidth, emblemHeight, trophies
     ctx.stroke();
     ctx.closePath();
 
-    const leagueName = getLeagueName(league)
+    const leagueName = league ? getLeagueName(league) : 'Unranked'
     clashFont(ctx, leagueName, lineStartFromEmblemX + 200, line1Y - 28, '55', false)
 
     const trophyIconPath = getImagePath('trophy')
     const trophyIconImage = await loadImage(trophyIconPath);
     ctx.drawImage(trophyIconImage, lineStartFromEmblemX + 200, line2Y - 45, 90, 90);
 
-    const trophyLeagueEmblemPath = getTrophyLeagueImagePath(trophies);
+    const unrankedEmblemPath = getImagePath('Icon_HV_League_None');
 
-    const image = await loadImage(trophyLeagueEmblemPath);
-    ctx.drawImage(image, x, y, emblemWidth, emblemHeight);
+    const emblemImage = league ? await loadImage(league.iconUrls.medium) :
+        await loadImage(unrankedEmblemPath);
+
+    ctx.drawImage(emblemImage, x, y, emblemWidth, emblemHeight);
 
     clashFont(ctx, trophies, lineStartFromEmblemX + 310, line2Y - 35, '85', false)
 }
 
 const dividerLine = (ctx, x1, x2, y1, y2, c1 = "#5b5f80", c2 = "#abaec1") => {
 
-    // Draw right line
     ctx.strokeStyle = c1;
     ctx.lineWidth = 8;
     ctx.beginPath();
@@ -324,7 +412,6 @@ const dividerLine = (ctx, x1, x2, y1, y2, c1 = "#5b5f80", c2 = "#abaec1") => {
     ctx.lineTo(x2, y2 - 3);
     ctx.stroke();
 
-    // Draw left line
     ctx.strokeStyle = c2;
     ctx.lineWidth = 4;
     ctx.beginPath();
@@ -333,73 +420,96 @@ const dividerLine = (ctx, x1, x2, y1, y2, c1 = "#5b5f80", c2 = "#abaec1") => {
     ctx.stroke();
 }
 
-const townhallSection = async (ctx, x, y) => {
+const townhallSection = async (profile, ctx, x, y) => {
     const townhallImageWidth = 610
-    const townhallLevel = 17
+    const townhallLevel = profile.townHallLevel
     const townhallImagePath = getTownhallPath(townhallLevel);
     const townhallImage = await loadImage(townhallImagePath);
 
-    //clashFont(ctx, `Townhall ${townhallLevel}`, x + 350 + (townhallImageWidth / 2), y, '75', true)
     ctx.drawImage(townhallImage, x + 300, y + 50, townhallImageWidth, townhallImageWidth);
 }
 
-const clanSection = async(ctx, x, y) => {
-    const clanEmblem = await loadImage("https://api-assets.clashofclans.com/badges/512/u-ublBXwZlpr16QFdwXPtsCBSkwTXCTkOMYx0gg9cUY.png")
-
+const clanSection = async(profile, ctx, x, y) => {
+    const clan = profile.clan
     const emblemWidth = 500
     const emblemHeight = 500
-
-    clashFont(ctx, 'Cool Clan', x + (emblemWidth / 2), y, '75', true)
     
-    ctx.drawImage(clanEmblem, x, y + 50, emblemWidth, emblemHeight); 
+    if (clan) {
+        const clanEmblem = await loadImage(clan.badgeUrls.medium)    
+        clashFont(ctx, clan.name, x + (emblemWidth / 2), y, '75', true)
+        ctx.drawImage(clanEmblem, x, y + 50, emblemWidth, emblemHeight); 
+    }
+    if (!clan) clashFont(ctx, 'No Clan', x + (emblemWidth / 2), y, '75', true)
 }
 
-const nameSection = async (ctx, x, y) => {
+const nameSection = async (profile, ctx, x, y) => {
+    const username = profile.name
+    const playerTag = profile.tag
+    const clanRole = profile.role
+    const league = profile?.league
+    const trophies = profile.trophies
+    const expLevel = profile.expLevel
+
     const imagePath = getImagePath('xp');
 
     const image = await loadImage(imagePath);
 
     ctx.drawImage(image, x, y - 10, 200, 200);
 
-    clashFont(ctx, '247', x + 100, y + 90, '90', true)
+    clashFont(ctx, expLevel, x + 100, y + 90, '90', true)
 
-    clashFont(ctx, 'JamesJamesJames', x + 250, y - 30, '100', false)
-    tagFont(ctx, '#VP0QG80Y', x + 250, y + 95, '75', false)
+    clashFont(ctx, username, x + 250, y - 30, '100', false)
+    tagFont(ctx, playerTag, x + 250, y + 95, '75', false)
 
-    clashFont(ctx, mapClanRoles('coLeader'), x + 250, y + 190, '75', false)
+    if(clanRole)
+        clashFont(ctx, mapClanRoles(clanRole), x + 250, y + 190, '75', false)
 
-    const league = {name: "Legend League"}
-    const trophies = 5600
     await leagueTrophyBanner(ctx, x + 100, y + 300, 350, 350, trophies, league)
-
-    //await labels(ctx, x + 250, y + 350)
-    
 }
 
-const achievementsSection = async (ctx, x, y) =>  {
-    achievementCell(ctx, x, y)
-    achievementCell(ctx, x, y + 225)
-    achievementCell(ctx, x, y + 450)
-    achievementCell(ctx, x, y + 675)
-    //achievementCell(ctx, x, y + 900)
+const achievementsSection = async (achievements, ctx, x, y) =>  {
+    const goldLooted = achievements[5]
+    const troopDonations = achievements[14]
+    const obstaclesRemoved = achievements[3]
+    const clanGamePoints = achievements[31]
+
+    const elixirLooted = achievements[6]
+    const spellDonations = achievements[23]
+    const seasonChallengePts = achievements[35]
+    const warStars = achievements[20]
+    const successfulAttacks = achievements[12]
+
+    const darkElixirLooted = achievements[16]
+    const siegeDonations = achievements[40]
+    const campaignMapStars = achievements[1]
+    const clanWarLeagueStars = achievements[33]
+    const successfulDefenses = achievements[13]
+
+    const tasks = [
+        achievementCell(ctx, x, y, 'Gold looted', 'gold', goldLooted),
+        achievementCell(ctx, x, y + 225, 'Troop donations', 'troopdonation', troopDonations),
+        achievementCell(ctx, x, y + 450, 'Obstacles removed', 'obstaclesremoved', obstaclesRemoved),
+        achievementCell(ctx, x, y + 675, 'Clan games points', 'clangames', clanGamePoints),
+
+        achievementCell(ctx, x + 1125, y, 'Elixir looted', 'elixir', elixirLooted),
+        achievementCell(ctx, x + 1125, y + 225, 'Spell donations', 'spelldonation', spellDonations),
+        achievementCell(ctx, x + 1125, y + 450, 'Season challenge pts', 'goldpass', seasonChallengePts),
+        achievementCell(ctx, x + 1125, y + 675, 'War stars', 'warstar', warStars),
+        achievementCell(ctx, x + 1125, y + 900, 'Successful attacks', 'multiplayerattack', successfulAttacks),
+        
+        achievementCell(ctx, x + 2250, y, 'Dark elixir looted', 'darkelixir', darkElixirLooted),
+        achievementCell(ctx, x + 2250, y + 225, 'Siege donations', 'siegemachinedonation', siegeDonations),
+        achievementCell(ctx, x + 2250, y + 450, 'Campaign map stars', 'campaigner', campaignMapStars),
+        achievementCell(ctx, x + 2250, y + 675, 'Clan war league stars', 'cwlstar', clanWarLeagueStars),
+        achievementCell(ctx, x + 2250, y + 900, 'Successful defenses', 'shield', successfulDefenses)
+    ]
+    
+    await Promise.all(tasks)
 
     await signature(ctx, x + 100, y + 850)
-
-    achievementCell(ctx, x + 1125, y)
-    achievementCell(ctx, x + 1125, y + 225)
-    achievementCell(ctx, x + 1125, y + 450)
-    achievementCell(ctx, x + 1125, y + 675)
-    achievementCell(ctx, x + 1125, y + 900)
-
-    achievementCell(ctx, x + 2250, y)
-    achievementCell(ctx, x + 2250, y + 225)
-    achievementCell(ctx, x + 2250, y + 450)
-    achievementCell(ctx, x + 2250, y + 675)
-    achievementCell(ctx, x + 2250, y + 900)
-
 }
 
-const achievementCell = (ctx, x, y) => {
+const achievementCell = async (ctx, x, y, achievementTitle, achievementIcon, achievement) => {
     const width = 1100
     const height = 200
     const radius = 30
@@ -409,16 +519,16 @@ const achievementCell = (ctx, x, y) => {
     gradient.addColorStop(0, '#a8adb0');
     gradient.addColorStop(1, '#9ca5b0');
 
-    // Fill with gradient
     ctx.fillStyle = gradient;
     ctx.fill();
 
-    // Stroke outline (white)
     ctx.lineWidth = 4;
     ctx.strokeStyle = '#ffffff';
     ctx.stroke();
 
     reflection(ctx, x + 25, y + 25, width - 50, (height / 2) - 25)
+
+    await achievementBanner(ctx, x, y, height, width, achievementTitle, achievementIcon, achievement)
 }
 
 const reflection = (ctx, x, y, width, height) => {
@@ -429,28 +539,8 @@ const reflection = (ctx, x, y, width, height) => {
     gradient.addColorStop(0, 'rgba(255, 255, 255, 0.25)');     // Fully opaque black at start
     gradient.addColorStop(1, 'rgba(255, 255, 255, 0.1)'); 
 
-    // Fill with gradient
     ctx.fillStyle = gradient;
     ctx.fill();
 }
-
-const labels = async (ctx, x, y) => {
-    const badgeWidth = 200;
-    const badgeHeight = 200;
-    const badgeSpacing = 25;
-
-    const tasks = [
-        loadImage("https://api-assets.clashofclans.com/labels/64/u-VKK5y0hj0U8B1xdawjxNcXciv-fwMK3VqEBWCn1oM.png"),
-        loadImage("https://api-assets.clashofclans.com/labels/64/PcgplBTQo2W_PXYqMi0i6g6nrNMjzCM8Ipd_umSnuHw.png"),
-        loadImage("https://api-assets.clashofclans.com/labels/64/8Q08M2dj1xz1Zx-sAre6QO14hOX2aiEvg-FaGGSX-7M.png")
-    ]
-    
-    const images = await Promise.all(tasks)
-
-    images.forEach((image, index) => {
-        ctx.drawImage(image, x + (index * (badgeWidth + badgeSpacing)), y, badgeWidth, badgeHeight); 
-    }) 
-}
-
 
 module.exports = { getProfileImage };

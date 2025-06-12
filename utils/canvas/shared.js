@@ -51,8 +51,12 @@ const clashFontScaled = (ctx, message, x, y, maxWidth, maxHeight, centered = fal
     clashFont(ctx, message, x, y, fontSize, centered);
 }
 
-const clashFont = (ctx, message, x, y, fontSize = '80', centered = false) => {
-    ctx.font = `${fontSize}px ClashFont`;
+const formatNumberWithSpaces = (number) => {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+}
+
+const clashFont = (ctx, message, x, y, fontSize = '80', centered = false, colour = '#FFFFFF') => {
+    ctx.font = `${fontSize}px ClashFont, Arial, sans-serif`;
 
     if (centered) {
         ctx.textAlign = 'center';
@@ -73,7 +77,7 @@ const clashFont = (ctx, message, x, y, fontSize = '80', centered = false) => {
     ctx.strokeText(message, x, y);
 
     // Fill (white or yellowish)
-    ctx.fillStyle = '#FFFFFF';    
+    ctx.fillStyle = colour;    
     ctx.fillText(message, x, y);
 }
 
@@ -117,7 +121,7 @@ const drawRoundedRectPath = (ctx, x, y, width, height, radius) => {
   ctx.closePath();
 }
 
-function drawRightRoundedRectPath(ctx, x, y, width, height, radius) {
+const drawRightRoundedRectPath = (ctx, x, y, width, height, radius) => {
     ctx.beginPath();
     ctx.moveTo(x, y);
     ctx.lineTo(x + width - radius, y);
@@ -141,6 +145,10 @@ const signature = async (ctx, x, y) => {
 
 const getImagePath = (imageName) => {
     return path.join(__dirname, '..', 'assets', 'images', `${imageName}.png`);
+}
+
+const getAchievementStarsImagePath = (achievementStars) => {
+    return getImagePath(`${achievementStars}star`)
 }
 
 const getTrophyLeagueImagePath = (trophies) => {
@@ -177,7 +185,7 @@ const getLeagueName = (league) => {
     return league.name
 }
 
-function formatDateYearMonth(dateStr) {
+const formatDateYearMonth = (dateStr) => {
     const [year, month] = dateStr.split('-');
     const date = new Date(year, month - 1); // JS months are 0-based
     const monthName = date.toLocaleString('default', { month: 'long' });
@@ -192,11 +200,13 @@ module.exports = {
     getImagePath,
     getFontPath,
     getTownhallPath,
+    getAchievementStarsImagePath,
     clashFont,
     tagFont,
     mapClanRoles,
     getTrophyLeagueImagePath,
     getLeagueName,
     formatDateYearMonth,
-    clashFontScaled
+    clashFontScaled,
+    formatNumberWithSpaces
 };
