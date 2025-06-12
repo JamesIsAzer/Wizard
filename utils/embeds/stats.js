@@ -32,6 +32,7 @@ const getTroopShowcaseEmbed = async (profile, verified, endTimestamp) => {
         .setColor('#33E3FF')
         .setDescription(descriptionLines.join('\n'))
         .setImage(`attachment://${fileName}`)
+        .setThumbnail('https://i.imgur.com/wbbK27a.png')
     if (verified) embed.setFooter({text: 'Verified under this account', iconURL: "https://media.discordapp.net/attachments/582092054264545280/935702845183918160/check-mark_2714-fe0f.png"})
     return { embed, fileName, buffer }
 }
@@ -59,7 +60,8 @@ const getProfileEmbed = async (profile, verified, endTimestamp) => {
         .setURL(`https://www.clashofstats.com/players/${getURLName(profile)}-${getURLTag(profile)}/summary`)
         .setColor('#33E3FF')
         .setDescription(descriptionLines.join('\n'))
-        .setImage(`attachment://${fileName}`);
+        .setImage(`attachment://${fileName}`)
+        .setThumbnail('https://i.imgur.com/FSzGdhn.png');
 
     if (verified) {
         embed.setFooter({
