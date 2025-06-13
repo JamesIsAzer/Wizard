@@ -122,19 +122,19 @@ const petSection = async(ctx, x, y, pets) => {
   
   const tasks = [
     drawTroopIcon(lassi.level, lassi.unlocked, lassi.maxed, ctx, 'Icon_HV_Hero_Pets_LASSI', x + 25, y + 100),
-    drawTroopIcon(mightyYak.level, mightyYak.unlocked, mightyYak.maxed, ctx, 'Icon_HV_Hero_Pets_Electro_Owl', x + 275, y + 100),
-    drawTroopIcon(electroOwl.level, electroOwl.unlocked, electroOwl.maxed, ctx, 'Icon_HV_Hero_Pets_Mighty_Yak', x + 525, y + 100),
+    drawTroopIcon(electroOwl.level, electroOwl.unlocked, electroOwl.maxed, ctx, 'Icon_HV_Hero_Pets_Electro_Owl', x + 275, y + 100),
+    drawTroopIcon(mightyYak.level, mightyYak.unlocked, mightyYak.maxed, ctx, 'Icon_HV_Hero_Pets_Mighty_Yak', x + 525, y + 100),
 
     drawTroopIcon(unicorn.level, unicorn.unlocked, unicorn.maxed, ctx, 'Icon_HV_Hero_Pets_Unicorn', x + 25, y + 350),
-    drawTroopIcon(phoenix.level, phoenix.unlocked, phoenix.maxed, ctx, 'Icon_HV_Hero_Pets_Frosty', x + 275, y + 350),
-    drawTroopIcon(poisonLizard.level, poisonLizard.unlocked, poisonLizard.maxed, ctx, 'Icon_HV_Hero_Pets_Diggy', x + 525, y + 350),
+    drawTroopIcon(frosty.level, frosty.unlocked, frosty.maxed, ctx, 'Icon_HV_Hero_Pets_Frosty', x + 275, y + 350),
+    drawTroopIcon(diggy.level, diggy.unlocked, diggy.maxed, ctx, 'Icon_HV_Hero_Pets_Diggy', x + 525, y + 350),
 
-    drawTroopIcon(diggy.level, diggy.unlocked, diggy.maxed, ctx, 'Icon_HV_Hero_Pets_Poison_Lizard', x + 25, y + 600),
-    drawTroopIcon(frosty.level, frosty.unlocked, frosty.maxed, ctx, 'Icon_HV_Hero_Pets_Phoenix', x + 275, y + 600),
+    drawTroopIcon(poisonLizard.level, poisonLizard.unlocked, poisonLizard.maxed, ctx, 'Icon_HV_Hero_Pets_Poison_Lizard', x + 25, y + 600),
+    drawTroopIcon(phoenix.level, phoenix.unlocked, phoenix.maxed, ctx, 'Icon_HV_Hero_Pets_Phoenix', x + 275, y + 600),
     drawTroopIcon(spiritFox.level, spiritFox.unlocked, spiritFox.maxed, ctx, 'Icon_HV_Hero_Pets_Spirit_Fox', x + 525, y + 600),
 
-    drawTroopIcon(angryJelly.level, angryJelly.unlocked, angryJelly.maxed, ctx, 'Icon_HV_Hero_Pets_Angry_Jelly', x + 25, y + 850),
-    drawTroopIcon(sneezy.level, sneezy.unlocked, sneezy.maxed, ctx, 'Icon_HV_Hero_Pets_Sneezy', x + 25, y + 850)
+    drawTroopIcon(angryJelly.level, angryJelly.unlocked, angryJelly.maxed, ctx, 'Icon_HV_Hero_Pets_Angry_Jelly', x + 275, y + 850),
+    drawTroopIcon(sneezy.level, sneezy.unlocked, sneezy.maxed, ctx, 'Icon_HV_Hero_Pets_Sneezy', x + 275, y + 850)
   ]
   
   await Promise.all(tasks)
