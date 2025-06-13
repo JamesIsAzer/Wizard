@@ -133,7 +133,7 @@ const petSection = async(ctx, x, y, pets) => {
     drawTroopIcon(phoenix.level, phoenix.unlocked, phoenix.maxed, ctx, 'Icon_HV_Hero_Pets_Phoenix', x + 275, y + 600),
     drawTroopIcon(spiritFox.level, spiritFox.unlocked, spiritFox.maxed, ctx, 'Icon_HV_Hero_Pets_Spirit_Fox', x + 525, y + 600),
 
-    drawTroopIcon(angryJelly.level, angryJelly.unlocked, angryJelly.maxed, ctx, 'Icon_HV_Hero_Pets_Angry_Jelly', x + 275, y + 850),
+    drawTroopIcon(angryJelly.level, angryJelly.unlocked, angryJelly.maxed, ctx, 'Icon_HV_Hero_Pets_Angry_Jelly', x + 25, y + 850),
     drawTroopIcon(sneezy.level, sneezy.unlocked, sneezy.maxed, ctx, 'Icon_HV_Hero_Pets_Sneezy', x + 275, y + 850)
   ]
   
