@@ -49,14 +49,15 @@ module.exports = {
             .setDescription('Remove your default profile.')
       ),
   async execute(interaction) {
-    await interaction.deferReply();
     if (interaction.options.getSubcommand() === 'show'){
 
         const unsanitizedTag = interaction.options.getString('tag') ?? await findTag(interaction.user.id)
         
         if (!unsanitizedTag) {
-            await interaction.editReply(`You have not set a default profile. To do so type \`/profile save <player tag>\``)
-            return
+            return await interaction.reply({
+                content: `You have not set a default profile. To do so type \`/profile save <player tag>\``,
+                flags: MessageFlags.Ephemeral
+            })
         }
         
         const tag = parseTag(unsanitizedTag);
@@ -67,14 +68,18 @@ module.exports = {
         const playerResponse = await findProfile(tag)
 
         if (!playerResponse.response) {
-            await interaction.editReply(`An error occured: ${playerResponse.error}`)
-            return
+            return await interaction.reply({
+                content: `An error occured: ${playerResponse.error}`,
+                flags: MessageFlags.Ephemeral
+            })
         }
 
         if (!playerResponse.response.found) {
             sendInvalidTagReply(interaction)
             return
         }
+
+        await interaction.deferReply();
 
         const verified = isOwnerOfAccount(tag, interaction.user.id)
         const playerData = playerResponse.response.data
@@ -166,8 +171,10 @@ module.exports = {
         const playerResponse = await findProfile(tag)
 
         if (!playerResponse.response) {
-            await interaction.editReply(`An error occured: ${playerResponse.error}`)
-            return
+            return await interaction.reply({
+                content: `An error occured: ${playerResponse.error}`,
+                flags: MessageFlags.Ephemeral
+            })
         }
 
         if (!playerResponse.response.found) {
@@ -175,22 +182,26 @@ module.exports = {
             return
         }
 
-        const verified = isOwnerOfAccount(tag, interaction.user.id)
+        saveDefaultProfile(tag, interaction.user.id)
+        return await interaction.reply({
+            content: `I have successfully saved your profile #${tag} as the default one!`,
+            flags: MessageFlags.Ephemeral
+        })
 
-        if (await verified) {
-            saveDefaultProfile(tag, interaction.user.id)
-            await interaction.editReply(`I have successfully saved your profile #${tag} as the default one!`)
-            return
-        }
-        else {
-            await interaction.editReply(`This tag is not verified under this account. To verify an account, type \`/verify <player tag> <api token>\``)
-            return
-        }
     } else if ( interaction.options.getSubcommand() === 'remove') {
         const foundDefaultProfile = await removeDefaultProfile(interaction.user.id)
-        if (foundDefaultProfile) await interaction.editReply(`I have removed your default profile.`)
-        else await interaction.editReply(`You don't have a default profile to remove!`)
-        return
+        if (foundDefaultProfile) {
+            return await interaction.reply({
+                content: `I have removed your default profile.`,
+                flags: MessageFlags.Ephemeral
+            })
+        }
+        else {
+            return await interaction.reply({
+                content: `You don't have a default profile to remove!`,
+                flags: MessageFlags.Ephemeral
+            })
+        }
     }
   }
 };
