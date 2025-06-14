@@ -61,7 +61,7 @@ const nameCardSection = async (profile, ctx, x, y) => {
     const tasks = [
         nameSection(profile, ctx, x + paddingLeft, y + paddingTop + 50),
         clanSection(profile, ctx, x + paddingLeft + 1600, y + paddingTop + 100),
-        townhallSection(profile, ctx, x + paddingLeft + 2200, y + paddingTop)
+        townhallSection(profile, ctx, x + paddingLeft + 2200, y + paddingTop, width, height)
     ]
     
     await Promise.all(tasks)
@@ -355,7 +355,7 @@ const statBanner = async (ctx, x, y, emblemWidth, emblemHeight, imageName, stat,
     clashFont(ctx, stat, textX, textY, '70', false);
 };
 
-const leagueTrophyBanner = async (ctx, x, y, emblemWidth, emblemHeight, trophies, league) => {
+const leagueTrophyBanner = async (ctx, x, y, emblemWidth, emblemHeight, trophies, league, rank) => {
     const lineStartFromEmblemX = x + (emblemWidth / 2);
     const lineEndX = x + emblemWidth + 750; 
     const emblemCenterY = y + (emblemHeight / 2);
@@ -400,6 +400,13 @@ const leagueTrophyBanner = async (ctx, x, y, emblemWidth, emblemHeight, trophies
 
     ctx.drawImage(emblemImage, x, y, emblemWidth, emblemHeight);
 
+    // TODO - Get Supercell to fix currentSeason.rank
+    if(false) {
+        const rankX = x + (emblemWidth/2)
+        const rankY = y + (emblemHeight/2) + 10
+        clashFontScaled(ctx, rank, rankX, rankY, emblemWidth * 0.4, emblemHeight * 0.4, true)
+    }
+
     clashFont(ctx, trophies, lineStartFromEmblemX + 310, line2Y - 35, '85', false)
 }
 
@@ -426,7 +433,11 @@ const townhallSection = async (profile, ctx, x, y) => {
     const townhallImagePath = getTownhallPath(townhallLevel);
     const townhallImage = await loadImage(townhallImagePath);
 
-    ctx.drawImage(townhallImage, x + 300, y + 50, townhallImageWidth, townhallImageWidth);
+    const shineImagePath = getImagePath('shine');
+    const shineImage = await loadImage(shineImagePath);
+
+    ctx.drawImage(shineImage, x + 130, y - 150, townhallImageWidth + 400, townhallImageWidth + 400);
+    ctx.drawImage(townhallImage, x + 330, y + 50, townhallImageWidth, townhallImageWidth);
 }
 
 const clanSection = async(profile, ctx, x, y) => {
@@ -464,7 +475,9 @@ const nameSection = async (profile, ctx, x, y) => {
     if(clanRole)
         clashFont(ctx, mapClanRoles(clanRole), x + 250, y + 190, '75', false)
 
-    await leagueTrophyBanner(ctx, x + 100, y + 300, 350, 350, trophies, league)
+    const rank = profile?.legendStatistics?.currentSeason?.rank
+
+    await leagueTrophyBanner(ctx, x + 100, y + 300, 350, 350, trophies, league, rank)
 }
 
 const achievementsSection = async (achievements, ctx, x, y) =>  {
