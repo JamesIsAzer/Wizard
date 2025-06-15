@@ -70,14 +70,17 @@ module.exports = {
     const colourRoles = config.colourRoles
 
     if (interaction.options.getSubcommand() === 'remove') {
+      console.log(`${new Date().toString()} ${interaction.user.id} used the command: /colour remove`)
       await removeColourRoles(colourRoles, interaction.member);
       await interaction.editReply(`Removed colour override!`);
       return;
     } else if (interaction.options.getSubcommand() === 'add') {
+      console.log(`${new Date().toString()} ${interaction.user.id} used the command: /colour add`)
       const colour = interaction.options.getString('colour');
       await setColorRoles(colour, verificationRoles, colourRoles, interaction);
       return;
     } else if (interaction.options.getSubcommand() === 'list') {
+      console.log(`${new Date().toString()} ${interaction.user.id} used the command: /colour list`)
       if (interaction.options.getBoolean('onlyavailable')) {
         await interaction.editReply({
           embeds: [getAvailableColoursListEmbed(interaction.member, colourRoles, verificationRoles)],

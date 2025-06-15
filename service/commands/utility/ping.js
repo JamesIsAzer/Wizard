@@ -9,6 +9,7 @@ module.exports = {
     .setDescription('Replies with Pong!')
     .setContexts(InteractionContextType.Guild, InteractionContextType.BotDM),
   async execute(interaction) {
+    console.log(`${new Date().toString()} ${interaction.user.id} used the command: /ping`)
     interaction.reply('Pong!')
   },
 };

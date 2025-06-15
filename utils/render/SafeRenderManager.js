@@ -6,27 +6,33 @@ class SafeRenderManager {
         this.workerPath = path.resolve(__dirname, './renderWorker.js');
     }
 
-    render(type, profile, key) {
+    async render(type, profile, key) {
         return new Promise((resolve, reject) => {
             const worker = new Worker(this.workerPath);
+
+            const timeout = setTimeout(() => {
+                worker.terminate();
+                reject(new Error('Render timed out'));
+            }, 60 * 1000);
+
             worker.postMessage({ type, profile, key });
 
             worker.on('message', (msg) => {
+                clearTimeout(timeout)
                 if (msg.success) {
-
                     resolve(msg.result);
-
                 } else {
                     reject(new Error(msg.error));
                 }
             });
 
             worker.on('error', (err) => {
+                clearTimeout(timeout)
+                worker.terminate()
                 reject(err);
             });
 
             worker.on('exit', (code) => {
-                worker.terminate()
                 if (code !== 0) {
                     reject(new Error(`Worker stopped with exit code ${code}`));
                 }

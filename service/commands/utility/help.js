@@ -24,6 +24,8 @@ module.exports = {
           )
     ),
   async execute(interaction) {
+    console.log(`${new Date().toString()} ${interaction.user.id} used the command: /help`)
+
     switch(interaction.options.getString('command')){
         case 'verification':
         await interaction.reply({

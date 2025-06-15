@@ -2,10 +2,8 @@ const { parentPort } = require('worker_threads');
 const { getProfileImage } = require('../canvas/profile');
 const { getTroopShowcaseImage } = require('../canvas/troopShowcase');
 
-parentPort.on('message', async (job) => {
+parentPort.on('message', async ({ type, profile, key }) => {
     try {
-        const { type, profile, key } = job;
-
         let result;
         
         if (type === 'profile') {

@@ -11,6 +11,8 @@ module.exports = {
     .setDescription('Admin only - Uncompete all participants on every leaderboard.')
     .setContexts(InteractionContextType.Guild),
   async execute(interaction) {
+    console.log(`${new Date().toString()} ${interaction.user.id} used the command: /resetleaderboard`)
+
     await interaction.deferReply({ 
       flags: MessageFlags.Ephemeral 
     });

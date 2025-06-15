@@ -21,17 +21,18 @@ module.exports = {
         .setRequired(true)
     ),
   async execute(interaction) {
+    console.log(`${new Date().toString()} ${interaction.user.id} used the command: /refresh`)
+
     await interaction.deferReply({ 
       flags: MessageFlags.Ephemeral 
     });
     const tag = parseTag(interaction.options.getString('tag'));
     const discordID = interaction.member.id;
     if (!isTagValid(tag)) {
-      await interaction.editReply({
+      return await interaction.editReply({
         embeds: [getInvalidTagEmbed()],
         flags: MessageFlags.Ephemeral
       });
-      return;
     }
     if (await tagVerifiedBySameUser(tag, discordID)) {
       const findProfileResponse = await findProfile(tag);

@@ -45,6 +45,8 @@ module.exports = {
             )
         ),
     async execute(interaction) {
+        console.log(`${new Date().toString()} ${interaction.user.id} used the command: /leaderboard`)
+
         const leaderboardType = interaction.options.getString('type');
         const participants = leaderboardType == "LEGENDS" ? 
             sortLegends(await getLeaderboardSnapshotsLegendary()) :

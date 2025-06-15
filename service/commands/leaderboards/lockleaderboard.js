@@ -19,6 +19,8 @@ module.exports = {
         .setRequired(true)
     ),
   async execute(interaction) {
+    console.log(`${new Date().toString()} ${interaction.user.id} used the command: /lockleaderboard`)
+
     await interaction.deferReply({ flags: MessageFlags.Ephemeral });
     if(hasMediumPerms(interaction.member)){
       const shouldLock = interaction.options.getBoolean('lock');

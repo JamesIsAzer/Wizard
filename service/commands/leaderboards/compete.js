@@ -29,6 +29,8 @@ module.exports = {
         .setRequired(true)
     ),
   async execute(interaction) {
+    console.log(`${new Date().toString()} ${interaction.user.id} used the command: /compete`)
+
     await interaction.deferReply({       
       flags: MessageFlags.Ephemeral
     });

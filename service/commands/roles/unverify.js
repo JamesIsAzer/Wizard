@@ -23,6 +23,8 @@ module.exports = {
         .setRequired(false)
     ),
   async execute(interaction) {
+    console.log(`${new Date().toString()} ${interaction.user.id} used the command: /unverify`)
+
     await interaction.deferReply({ 
       flags: MessageFlags.Ephemeral
      });

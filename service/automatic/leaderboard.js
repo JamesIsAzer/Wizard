@@ -19,6 +19,8 @@ const limiter = new Bottleneck({
 });
   
 const createLeaderboard = async() => {
+    console.log(`${new Date().toString()} Creating leaderboards`)
+    
     const leaderboards = getAllLeaderboards()
     const participants = await getLeaderboardAccounts()
     const discordData = await appendDiscordData(participants)

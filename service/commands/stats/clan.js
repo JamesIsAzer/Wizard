@@ -20,6 +20,7 @@ module.exports = {
         .setRequired(true)
     ),
   async execute(interaction) {
+    console.log(`${new Date().toString()} ${interaction.user.id} used the command: /clan`)
     await interaction.deferReply();
     
     const tag = parseTag(interaction.options.getString('tag'))

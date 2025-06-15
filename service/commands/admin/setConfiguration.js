@@ -367,6 +367,8 @@ module.exports = {
                 )
         ),
     async execute(interaction) {
+        console.log(`${new Date().toString()} ${interaction.user.id} used the command: /setconfiguration`)
+
         if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
             return interaction.reply({
               content: "You do not have permission to use this command."

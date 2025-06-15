@@ -17,6 +17,8 @@ module.exports = {
       option.setName('playertag').setDescription('Player Tag').setRequired(true)
     ),
   async execute(interaction) {
+    console.log(`${new Date().toString()} ${interaction.user.id} used the command: /taginfo`)
+
     if (!hasMediumPerms(interaction.member))
       return interaction.reply({
         content: `You do not have permission to use this command.`

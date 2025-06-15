@@ -50,6 +50,7 @@ module.exports = {
       ),
   async execute(interaction) {
     if (interaction.options.getSubcommand() === 'show'){
+        console.log(`${new Date().toString()} ${interaction.user.id} used the command: /profile show`)
 
         const unsanitizedTag = interaction.options.getString('tag') ?? await findTag(interaction.user.id)
         
@@ -96,7 +97,6 @@ module.exports = {
         const troopImage = await renderManager.render('troop', playerData, keyTroop);
 
         const profileAttachment = new AttachmentBuilder(Buffer.from(profileImage.buffer), { name: profileImage.fileName });
-        const troopAttachment = new AttachmentBuilder(Buffer.from(troopImage.buffer), { name: troopImage.fileName });
 
         const profileEmbed = await getProfileEmbed(playerData, verified, null, profileImage.fileName);
 
@@ -118,7 +118,6 @@ module.exports = {
 
         await interaction.editReply({
             embeds: [timestampedProfileEmbed],
-            files: [profileAttachment], //take out if re-rendering
             components: [profileMenu]
         });
         
@@ -169,6 +168,7 @@ module.exports = {
         });
 
     } else if (interaction.options.getSubcommand() === 'save') {
+        console.log(`${new Date().toString()} ${interaction.user.id} used the command: /profile save`)
         const tag = parseTag(interaction.options.getString('tag'))
         if (!isTagValid(tag)) {
             sendInvalidTagReply(interaction)
@@ -196,6 +196,7 @@ module.exports = {
         })
 
     } else if ( interaction.options.getSubcommand() === 'remove') {
+        console.log(`${new Date().toString()} ${interaction.user.id} used the command: /profile remove`)
         const foundDefaultProfile = await removeDefaultProfile(interaction.user.id)
         if (foundDefaultProfile) {
             return await interaction.reply({

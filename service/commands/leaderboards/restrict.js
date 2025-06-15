@@ -34,6 +34,8 @@ module.exports = {
         .setRequired(true)
     ),
   async execute(interaction) {
+    console.log(`${new Date().toString()} ${interaction.user.id} used the command: /restrict`)
+
     await interaction.deferReply();
     
     if(!hasMediumPerms(interaction.member)) {
