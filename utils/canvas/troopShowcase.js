@@ -1,6 +1,16 @@
 const { createCanvas, loadImage, registerFont } = require('canvas');
-const path = require('path');
-const { sectionTitleFont, drawRoundedRectPath, signature, getFontPath, getImagePath } = require('./shared')
+const { 
+  sectionTitleFont, 
+  drawRoundedRectPath, 
+  signature, 
+  getFontPath, 
+  getImagePath,
+  getCachedImage, 
+  createOptimizedGradient, 
+  preloadImages, 
+  setupCanvasContext,
+  autoThrottleCacheClear
+ } = require('./shared')
 
 registerFont(getFontPath('Clash_Regular'), { family: 'ClashFont' });
 
@@ -8,14 +18,22 @@ const getTroopShowcaseImage = async (profile, key) => {
   const width = 2950;
   const height = 2050;
   const canvas = createCanvas(width, height);
-  const ctx = canvas.getContext('2d');
+   const ctx = setupCanvasContext(canvas.getContext('2d'));
 
-  const gradient = ctx.createLinearGradient(0, 0, 0, 0 + height);
+  const gradient = createOptimizedGradient(
+    ctx,
+    'troops-showcase-bg',
+    0,
+    0,
+    width,
+    height,
+    [
+      { offset: 0, color: '#8c96af' },
+      { offset: 1, color: '#6b7899' }
+    ]
+  );
 
-  gradient.addColorStop(0, '#8c96af'); 
-  gradient.addColorStop(1, '#6b7899');
   ctx.fillStyle = gradient
-
   ctx.fillRect(0, 0, width, height);
 
   try {
@@ -29,6 +47,8 @@ const getTroopShowcaseImage = async (profile, key) => {
     console.error('🛑 Failed to load image:', err);
     return null;
   }
+
+  autoThrottleCacheClear();
 
   const buffer = canvas.toBuffer('image/png');
   const fileName = `player-profile-${key}.png`
@@ -94,9 +114,7 @@ const petSection = async(ctx, x, y, pets) => {
   const radius = 25;
 
   ctx.fillStyle = '#636e8f';
-
   drawRoundedRectPath(ctx, x, y, width, height, radius)
-
   ctx.fill()
 
   sectionTitleFont(ctx, 'Pets', x + 25, y + 80)
@@ -133,7 +151,6 @@ const troopSection = async(ctx, x, y, troops) => {
   ctx.fillStyle = '#636e8f';
 
   drawRoundedRectPath(ctx,x, y, width, height, radius)
-
   ctx.fill()
 
   sectionTitleFont(ctx, 'Troops', x + 25, y + 80)
@@ -213,7 +230,6 @@ const spellSection = async (ctx, x, y, spells) => {
   ctx.fillStyle = '#636e8f';
 
   drawRoundedRectPath(ctx,x, y, width, height, radius)
-
   ctx.fill()
 
   sectionTitleFont(ctx, 'Spells', x + 25, y + 80)
@@ -283,12 +299,21 @@ const siegeMachineSection = async (ctx, x, y, siegeMachines) => {
 }
 
 const drawTroopIcon = async (troopLevel, unlocked, max, ctx, imageName, x, y) => {
-    
   const imagePath = getImagePath(imageName);
-
-  const image = await loadImage(imagePath);
-
-  drawTroopIconDisplay(troopLevel, unlocked, max, ctx, image, x, y, );
+  
+  try {
+    const image = await getCachedImage(imagePath); // Use cached loading
+    drawTroopIconDisplay(troopLevel, unlocked, max, ctx, image, x, y);
+  } catch (error) {
+    console.error(`Failed to load cached image ${imageName}:`, error);
+    // Fallback to original loading if cache fails
+    try {
+      const image = await loadImage(imagePath);
+      drawTroopIconDisplay(troopLevel, unlocked, max, ctx, image, x, y);
+    } catch (fallbackError) {
+      console.error(`Fallback image loading also failed for ${imageName}:`, fallbackError);
+    }
+  }
 }
 
 const drawTroopIconDisplay = (troopLevel, unlocked, max, ctx, image, x, y) => {
@@ -389,13 +414,25 @@ function drawLevelBox(ctx, number, x, y, width, height, radius, max) {
 
   // Inner shadow bevel effect (simulate by dark overlay gradient)
   const bevelInset = 2;
-  const grad = ctx.createLinearGradient(x, y, x + width, y + height);
-  grad.addColorStop(0, 'rgba(0, 0, 0, 0.25)');
-  grad.addColorStop(0.5, 'rgba(0, 0, 0, 0)');
+  const bevelStops = [
+    { offset: 0, color: 'rgba(0, 0, 0, 0.25)' },
+    { offset: 0.5, color: 'rgba(0, 0, 0, 0)' }
+  ];
+
+  const bevelGradient = createOptimizedGradient(
+    ctx, 
+    'bevel', 
+    x, 
+    y, 
+    width, 
+    height, 
+    bevelStops
+  );
+
   ctx.save();
   drawRoundedRectPath(ctx, x + bevelInset, y + bevelInset, width - bevelInset * 2, height - bevelInset * 2, radius - 1);
   ctx.clip();
-  ctx.fillStyle = grad;
+  ctx.fillStyle = bevelGradient;
   ctx.fill();
   ctx.restore();
 

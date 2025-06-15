@@ -1,5 +1,5 @@
 const { createCanvas, registerFont } = require('canvas');
-const { getImagePath, getFontPath, clashFont, tagFont, mapClanRoles, getTrophyLeagueImagePath, getLeagueName, drawRoundedRectPath, drawRightRoundedRectPath, getTownhallPath, clashFontScaled, formatDateYearMonth, signature, getAchievementStarsImagePath, formatNumberWithSpaces, getLastYearMonth, getCachedImage, createOptimizedGradient, preloadImages, setupCanvasContext } = require('./shared');
+const { getImagePath, getFontPath, clashFont, tagFont, mapClanRoles, getTrophyLeagueImagePath, getLeagueName, drawRoundedRectPath, drawRightRoundedRectPath, getTownhallPath, clashFontScaled, formatDateYearMonth, signature, getAchievementStarsImagePath, formatNumberWithSpaces, getLastYearMonth, getCachedImage, createOptimizedGradient, preloadImages, setupCanvasContext, autoThrottleCacheClear } = require('./shared');
 
 registerFont(getFontPath('Clash_Regular'), { family: 'ClashFont' });
 
@@ -9,9 +9,7 @@ const getProfileImage = async (profile, key) => {
     const width = 3500;
     const height = hasLegendStats ? 2550 : 2125;
     const canvas = createCanvas(width, height);
-    const ctx = canvas.getContext('2d');
-
-    setupCanvasContext(ctx)
+    const ctx = setupCanvasContext(canvas.getContext('2d'))
 
     ctx.fillStyle = '#e8e8e0';
     
@@ -36,14 +34,14 @@ const getProfileImage = async (profile, key) => {
         });
     }
 
-    await preloadImages(requiredImages);
-
     await nameCardSection(profile, ctx, 25, 25),
     await achievementsSection(profile.achievements, ctx, 75, hasLegendStats ? 1425 : 1000)
 
     if (hasLegendStats) {
         await legendLeagueSection(profile.legendStatistics, ctx, 25, 1000)
     }
+
+    autoThrottleCacheClear();
 
     const buffer = canvas.toBuffer('image/png');
     const fileName = `player-profile-${key}.png`

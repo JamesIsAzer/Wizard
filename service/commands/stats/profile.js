@@ -63,8 +63,7 @@ module.exports = {
         
         const tag = parseTag(unsanitizedTag);
         if (!isTagValid(tag)) {
-            sendInvalidTagReply(interaction)
-            return
+            return sendInvalidTagReply(interaction)
         }
         const playerResponse = await findProfile(tag)
 
@@ -76,8 +75,7 @@ module.exports = {
         }
 
         if (!playerResponse.response.found) {
-            sendInvalidTagReply(interaction)
-            return
+            return sendInvalidTagReply(interaction)
         }
 
         await interaction.deferReply();
@@ -212,6 +210,7 @@ module.exports = {
   }
 };
 
-const sendInvalidTagReply = async(interaction) => await interaction.editReply({
-    embeds: [getInvalidTagEmbed()]
+const sendInvalidTagReply = async(interaction) => await interaction.reply({
+    embeds: [getInvalidTagEmbed()],
+    flags: MessageFlags.Ephemeral
 });

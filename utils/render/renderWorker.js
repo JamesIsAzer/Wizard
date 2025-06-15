@@ -1,6 +1,12 @@
 const { parentPort } = require('worker_threads');
 const { getProfileImage } = require('../canvas/profile');
 const { getTroopShowcaseImage } = require('../canvas/troopShowcase');
+const { preloadAllImages } = require('../canvas/shared');
+
+(async () => {
+  await preloadAllImages();
+  console.log("Worker preload complete");
+})();
 
 // Add memory monitoring
 const monitorMemory = () => {
