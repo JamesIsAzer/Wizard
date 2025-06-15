@@ -1,5 +1,5 @@
-const { createCanvas, loadImage, registerFont } = require('canvas');
-const { getImagePath, getFontPath, clashFont, tagFont, mapClanRoles, getTrophyLeagueImagePath, getLeagueName, drawRoundedRectPath, drawRightRoundedRectPath, getTownhallPath, clashFontScaled, formatDateYearMonth, signature, getAchievementStarsImagePath, formatNumberWithSpaces, getLastYearMonth } = require('./shared');
+const { createCanvas, registerFont } = require('canvas');
+const { getImagePath, getFontPath, clashFont, tagFont, mapClanRoles, getTrophyLeagueImagePath, getLeagueName, drawRoundedRectPath, drawRightRoundedRectPath, getTownhallPath, clashFontScaled, formatDateYearMonth, signature, getAchievementStarsImagePath, formatNumberWithSpaces, getLastYearMonth, getCachedImage, createOptimizedGradient, preloadImages, setupCanvasContext } = require('./shared');
 
 registerFont(getFontPath('Clash_Regular'), { family: 'ClashFont' });
 
@@ -11,16 +11,40 @@ const getProfileImage = async (profile, key) => {
     const canvas = createCanvas(width, height);
     const ctx = canvas.getContext('2d');
 
+    setupCanvasContext(ctx)
+
     ctx.fillStyle = '#e8e8e0';
     
     ctx.fillRect(0, 0, width, height);
 
-    await nameCardSection(profile, ctx, 25, 25, ),
+    const requiredImages = [
+        getTownhallPath(profile.townHallLevel),
+        getImagePath('xp'),
+        getImagePath('shine')
+    ];
+
+    if (profile.clan) {
+        requiredImages.push(profile.clan.badgeUrls.medium);
+    }
+    
+    // Achievement images
+    if (profile.achievements) {
+        profile.achievements.forEach(achievement => {
+            if (achievement.stars > 0) {
+                requiredImages.push(getAchievementStarsImagePath(achievement.stars));
+            }
+        });
+    }
+
+    await preloadImages(requiredImages);
+
+    await nameCardSection(profile, ctx, 25, 25),
     await achievementsSection(profile.achievements, ctx, 75, hasLegendStats ? 1425 : 1000)
 
     if (hasLegendStats) {
         await legendLeagueSection(profile.legendStatistics, ctx, 25, 1000)
     }
+
     const buffer = canvas.toBuffer('image/png');
     const fileName = `player-profile-${key}.png`
     return { buffer, fileName };
@@ -34,10 +58,10 @@ const nameCardSection = async (profile, ctx, x, y) => {
     const paddingTop = 75
     const paddingLeft = 75
 
-    const gradient = ctx.createLinearGradient(x, y, x, y + height);
-
-    gradient.addColorStop(0, '#8c96af'); 
-    gradient.addColorStop(1, '#6b7899');
+    const gradient = createOptimizedGradient(ctx, 'namecard', x, y, width, height, [
+        { offset: 0, color: '#8c96af' },
+        { offset: 1, color: '#6b7899' }
+    ]);
 
     ctx.fillStyle = gradient
 
@@ -131,10 +155,10 @@ const legendLeagueSection = async (legendStats, ctx, x, y) => {
     const paddingTop = 50
     const paddingLeft = 200
 
-    const gradient = ctx.createLinearGradient(x, y, x, y + height);
-
-    gradient.addColorStop(0, '#4d4379'); 
-    gradient.addColorStop(1, '#6f659b');
+    const gradient = createOptimizedGradient(ctx, 'legendleaguesection', x, y, width, height, [
+        { offset: 0, color: '#4d4379' },
+        { offset: 1, color: '#6f659b' }
+    ]);
 
     ctx.fillStyle = gradient
 
@@ -142,10 +166,11 @@ const legendLeagueSection = async (legendStats, ctx, x, y) => {
     
     ctx.fill()
 
-    const gradient1 = ctx.createLinearGradient(x, y + 50, x + width, y + 50);
-    gradient1.addColorStop(0, 'rgba(148, 113, 210, 0)');    
-    gradient1.addColorStop(0.5, 'rgba(148, 113, 210, 1)');    
-    gradient1.addColorStop(1, 'rgba(148, 113, 210, 0)');    
+    const gradient1 = createOptimizedGradient(ctx, 'legendleaguesection1', x, y, width, height, [
+        { offset: 0, color: 'rgba(148, 113, 210, 0)' },
+        { offset: 0.5, color: 'rgba(148, 113, 210, 1)' },
+        { offset: 1, color: 'rgba(148, 113, 210, 0)' }
+    ]);
 
     ctx.beginPath();
     ctx.strokeStyle = gradient1;
@@ -177,7 +202,7 @@ const trophyLegendarySection = async (season, ctx, x, y, type) => {
 
     if (season) {
         const legendImagePath = getImagePath("Icon_HV_League_Legend");
-        const legendImage = await loadImage(legendImagePath);
+        const legendImage = await getCachedImage(legendImagePath);
 
         ctx.drawImage(legendImage, x, y + 100, 250, 250);
         clashFontScaled(ctx, rank, x + 125, y + 220, 200, 160, true)
@@ -186,7 +211,7 @@ const trophyLegendarySection = async (season, ctx, x, y, type) => {
     }
     if (!season) {
         const unrankedImagePath = getImagePath("Icon_HV_League_None");
-        const unrankedImage = await loadImage(unrankedImagePath);
+        const unrankedImage = await getCachedImage(unrankedImagePath);
 
         ctx.drawImage(unrankedImage, x, y + 100, 250, 250);
 
@@ -221,9 +246,9 @@ const achievementBanner = async (ctx, x, y, cellHeight, cellWidth, achievementTi
     const xFromStatIcon = x + starsWidth + 70;
 
     const achievementIconPath = getImagePath(achievementIcon);
-    const achievementIconImage = await loadImage(achievementIconPath);
+    const achievementIconImage = await getCachedImage(achievementIconPath);
     const starsImagePath = getAchievementStarsImagePath(achievementStars);
-    const starsImage = await loadImage(starsImagePath);
+    const starsImage = await getCachedImage(starsImagePath);
 
     const iconY = y + (cellHeight / 2) - (achievementIconHeight / 2) + 10;
     const iconCenterY = iconY + (achievementIconHeight / 2) + 10
@@ -271,9 +296,9 @@ const personalBestBanner = async (ctx, x, y, emblemWidth, emblemHeight, bestTrop
     const xFromStatIcon = x + starsWidth + 70;
 
     const trophyLeagueEmblemPath = getTrophyLeagueImagePath(bestTrophies);
-    const emblemImage = await loadImage(trophyLeagueEmblemPath);
+    const emblemImage = await getCachedImage(trophyLeagueEmblemPath);
     const starsImagePath = getImagePath('3star');
-    const starsImage = await loadImage(starsImagePath);
+    const starsImage = await getCachedImage(starsImagePath);
 
     // Proper emblem vertical centering
     const emblemY = y + (cellHeight / 2) - (emblemHeight / 2);
@@ -316,7 +341,7 @@ const statBanner = async (ctx, x, y, emblemWidth, emblemHeight, imageName, stat,
     const spacingBetween = 20;
 
     const statImagePath = getImagePath(imageName);
-    const statImage = await loadImage(statImagePath);
+    const statImage = await getCachedImage(statImagePath);
 
     const barX = x + (emblemWidth / 2);
     const barY = emblemCenterY - (barHeight / 2);
@@ -344,9 +369,13 @@ const leagueTrophyBanner = async (ctx, x, y, emblemWidth, emblemHeight, trophies
     const lineEndX = x + emblemWidth + 750; 
     const emblemCenterY = y + (emblemHeight / 2);
     const line1Y = emblemCenterY - 55; 
-    const gradient1 = ctx.createLinearGradient(lineStartFromEmblemX, 0, lineEndX, 0);
-    gradient1.addColorStop(0, 'rgba(0, 0, 0, 0.8)');   
-    gradient1.addColorStop(1, 'rgba(0, 0, 0, 0)');     
+
+    //check this and one below, i dont think width  and height are correct
+    const gradient1 = createOptimizedGradient(ctx, 'leaguetrophybanner', x, y, emblemWidth, emblemHeight, [
+        { offset: 0, color: 'rgba(0, 0, 0, 0.8)' },
+        { offset: 1, color: 'rgba(0, 0, 0, 0)' }
+    ]);
+
 
     ctx.beginPath();
     ctx.strokeStyle = gradient1;
@@ -357,11 +386,12 @@ const leagueTrophyBanner = async (ctx, x, y, emblemWidth, emblemHeight, trophies
     ctx.closePath();
 
     const line2Y = emblemCenterY + 50; 
-    const gradient2 = ctx.createLinearGradient(lineStartFromEmblemX, 0, lineEndX, 0);
-    gradient2.addColorStop(0, 'rgba(118, 82, 178, 1)'); 
-    gradient2.addColorStop(0.5, 'rgba(101, 82, 166, 1)'); 
-    gradient2.addColorStop(1, 'rgba(101, 82, 166, 0)'); 
-
+    const gradient2 = createOptimizedGradient(ctx, 'leaguetrophybanner2', x, y, emblemWidth, emblemHeight, [
+        { offset: 0, color: 'rgba(118, 82, 178, 1)' },
+        { offset: 0.5, color: 'rgba(101, 82, 166, 1)' },
+        { offset: 1, color: 'rgba(101, 82, 166, 0)' }
+    ]);
+    
     ctx.beginPath();
     ctx.strokeStyle = gradient2;
     ctx.lineWidth = 110;
@@ -374,13 +404,13 @@ const leagueTrophyBanner = async (ctx, x, y, emblemWidth, emblemHeight, trophies
     clashFont(ctx, leagueName, lineStartFromEmblemX + 200, line1Y - 28, '55', false)
 
     const trophyIconPath = getImagePath('trophy')
-    const trophyIconImage = await loadImage(trophyIconPath);
+    const trophyIconImage = await getCachedImage(trophyIconPath);
     ctx.drawImage(trophyIconImage, lineStartFromEmblemX + 200, line2Y - 45, 90, 90);
 
     const unrankedEmblemPath = getImagePath('Icon_HV_League_None');
 
-    const emblemImage = league ? await loadImage(league.iconUrls.medium) :
-        await loadImage(unrankedEmblemPath);
+    const emblemImage = league ? await getCachedImage(league.iconUrls.medium) :
+        await getCachedImage(unrankedEmblemPath);
 
     ctx.drawImage(emblemImage, x, y, emblemWidth, emblemHeight);
 
@@ -415,10 +445,13 @@ const townhallSection = async (profile, ctx, x, y) => {
     const townhallImageWidth = 610
     const townhallLevel = profile.townHallLevel
     const townhallImagePath = getTownhallPath(townhallLevel);
-    const townhallImage = await loadImage(townhallImagePath);
-
+    
     const shineImagePath = getImagePath('shine');
-    const shineImage = await loadImage(shineImagePath);
+
+    const [townhallImage, shineImage] = await Promise.all([
+        getCachedImage(townhallImagePath),
+        getCachedImage(shineImagePath)
+    ])
 
     ctx.drawImage(shineImage, x + 130, y - 150, townhallImageWidth + 400, townhallImageWidth + 400);
     ctx.drawImage(townhallImage, x + 330, y + 50, townhallImageWidth, townhallImageWidth);
@@ -430,7 +463,7 @@ const clanSection = async(profile, ctx, x, y) => {
     const emblemHeight = 500
     
     if (clan) {
-        const clanEmblem = await loadImage(clan.badgeUrls.medium)    
+        const clanEmblem = await getCachedImage(clan.badgeUrls.medium)    
         clashFont(ctx, clan.name, x + (emblemWidth / 2), y, '75', true)
         ctx.drawImage(clanEmblem, x, y + 50, emblemWidth, emblemHeight); 
     }
@@ -447,7 +480,7 @@ const nameSection = async (profile, ctx, x, y) => {
 
     const imagePath = getImagePath('xp');
 
-    const image = await loadImage(imagePath);
+    const image = await getCachedImage(imagePath);
 
     ctx.drawImage(image, x, y - 10, 200, 200);
 
@@ -508,9 +541,10 @@ const achievementCell = async (ctx, x, y, achievementTitle, achievementIcon, ach
     const radius = 30
     drawRoundedRectPath(ctx, x, y, width, height, radius)
 
-    const gradient = ctx.createLinearGradient(0, y, 0, y + height);
-    gradient.addColorStop(0, '#a8adb0');
-    gradient.addColorStop(1, '#9ca5b0');
+    const gradient = createOptimizedGradient(ctx, 'achievementcell', x, y, width, height, [
+        { offset: 0, color: '#a8adb0' },
+        { offset: 1, color: '#9ca5b0' }
+    ]);
 
     ctx.fillStyle = gradient;
     ctx.fill();
@@ -528,10 +562,10 @@ const reflection = (ctx, x, y, width, height) => {
     const radius = 20
     drawRoundedRectPath(ctx, x, y, width, height, radius)
 
-    const gradient = ctx.createLinearGradient(0, y, 0, y + height);
-    gradient.addColorStop(0, 'rgba(255, 255, 255, 0.25)');     // Fully opaque black at start
-    gradient.addColorStop(1, 'rgba(255, 255, 255, 0.1)'); 
-
+    const gradient = createOptimizedGradient(ctx, 'reflection', x, y, width, height, [
+        { offset: 0, color: 'rgba(255, 255, 255, 0.25)' },
+        { offset: 1, color: 'rgba(255, 255, 255, 0.1)' }
+    ]);
     ctx.fillStyle = gradient;
     ctx.fill();
 }

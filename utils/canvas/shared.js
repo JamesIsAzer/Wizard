@@ -1,6 +1,108 @@
 const { loadImage } = require('canvas');
 const path = require('path');
 
+const imageCache = new Map();
+const CACHE_SIZE_LIMIT = 100;
+let cacheAccessOrder = new Map();
+
+const gradientCache = new Map();
+const GRADIENT_CACHE_LIMIT = 50; // This was missing!
+
+const getCachedImage = async (imagePath) => {
+    if (imageCache.has(imagePath)) {
+        // Update access order for LRU
+        cacheAccessOrder.set(imagePath, Date.now());
+        return imageCache.get(imagePath);
+    }
+    
+    // LRU eviction when cache is full
+    if (imageCache.size >= CACHE_SIZE_LIMIT) {
+        const oldestKey = [...cacheAccessOrder.entries()]
+            .sort((a, b) => a[1] - b[1])[0][0];
+        imageCache.delete(oldestKey);
+        cacheAccessOrder.delete(oldestKey);
+    }
+    
+    try {
+        const image = await loadImage(imagePath);
+        imageCache.set(imagePath, image);
+        cacheAccessOrder.set(imagePath, Date.now());
+        return image;
+    } catch (error) {
+        console.error(`Failed to load image: ${imagePath}`, error);
+        throw error; // Re-throw to let caller handle
+    }
+};
+
+const createOptimizedGradient = (ctx, key, x, y, width, height, stops) => {
+    // Create a unique cache key that includes all parameters that affect the gradient
+    const cacheKey = `${key}_${x}_${y}_${width}_${height}_${JSON.stringify(stops)}`;
+    
+    // Check if gradient exists in cache
+    if (gradientCache.has(cacheKey)) {
+        return gradientCache.get(cacheKey);
+    }
+    
+    // Create new gradient
+    const gradient = ctx.createLinearGradient(x, y, x, y + height);
+    stops.forEach(stop => gradient.addColorStop(stop.offset, stop.color));
+    
+    // Cache management - remove oldest if cache is full
+    if (gradientCache.size >= GRADIENT_CACHE_LIMIT) {
+        const firstKey = gradientCache.keys().next().value;
+        gradientCache.delete(firstKey);
+    }
+    
+    // Store in cache
+    gradientCache.set(cacheKey, gradient);
+    
+    return gradient;
+};
+
+
+const preloadImages = async (imagePaths) => {
+    const loadPromises = imagePaths.map(path => getCachedImage(path));
+    return Promise.all(loadPromises);
+};
+
+const clearCaches = () => {
+    // More aggressive cleanup based on usage patterns
+    if (imageCache.size > 80) {
+        const sortedByAccess = [...cacheAccessOrder.entries()]
+            .sort((a, b) => a[1] - b[1]);
+        
+        // Remove oldest 30% of entries
+        const toRemove = Math.floor(sortedByAccess.length * 0.3);
+        for (let i = 0; i < toRemove; i++) {
+            const key = sortedByAccess[i][0];
+            imageCache.delete(key);
+            cacheAccessOrder.delete(key);
+        }
+    }
+    
+    if (gradientCache.size > 50) {
+        gradientCache.clear();
+    }
+    
+    // Force garbage collection hint
+    if (global.gc) {
+        global.gc();
+    }
+};
+
+const setupCanvasContext = (ctx) => {
+    // Enable hardware acceleration hints
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    
+    // Set default text properties once
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.font = '40px ClashFont';
+    
+    return ctx;
+};
+
 const sectionTitleFont = (ctx, message, x, y, fontSize = '80', outline = 2) => {
     ctx.font = `${fontSize}px ClashFont`;
 
@@ -203,6 +305,8 @@ const formatDateYearMonth = (dateStr) => {
     return `${monthName} ${year}`;
 }
 
+setInterval(clearCaches, 60000);
+
 module.exports = { 
     sectionTitleFont, 
     drawRoundedRectPath, 
@@ -220,5 +324,9 @@ module.exports = {
     formatDateYearMonth,
     clashFontScaled,
     formatNumberWithSpaces,
-    getLastYearMonth
+    getLastYearMonth,
+    getCachedImage,
+    createOptimizedGradient,
+    preloadImages,
+    setupCanvasContext
 };
