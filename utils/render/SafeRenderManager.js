@@ -18,9 +18,12 @@ class SafeRenderManager {
             const worker = new Worker(this.workerPath);
 
             const timeout = setTimeout(() => {
-                worker.terminate();
-                reject(new Error('Render timed out'));
-            }, 60 * 1000);
+                worker.terminate().then(() => {
+                    reject(new Error('Render timed out'));
+                }).catch(() => {
+                    process.kill(worker.threadId);
+                });
+            }, 30 * 1000);
 
             worker.postMessage({ type, profile, key });
 
