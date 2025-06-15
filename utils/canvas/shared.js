@@ -1,7 +1,7 @@
 const { loadImage } = require('canvas');
 const path = require('path');
 
-const sectionTitleFont = (ctx, message, x, y, fontSize = '80') => {
+const sectionTitleFont = (ctx, message, x, y, fontSize = '80', outline = 2) => {
     ctx.font = `${fontSize}px ClashFont`;
 
     ctx.textAlign = 'left';
@@ -13,7 +13,7 @@ const sectionTitleFont = (ctx, message, x, y, fontSize = '80') => {
     ctx.shadowOffsetY = 2;
 
     // Stroke (black border)
-    ctx.lineWidth = 2;
+    ctx.lineWidth = outline;
     ctx.strokeStyle = '#000000';
     ctx.strokeText(message, x, y);
 
@@ -133,14 +133,14 @@ const drawRightRoundedRectPath = (ctx, x, y, width, height, radius) => {
     ctx.closePath();
 }
 
-const signature = async (ctx, x, y) => {
+const signature = async (ctx, x, y, outline) => {
   const imagePath = path.join(__dirname, '..', 'assets', 'images', 'CreatorLogo.png');
 
   const image = await loadImage(imagePath);
 
   ctx.drawImage(image, x + 50, y + 75, 150, 150);
 
-  sectionTitleFont(ctx, 'Azer', x + 250, y + 200, '150')
+  sectionTitleFont(ctx, 'Azer', x + 250, y + 200, '150', outline)
 }
 
 const getImagePath = (imageName) => {

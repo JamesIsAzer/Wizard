@@ -2,24 +2,9 @@ const { EmbedBuilder } = require('discord.js')
 const MAX_MEMBERS = 3
 const { prettyNumbers } = require('../format');
 const emojis = require('../../emojis.json');
-const { getTroopShowcaseImage } = require('../canvas/troopShowcase');
-const { getProfileImage } = require('../canvas/profile');
-const NodeCache = require('node-cache');
 const { parseTag } = require('../arguments/tagHandling');
-const troopShowcaseImageCache = new NodeCache({ stdTTL: 300 });
-const profileImageCache = new NodeCache({ stdTTL: 300 });
 
-const getTroopShowcaseEmbed = async (profile, verified, endTimestamp) => {
-    const key = profile.tag.replace(/[^a-zA-Z0-9-_]/g, '')
-    let image = troopShowcaseImageCache.get(key);
-
-    if (!image) {
-        image = await getTroopShowcaseImage(profile, key);
-        troopShowcaseImageCache.set(key, image);
-    }
-
-    const { buffer, fileName } = image
-
+const getTroopShowcaseEmbed = async (profile, verified, endTimestamp, fileName) => {
     const descriptionLines = [
         `**Player tag:** \`${profile.tag}\``,
         `${emojis.link} **[View profile in-game](https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=${parseTag(profile.tag)})**`,
@@ -34,21 +19,10 @@ const getTroopShowcaseEmbed = async (profile, verified, endTimestamp) => {
         .setImage(`attachment://${fileName}`)
         .setThumbnail('https://i.imgur.com/wbbK27a.png')
     if (verified) embed.setFooter({text: 'Verified under this account', iconURL: "https://media.discordapp.net/attachments/582092054264545280/935702845183918160/check-mark_2714-fe0f.png"})
-    return { embed, fileName, buffer }
+    return embed
 }
 
-const getProfileEmbed = async (profile, verified, endTimestamp) => {
-    const key = profile.tag.replace(/[^a-zA-Z0-9-_]/g, '')
-
-    let image = profileImageCache.get(key);
-
-    if (!image) {
-        image = await getProfileImage(profile, key);
-        profileImageCache.set(key, image);
-    }
-
-    const { buffer, fileName } = image
-
+const getProfileEmbed = async (profile, verified, endTimestamp, fileName) => {
     const descriptionLines = [
         `**Player tag:** \`${profile.tag}\``,
         `${emojis.link} **[View profile in-game](https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=${parseTag(profile.tag)})**`,
@@ -70,7 +44,7 @@ const getProfileEmbed = async (profile, verified, endTimestamp) => {
         });
     }
 
-    return { embed, fileName, buffer };
+    return embed
 }
 
 const getClanEmbed = (clan) => {

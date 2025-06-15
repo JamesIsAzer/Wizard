@@ -519,7 +519,7 @@ const achievementsSection = async (achievements, ctx, x, y) =>  {
     
     await Promise.all(tasks)
 
-    await signature(ctx, x + 100, y + 850)
+    await signature(ctx, x + 100, y + 850, 6)
 }
 
 const achievementCell = async (ctx, x, y, achievementTitle, achievementIcon, achievement) => {

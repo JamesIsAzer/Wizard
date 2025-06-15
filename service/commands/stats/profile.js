@@ -81,45 +81,52 @@ module.exports = {
 
         await interaction.deferReply();
 
-        const verified = isOwnerOfAccount(tag, interaction.user.id)
+        const verified = await isOwnerOfAccount(tag, interaction.user.id)
         const playerData = playerResponse.response.data
         
         const timeoutMs = 300_000
+        const endTimestamp = Math.floor((Date.now() + timeoutMs) / 1000);
 
-        const profile = await getProfileEmbed(playerData, await verified);
+        const keyProfile = playerData.tag.replace(/[^a-zA-Z0-9-_]/g, '');
+        const keyTroop = keyProfile + '_troop';
+
+        const renderManager = require('../../../utils/render/SafeRenderManager');
+
+        const profileImage = await renderManager.render('profile', playerData, keyProfile);
+        const troopImage = await renderManager.render('troop', playerData, keyTroop);
+
+        const profileAttachment = new AttachmentBuilder(Buffer.from(profileImage.buffer), { name: profileImage.fileName });
+        const troopAttachment = new AttachmentBuilder(Buffer.from(troopImage.buffer), { name: troopImage.fileName });
+
+        const profileEmbed = await getProfileEmbed(playerData, verified, null, profileImage.fileName);
 
         const profileMenu = profileOptions('profile')
 
-        const attachment = new AttachmentBuilder(profile.buffer, {
-            name: profile.fileName
-        });
-
         const message = await interaction.editReply({ 
-            embeds: [profile.embed], 
-            files: [attachment], 
+            embeds: [profileEmbed], 
+            files: [profileAttachment], 
             components: [profileMenu]
         })
 
+        const timestampedProfileEmbed = await getProfileEmbed(playerData, verified, endTimestamp, profileImage.fileName)
+        const timestampedTroopShowcaseEmbed = await getTroopShowcaseEmbed(playerData, verified, endTimestamp, troopImage.fileName)
+
+        const dataOptions = {
+            'profile': timestampedProfileEmbed,
+            'army': timestampedTroopShowcaseEmbed
+        }
+
+        await interaction.editReply({
+            embeds: [timestampedProfileEmbed],
+            files: [profileAttachment], //take out if re-rendering
+            components: [profileMenu]
+        });
+        
         const collector = message.createMessageComponentCollector({
             componentType: ComponentType.StringSelect,
             time: timeoutMs
         });
 
-        const endTimestamp = Math.floor((Date.now() + timeoutMs) / 1000);
-
-        const timestampedProfile = await getProfileEmbed(playerData, await verified, endTimestamp)
-        const timestampedTroopShowcase = await getTroopShowcaseEmbed(playerData, await verified, endTimestamp)
-
-        const dataOptions = {
-            'profile': timestampedProfile,
-            'army': timestampedTroopShowcase
-        }
-
-        await interaction.editReply({
-            embeds: [timestampedProfile.embed],
-            components: [profileMenu]
-        });
-        
         collector.on('collect', async (selectInteraction) => {
             if (selectInteraction.user.id !== interaction.user.id) {
                 return await selectInteraction.reply({
@@ -146,12 +153,12 @@ module.exports = {
                 components: [profileOptions(selected, true)]
             });
             
-            const attachment = new AttachmentBuilder(selectedData.buffer, {
-                name: selectedData.fileName
-            });
+            const attachment = selected === 'profile' 
+                ? new AttachmentBuilder(Buffer.from(profileImage.buffer), { name: profileImage.fileName })
+                : new AttachmentBuilder(Buffer.from(troopImage.buffer), { name: troopImage.fileName });
 
             await selectInteraction.editReply({
-                embeds: [selectedData.embed],
+                embeds: [selectedData],
                 files: [attachment],
                 components: [profileOptions(selected)]
             });
