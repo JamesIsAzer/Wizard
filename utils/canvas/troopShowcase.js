@@ -19,15 +19,12 @@ const getTroopShowcaseImage = async (profile, key) => {
   ctx.fillRect(0, 0, width, height);
 
   try {
-    const tasks = [
-      heroSection(ctx, 50, 50, profile.heroes),
-      petSection(ctx, 50, 675, profile.troops),
-      troopSection(ctx, 850, 50, profile.troops),
-      spellSection(ctx, 2150, 50, profile.spells),
-      siegeMachineSection(ctx, 850, 1675, profile.troops),
-      signature(ctx, 50, 1750)
-    ]
-    await Promise.all(tasks)
+    await heroSection(ctx, 50, 50, profile.heroes),
+    await petSection(ctx, 50, 675, profile.troops),
+    await troopSection(ctx, 850, 50, profile.troops),
+    await spellSection(ctx, 2150, 50, profile.spells),
+    await siegeMachineSection(ctx, 850, 1675, profile.troops),
+    await signature(ctx, 50, 1750)
   } catch (err) {
     console.error('🛑 Failed to load image:', err);
     return null;
@@ -83,16 +80,12 @@ const heroSection = async(ctx, x, y, heroes) => {
   const grandWarden = getTroopData(heroes, "Grand Warden")
   const royalChampion = getTroopData(heroes, "Royal Champion")
 
-  const tasks = [
-    drawTroopIcon(barbarianKing.level, barbarianKing.unlocked, barbarianKing.maxed, ctx, 'Icon_HV_Hero_Barbarian_King', x + 25, y + 100),
-    drawTroopIcon(archerQueen.level, archerQueen.unlocked, archerQueen.maxed, ctx, 'Icon_HV_Hero_Archer_Queen', x + 275, y + 100),
-    drawTroopIcon(minionPrince.level, minionPrince.unlocked, minionPrince.maxed, ctx, 'Icon_HV_Hero_Minion_Prince', x + 525, y + 100),
+  await drawTroopIcon(barbarianKing.level, barbarianKing.unlocked, barbarianKing.maxed, ctx, 'Icon_HV_Hero_Barbarian_King', x + 25, y + 100),
+  await drawTroopIcon(archerQueen.level, archerQueen.unlocked, archerQueen.maxed, ctx, 'Icon_HV_Hero_Archer_Queen', x + 275, y + 100),
+  await drawTroopIcon(minionPrince.level, minionPrince.unlocked, minionPrince.maxed, ctx, 'Icon_HV_Hero_Minion_Prince', x + 525, y + 100),
 
-    drawTroopIcon(grandWarden.level, grandWarden.unlocked, grandWarden.maxed, ctx, 'Icon_HV_Hero_Grand_Warden', x + 25, y + 350),
-    drawTroopIcon(royalChampion.level, royalChampion.unlocked, royalChampion.maxed, ctx, 'Icon_HV_Hero_Royal_Champion', x + 275, y + 350)
-  ]
-  
-  await Promise.all(tasks)
+  await drawTroopIcon(grandWarden.level, grandWarden.unlocked, grandWarden.maxed, ctx, 'Icon_HV_Hero_Grand_Warden', x + 25, y + 350),
+  await drawTroopIcon(royalChampion.level, royalChampion.unlocked, royalChampion.maxed, ctx, 'Icon_HV_Hero_Royal_Champion', x + 275, y + 350)
 }
 
 const petSection = async(ctx, x, y, pets) => {
@@ -120,24 +113,17 @@ const petSection = async(ctx, x, y, pets) => {
   const angryJelly = getTroopData(pets, "Angry Jelly")
   const sneezy = getTroopData(pets, "Sneezy")
   
-  const tasks = [
-    drawTroopIcon(lassi.level, lassi.unlocked, lassi.maxed, ctx, 'Icon_HV_Hero_Pets_LASSI', x + 25, y + 100),
-    drawTroopIcon(electroOwl.level, electroOwl.unlocked, electroOwl.maxed, ctx, 'Icon_HV_Hero_Pets_Electro_Owl', x + 275, y + 100),
-    drawTroopIcon(mightyYak.level, mightyYak.unlocked, mightyYak.maxed, ctx, 'Icon_HV_Hero_Pets_Mighty_Yak', x + 525, y + 100),
-
-    drawTroopIcon(unicorn.level, unicorn.unlocked, unicorn.maxed, ctx, 'Icon_HV_Hero_Pets_Unicorn', x + 25, y + 350),
-    drawTroopIcon(frosty.level, frosty.unlocked, frosty.maxed, ctx, 'Icon_HV_Hero_Pets_Frosty', x + 275, y + 350),
-    drawTroopIcon(diggy.level, diggy.unlocked, diggy.maxed, ctx, 'Icon_HV_Hero_Pets_Diggy', x + 525, y + 350),
-
-    drawTroopIcon(poisonLizard.level, poisonLizard.unlocked, poisonLizard.maxed, ctx, 'Icon_HV_Hero_Pets_Poison_Lizard', x + 25, y + 600),
-    drawTroopIcon(phoenix.level, phoenix.unlocked, phoenix.maxed, ctx, 'Icon_HV_Hero_Pets_Phoenix', x + 275, y + 600),
-    drawTroopIcon(spiritFox.level, spiritFox.unlocked, spiritFox.maxed, ctx, 'Icon_HV_Hero_Pets_Spirit_Fox', x + 525, y + 600),
-
-    drawTroopIcon(angryJelly.level, angryJelly.unlocked, angryJelly.maxed, ctx, 'Icon_HV_Hero_Pets_Angry_Jelly', x + 25, y + 850),
-    drawTroopIcon(sneezy.level, sneezy.unlocked, sneezy.maxed, ctx, 'Icon_HV_Hero_Pets_Sneezy', x + 275, y + 850)
-  ]
-  
-  await Promise.all(tasks)
+  await drawTroopIcon(lassi.level, lassi.unlocked, lassi.maxed, ctx, 'Icon_HV_Hero_Pets_LASSI', x + 25, y + 100),
+  await drawTroopIcon(electroOwl.level, electroOwl.unlocked, electroOwl.maxed, ctx, 'Icon_HV_Hero_Pets_Electro_Owl', x + 275, y + 100),
+  await drawTroopIcon(mightyYak.level, mightyYak.unlocked, mightyYak.maxed, ctx, 'Icon_HV_Hero_Pets_Mighty_Yak', x + 525, y + 100),
+  await drawTroopIcon(unicorn.level, unicorn.unlocked, unicorn.maxed, ctx, 'Icon_HV_Hero_Pets_Unicorn', x + 25, y + 350),
+  await drawTroopIcon(frosty.level, frosty.unlocked, frosty.maxed, ctx, 'Icon_HV_Hero_Pets_Frosty', x + 275, y + 350),
+  await drawTroopIcon(diggy.level, diggy.unlocked, diggy.maxed, ctx, 'Icon_HV_Hero_Pets_Diggy', x + 525, y + 350),
+  await drawTroopIcon(poisonLizard.level, poisonLizard.unlocked, poisonLizard.maxed, ctx, 'Icon_HV_Hero_Pets_Poison_Lizard', x + 25, y + 600),
+  await drawTroopIcon(phoenix.level, phoenix.unlocked, phoenix.maxed, ctx, 'Icon_HV_Hero_Pets_Phoenix', x + 275, y + 600),
+  await drawTroopIcon(spiritFox.level, spiritFox.unlocked, spiritFox.maxed, ctx, 'Icon_HV_Hero_Pets_Spirit_Fox', x + 525, y + 600),
+  await drawTroopIcon(angryJelly.level, angryJelly.unlocked, angryJelly.maxed, ctx, 'Icon_HV_Hero_Pets_Angry_Jelly', x + 25, y + 850),
+  await drawTroopIcon(sneezy.level, sneezy.unlocked, sneezy.maxed, ctx, 'Icon_HV_Hero_Pets_Sneezy', x + 275, y + 850)
 }
 
 const troopSection = async(ctx, x, y, troops) => {
@@ -183,45 +169,41 @@ const troopSection = async(ctx, x, y, troops) => {
   const druid = getTroopData(troops, "Druid")
   const furnace = getTroopData(troops, "Furnace")
 
-  const tasks = [
-    drawTroopIcon(barbarian.level, barbarian.unlocked, barbarian.maxed, ctx, 'Icon_HV_Barbarian', x + 25, y + 100),
-    drawTroopIcon(archer.level, archer.unlocked, archer.maxed, ctx, 'Icon_HV_Archer', x + 275, y + 100),
-    drawTroopIcon(giant.level, giant.unlocked, giant.maxed, ctx, 'Icon_HV_Giant', x + 525, y + 100),
-    drawTroopIcon(goblin.level, goblin.unlocked, goblin.maxed, ctx, 'Icon_HV_Goblin', x + 775, y + 100),
-    drawTroopIcon(wallBreaker.level, wallBreaker.unlocked, wallBreaker.maxed, ctx, 'Icon_HV_Wall_Breaker', x + 1025, y + 100),
+  await drawTroopIcon(barbarian.level, barbarian.unlocked, barbarian.maxed, ctx, 'Icon_HV_Barbarian', x + 25, y + 100),
+  await drawTroopIcon(archer.level, archer.unlocked, archer.maxed, ctx, 'Icon_HV_Archer', x + 275, y + 100),
+  await drawTroopIcon(giant.level, giant.unlocked, giant.maxed, ctx, 'Icon_HV_Giant', x + 525, y + 100),
+  await drawTroopIcon(goblin.level, goblin.unlocked, goblin.maxed, ctx, 'Icon_HV_Goblin', x + 775, y + 100),
+  await drawTroopIcon(wallBreaker.level, wallBreaker.unlocked, wallBreaker.maxed, ctx, 'Icon_HV_Wall_Breaker', x + 1025, y + 100),
     
-    drawTroopIcon(balloon.level, balloon.unlocked, balloon.maxed, ctx, 'Icon_HV_Balloon', x + 25, y + 350),
-    drawTroopIcon(wizard.level, wizard.unlocked, wizard.maxed, ctx, 'Icon_HV_Wizard', x + 275, y + 350),
-    drawTroopIcon(healer.level, healer.unlocked, healer.maxed, ctx, 'Icon_HV_Healer', x + 525, y + 350),
-    drawTroopIcon(dragon.level, dragon.unlocked, dragon.maxed, ctx, 'Icon_HV_Dragon', x + 775, y + 350),
-    drawTroopIcon(pekka.level, pekka.unlocked, pekka.maxed, ctx, 'Icon_HV_P.E.K.K.A', x + 1025, y + 350),
+  await drawTroopIcon(balloon.level, balloon.unlocked, balloon.maxed, ctx, 'Icon_HV_Balloon', x + 25, y + 350),
+  await drawTroopIcon(wizard.level, wizard.unlocked, wizard.maxed, ctx, 'Icon_HV_Wizard', x + 275, y + 350),
+  await drawTroopIcon(healer.level, healer.unlocked, healer.maxed, ctx, 'Icon_HV_Healer', x + 525, y + 350),
+  await drawTroopIcon(dragon.level, dragon.unlocked, dragon.maxed, ctx, 'Icon_HV_Dragon', x + 775, y + 350),
+  await drawTroopIcon(pekka.level, pekka.unlocked, pekka.maxed, ctx, 'Icon_HV_P.E.K.K.A', x + 1025, y + 350),
     
-    drawTroopIcon(babyDragon.level, babyDragon.unlocked, babyDragon.maxed, ctx, 'Icon_HV_Baby_Dragon', x + 25, y + 600),
-    drawTroopIcon(miner.level, miner.unlocked, miner.maxed, ctx, 'Icon_HV_Miner', x + 275, y + 600),
-    drawTroopIcon(electroDragon.level, electroDragon.unlocked, electroDragon.maxed, ctx, 'Icon_HV_Electro_Dragon', x + 525, y + 600),
-    drawTroopIcon(yeti.level, yeti.unlocked, yeti.maxed, ctx, 'Icon_HV_Yeti', x + 775, y + 600),
-    drawTroopIcon(dragonRider.level, dragonRider.unlocked, dragonRider.maxed, ctx, 'Icon_HV_Dragon_Rider', x + 1025, y + 600),
+  await drawTroopIcon(babyDragon.level, babyDragon.unlocked, babyDragon.maxed, ctx, 'Icon_HV_Baby_Dragon', x + 25, y + 600),
+  await drawTroopIcon(miner.level, miner.unlocked, miner.maxed, ctx, 'Icon_HV_Miner', x + 275, y + 600),
+  await drawTroopIcon(electroDragon.level, electroDragon.unlocked, electroDragon.maxed, ctx, 'Icon_HV_Electro_Dragon', x + 525, y + 600),
+  await drawTroopIcon(yeti.level, yeti.unlocked, yeti.maxed, ctx, 'Icon_HV_Yeti', x + 775, y + 600),
+  await drawTroopIcon(dragonRider.level, dragonRider.unlocked, dragonRider.maxed, ctx, 'Icon_HV_Dragon_Rider', x + 1025, y + 600),
 
-    drawTroopIcon(electroTitan.level, electroTitan.unlocked, electroTitan.maxed, ctx, 'Icon_HV_Electro_Titan', x + 25, y + 850),
-    drawTroopIcon(rootRider.level, rootRider.unlocked, rootRider.maxed, ctx, 'Icon_HV_Root_Rider', x + 275, y + 850),
-    drawTroopIcon(thrower.level, thrower.unlocked, thrower.maxed, ctx, 'Icon_HV_Thrower', x + 525, y + 850),
-    drawTroopIcon(minion.level, minion.unlocked, minion.maxed, ctx, 'Icon_HV_Minion', x + 775, y + 850),
-    drawTroopIcon(hogRider.level, hogRider.unlocked, hogRider.maxed, ctx, 'Icon_HV_Hog_Rider', x + 1025, y + 850),
+  await drawTroopIcon(electroTitan.level, electroTitan.unlocked, electroTitan.maxed, ctx, 'Icon_HV_Electro_Titan', x + 25, y + 850),
+  await drawTroopIcon(rootRider.level, rootRider.unlocked, rootRider.maxed, ctx, 'Icon_HV_Root_Rider', x + 275, y + 850),
+  await drawTroopIcon(thrower.level, thrower.unlocked, thrower.maxed, ctx, 'Icon_HV_Thrower', x + 525, y + 850),
+  await drawTroopIcon(minion.level, minion.unlocked, minion.maxed, ctx, 'Icon_HV_Minion', x + 775, y + 850),
+  await drawTroopIcon(hogRider.level, hogRider.unlocked, hogRider.maxed, ctx, 'Icon_HV_Hog_Rider', x + 1025, y + 850),
 
-    drawTroopIcon(valkyrie.level, valkyrie.unlocked, valkyrie.maxed, ctx, 'Icon_HV_Valkyrie', x + 25, y + 1100),
-    drawTroopIcon(golem.level, golem.unlocked, golem.maxed, ctx, 'Icon_HV_Golem', x + 275, y + 1100),
-    drawTroopIcon(witch.level, witch.unlocked, witch.maxed, ctx, 'Icon_HV_Witch', x + 525, y + 1100),
-    drawTroopIcon(lavaHound.level, lavaHound.unlocked, lavaHound.maxed, ctx, 'Icon_HV_Lava_Hound', x + 775, y + 1100),
-    drawTroopIcon(bowler.level, bowler.unlocked, bowler.maxed, ctx, 'Icon_HV_Bowler', x + 1025, y + 1100),
+  await drawTroopIcon(valkyrie.level, valkyrie.unlocked, valkyrie.maxed, ctx, 'Icon_HV_Valkyrie', x + 25, y + 1100),
+  await drawTroopIcon(golem.level, golem.unlocked, golem.maxed, ctx, 'Icon_HV_Golem', x + 275, y + 1100),
+  await drawTroopIcon(witch.level, witch.unlocked, witch.maxed, ctx, 'Icon_HV_Witch', x + 525, y + 1100),
+  await drawTroopIcon(lavaHound.level, lavaHound.unlocked, lavaHound.maxed, ctx, 'Icon_HV_Lava_Hound', x + 775, y + 1100),
+  await drawTroopIcon(bowler.level, bowler.unlocked, bowler.maxed, ctx, 'Icon_HV_Bowler', x + 1025, y + 1100),
 
-    drawTroopIcon(iceGolem.level, iceGolem.unlocked, iceGolem.maxed, ctx, 'Icon_HV_Ice_Golem', x + 25, y + 1350),
-    drawTroopIcon(headhunter.level, headhunter.unlocked, headhunter.maxed, ctx, 'Icon_HV_Headhunter', x + 275, y + 1350),
-    drawTroopIcon(apprenticeWarden.level, apprenticeWarden.unlocked, apprenticeWarden.maxed, ctx, 'Icon_HV_Apprentice_Warden', x + 525, y + 1350),
-    drawTroopIcon(druid.level, druid.unlocked, druid.maxed, ctx, 'Icon_HV_Druid', x + 775, y + 1350),
-    drawTroopIcon(furnace.level, furnace.unlocked, furnace.maxed, ctx, 'Icon_HV_Furnace', x + 1025, y + 1350),
-  ]
-
-  await Promise.all(tasks)
+  await drawTroopIcon(iceGolem.level, iceGolem.unlocked, iceGolem.maxed, ctx, 'Icon_HV_Ice_Golem', x + 25, y + 1350),
+  await drawTroopIcon(headhunter.level, headhunter.unlocked, headhunter.maxed, ctx, 'Icon_HV_Headhunter', x + 275, y + 1350),
+  await drawTroopIcon(apprenticeWarden.level, apprenticeWarden.unlocked, apprenticeWarden.maxed, ctx, 'Icon_HV_Apprentice_Warden', x + 525, y + 1350),
+  await drawTroopIcon(druid.level, druid.unlocked, druid.maxed, ctx, 'Icon_HV_Druid', x + 775, y + 1350),
+  await drawTroopIcon(furnace.level, furnace.unlocked, furnace.maxed, ctx, 'Icon_HV_Furnace', x + 1025, y + 1350)
 }
 
 const spellSection = async (ctx, x, y, spells) => {
@@ -252,30 +234,21 @@ const spellSection = async (ctx, x, y, spells) => {
   const bat = getTroopData(spells, "Bat Spell")
   const overgrowth = getTroopData(spells, "Overgrowth Spell")
 
-  const tasks = [
-    drawTroopIcon(lightning.level, lightning.unlocked, lightning.maxed, ctx, 'Icon_HV_Spell_Lightning', x + 25, y + 100),
-    drawTroopIcon(heal.level, heal.unlocked, heal.maxed, ctx, 'Icon_HV_Spell_Heal', x + 275, y + 100),
-    drawTroopIcon(rage.level, rage.unlocked, rage.maxed, ctx, 'Icon_HV_Spell_Rage', x + 525, y + 100),
-
-    drawTroopIcon(jump.level, jump.unlocked, jump.maxed, ctx, 'Icon_HV_Spell_Jump', x + 25, y + 350),
-    drawTroopIcon(freeze.level, freeze.unlocked, freeze.maxed, ctx, 'Icon_HV_Spell_Freeze', x + 275, y + 350),
-    drawTroopIcon(clone.level, clone.unlocked, clone.maxed, ctx, 'Icon_HV_Spell_Clone', x + 525, y + 350),
-
-    drawTroopIcon(invisibility.level, invisibility.unlocked, invisibility.maxed, ctx, 'Icon_HV_Spell_Invisibility', x + 25, y + 600),
-    drawTroopIcon(recall.level, recall.unlocked, recall.maxed, ctx, 'Icon_HV_Spell_Recall', x + 275, y + 600),
-    drawTroopIcon(revive.level, revive.unlocked, revive.maxed, ctx, 'Icon_HV_Spell_Revive', x + 525, y + 600),
-
-    drawTroopIcon(poison.level, poison.unlocked, poison.maxed, ctx, 'Icon_HV_Dark_Spell_Poison', x + 25, y + 850),
-    drawTroopIcon(earthquake.level, earthquake.unlocked, earthquake.maxed, ctx, 'Icon_HV_Dark_Spell_Earthquake', x + 275, y + 850),
-    drawTroopIcon(haste.level, haste.unlocked, haste.maxed, ctx, 'Icon_HV_Dark_Spell_Haste', x + 525, y + 850),
-
-    drawTroopIcon(skeleton.level, skeleton.unlocked, skeleton.maxed, ctx, 'Icon_HV_Dark_Spell_Skeleton', x + 25, y + 1100),
-    drawTroopIcon(bat.level, bat.unlocked, bat.maxed, ctx, 'Icon_HV_Dark_Spell_Bat', x + 275, y + 1100),
-    drawTroopIcon(overgrowth.level, overgrowth.unlocked, overgrowth.maxed, ctx, 'Icon_HV_Dark_Spell_Overgrowth', x + 525, y + 1100)
-  ]
-  
-  await Promise.all(tasks)
-
+  await drawTroopIcon(lightning.level, lightning.unlocked, lightning.maxed, ctx, 'Icon_HV_Spell_Lightning', x + 25, y + 100),
+  await drawTroopIcon(heal.level, heal.unlocked, heal.maxed, ctx, 'Icon_HV_Spell_Heal', x + 275, y + 100),
+  await drawTroopIcon(rage.level, rage.unlocked, rage.maxed, ctx, 'Icon_HV_Spell_Rage', x + 525, y + 100),
+  await drawTroopIcon(jump.level, jump.unlocked, jump.maxed, ctx, 'Icon_HV_Spell_Jump', x + 25, y + 350),
+  await drawTroopIcon(freeze.level, freeze.unlocked, freeze.maxed, ctx, 'Icon_HV_Spell_Freeze', x + 275, y + 350),
+  await drawTroopIcon(clone.level, clone.unlocked, clone.maxed, ctx, 'Icon_HV_Spell_Clone', x + 525, y + 350),
+  await drawTroopIcon(invisibility.level, invisibility.unlocked, invisibility.maxed, ctx, 'Icon_HV_Spell_Invisibility', x + 25, y + 600),
+  await drawTroopIcon(recall.level, recall.unlocked, recall.maxed, ctx, 'Icon_HV_Spell_Recall', x + 275, y + 600),
+  await drawTroopIcon(revive.level, revive.unlocked, revive.maxed, ctx, 'Icon_HV_Spell_Revive', x + 525, y + 600),
+  await drawTroopIcon(poison.level, poison.unlocked, poison.maxed, ctx, 'Icon_HV_Dark_Spell_Poison', x + 25, y + 850),
+  await drawTroopIcon(earthquake.level, earthquake.unlocked, earthquake.maxed, ctx, 'Icon_HV_Dark_Spell_Earthquake', x + 275, y + 850),
+  await drawTroopIcon(haste.level, haste.unlocked, haste.maxed, ctx, 'Icon_HV_Dark_Spell_Haste', x + 525, y + 850),
+  await drawTroopIcon(skeleton.level, skeleton.unlocked, skeleton.maxed, ctx, 'Icon_HV_Dark_Spell_Skeleton', x + 25, y + 1100),
+  await drawTroopIcon(bat.level, bat.unlocked, bat.maxed, ctx, 'Icon_HV_Dark_Spell_Bat', x + 275, y + 1100),
+  await drawTroopIcon(overgrowth.level, overgrowth.unlocked, overgrowth.maxed, ctx, 'Icon_HV_Dark_Spell_Overgrowth', x + 525, y + 1100)
 }
 
 const siegeMachineSection = async (ctx, x, y, siegeMachines) => {
@@ -299,19 +272,14 @@ const siegeMachineSection = async (ctx, x, y, siegeMachines) => {
   const battleDrill = getTroopData(siegeMachines, "Battle Drill")
   const troopLauncher = getTroopData(siegeMachines, "Troop Launcher")
 
-  const tasks = [
-    drawTroopIcon(wallWrecker.level, wallWrecker.unlocked, wallWrecker.maxed, ctx, 'Icon_HV_Siege_Machine_Wall_Wrecker', x + 25, y + 100),
-    drawTroopIcon(battleBlimp.level, battleBlimp.unlocked, battleBlimp.maxed, ctx, 'Icon_HV_Siege_Machine_Battle_Blimp', x + 275, y + 100),
-    drawTroopIcon(stoneSlammer.level, stoneSlammer.unlocked, stoneSlammer.maxed, ctx, 'Icon_HV_Siege_Machine_Stone_Slammer', x + 525, y + 100),
-    drawTroopIcon(siegeBarracks.level, siegeBarracks.unlocked, siegeBarracks.maxed, ctx, 'Icon_HV_Siege_Machine_Siege_Barracks', x + 775, y + 100),
-    drawTroopIcon(logLauncher.level, logLauncher.unlocked, logLauncher.maxed, ctx, 'Icon_HV_Siege_Machine_Log_Launcher', x + 1025, y + 100),
-    drawTroopIcon(flameFlinger.level, flameFlinger.unlocked, flameFlinger.maxed, ctx, 'Icon_HV_Siege_Machine_Flame_Flinger', x + 1275, y + 100),
-    drawTroopIcon(battleDrill.level, battleDrill.unlocked, battleDrill.maxed, ctx, 'Icon_HV_Siege_Machine_Battle_Drill', x + 1525, y + 100),
-    drawTroopIcon(troopLauncher.level, troopLauncher.unlocked, troopLauncher.maxed, ctx, 'Icon_HV_Siege_Machine_Troop_Launcher', x + 1775, y + 100)
-  ]
-  
-  await Promise.all(tasks)
-
+  await drawTroopIcon(wallWrecker.level, wallWrecker.unlocked, wallWrecker.maxed, ctx, 'Icon_HV_Siege_Machine_Wall_Wrecker', x + 25, y + 100),
+  await drawTroopIcon(battleBlimp.level, battleBlimp.unlocked, battleBlimp.maxed, ctx, 'Icon_HV_Siege_Machine_Battle_Blimp', x + 275, y + 100),
+  await drawTroopIcon(stoneSlammer.level, stoneSlammer.unlocked, stoneSlammer.maxed, ctx, 'Icon_HV_Siege_Machine_Stone_Slammer', x + 525, y + 100),
+  await drawTroopIcon(siegeBarracks.level, siegeBarracks.unlocked, siegeBarracks.maxed, ctx, 'Icon_HV_Siege_Machine_Siege_Barracks', x + 775, y + 100),
+  await drawTroopIcon(logLauncher.level, logLauncher.unlocked, logLauncher.maxed, ctx, 'Icon_HV_Siege_Machine_Log_Launcher', x + 1025, y + 100),
+  await drawTroopIcon(flameFlinger.level, flameFlinger.unlocked, flameFlinger.maxed, ctx, 'Icon_HV_Siege_Machine_Flame_Flinger', x + 1275, y + 100),
+  await drawTroopIcon(battleDrill.level, battleDrill.unlocked, battleDrill.maxed, ctx, 'Icon_HV_Siege_Machine_Battle_Drill', x + 1525, y + 100),
+  await drawTroopIcon(troopLauncher.level, troopLauncher.unlocked, troopLauncher.maxed, ctx, 'Icon_HV_Siege_Machine_Troop_Launcher', x + 1775, y + 100)
 }
 
 const drawTroopIcon = async (troopLevel, unlocked, max, ctx, imageName, x, y) => {

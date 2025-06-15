@@ -15,12 +15,8 @@ const getProfileImage = async (profile, key) => {
     
     ctx.fillRect(0, 0, width, height);
 
-    const tasks = [
-        nameCardSection(profile, ctx, 25, 25, ),
-        achievementsSection(profile.achievements, ctx, 75, hasLegendStats ? 1425 : 1000)
-    ]
-
-    await Promise.all(tasks)
+    await nameCardSection(profile, ctx, 25, 25, ),
+    await achievementsSection(profile.achievements, ctx, 75, hasLegendStats ? 1425 : 1000)
 
     if (hasLegendStats) {
         await legendLeagueSection(profile.legendStatistics, ctx, 25, 1000)
@@ -47,7 +43,6 @@ const nameCardSection = async (profile, ctx, x, y) => {
 
     drawRoundedRectPath(ctx, x, y, width, height, radius); 
 
-    
     ctx.fill()
 
     ctx.lineWidth = 10;
@@ -58,13 +53,9 @@ const nameCardSection = async (profile, ctx, x, y) => {
     dividerLine(ctx, x + paddingLeft + 1400, x + paddingLeft + 1400, y + paddingTop, y + paddingTop + 700)
     dividerLine(ctx, x + paddingLeft + 2300, x + paddingLeft + 2300, y + paddingTop, y + paddingTop + 700)
 
-    const tasks = [
-        nameSection(profile, ctx, x + paddingLeft, y + paddingTop + 50),
-        clanSection(profile, ctx, x + paddingLeft + 1600, y + paddingTop + 100),
-        townhallSection(profile, ctx, x + paddingLeft + 2200, y + paddingTop, width, height)
-    ]
-    
-    await Promise.all(tasks)
+    await nameSection(profile, ctx, x + paddingLeft, y + paddingTop + 50),
+    await clanSection(profile, ctx, x + paddingLeft + 1600, y + paddingTop + 100),
+    await townhallSection(profile, ctx, x + paddingLeft + 2200, y + paddingTop, width, height)
 
     addSeasonalSection(profile, ctx, x, y, width, height, radius)
 }
@@ -174,20 +165,14 @@ const legendLeagueSection = async (legendStats, ctx, x, y) => {
     dividerLine(ctx, x + paddingLeft + 1000, x + paddingLeft + 1000, y + paddingTop + 75, y + paddingTop + 325, "#35304e", "#796fa5")
     dividerLine(ctx, x + paddingLeft + 2175, x + paddingLeft + 2175, y + paddingTop + 75, y + paddingTop + 325, "#35304e", "#796fa5")
 
-    const tasks = [
-        trophyLegendarySection(bestSeason, ctx, x + paddingLeft, y + (paddingTop/2), 'Best'),
-        trophyLegendarySection(previousSeason, ctx, x + paddingLeft + 1100, y + (paddingTop/2), 'Previous'),
-        legendTrophySection(legendTrophies, ctx, x + paddingLeft + 2400, y + (paddingTop/2))
-    ]
-    
-    await Promise.all(tasks)
+    await trophyLegendarySection(bestSeason, ctx, x + paddingLeft, y + (paddingTop/2), 'Best'),
+    await trophyLegendarySection(previousSeason, ctx, x + paddingLeft + 1100, y + (paddingTop/2), 'Previous'),
+    await legendTrophySection(legendTrophies, ctx, x + paddingLeft + 2400, y + (paddingTop/2))
 }
 
 const trophyLegendarySection = async (season, ctx, x, y, type) => {
-
     const rank = season?.rank
     const trophies = season?.trophies
-
     const date = season?.id
 
     if (season) {
@@ -206,7 +191,6 @@ const trophyLegendarySection = async (season, ctx, x, y, type) => {
         ctx.drawImage(unrankedImage, x, y + 100, 250, 250);
 
         clashFont(ctx, `Did not place`, x + 300, y + 250, '50', false, '#dde2ff')
-
         clashFont(ctx, `${type}: ${formatDateYearMonth(getLastYearMonth())}`, x + 275, y + 125, '50', false)
     }
     
@@ -498,26 +482,22 @@ const achievementsSection = async (achievements, ctx, x, y) =>  {
     const clanWarLeagueStars = achievements[33]
     const successfulDefenses = achievements[13]
 
-    const tasks = [
-        achievementCell(ctx, x, y, 'Gold looted', 'gold', goldLooted),
-        achievementCell(ctx, x, y + 225, 'Troop donations', 'troopdonation', troopDonations),
-        achievementCell(ctx, x, y + 450, 'Obstacles removed', 'obstaclesremoved', obstaclesRemoved),
-        achievementCell(ctx, x, y + 675, 'Clan games points', 'clangames', clanGamePoints),
+    await achievementCell(ctx, x, y, 'Gold looted', 'gold', goldLooted),
+    await achievementCell(ctx, x, y + 225, 'Troop donations', 'troopdonation', troopDonations),
+    await achievementCell(ctx, x, y + 450, 'Obstacles removed', 'obstaclesremoved', obstaclesRemoved),
+    await achievementCell(ctx, x, y + 675, 'Clan games points', 'clangames', clanGamePoints),
 
-        achievementCell(ctx, x + 1125, y, 'Elixir looted', 'elixir', elixirLooted),
-        achievementCell(ctx, x + 1125, y + 225, 'Spell donations', 'spelldonation', spellDonations),
-        achievementCell(ctx, x + 1125, y + 450, 'Season challenge pts', 'goldpass', seasonChallengePts),
-        achievementCell(ctx, x + 1125, y + 675, 'War stars', 'warstar', warStars),
-        achievementCell(ctx, x + 1125, y + 900, 'Successful attacks', 'multiplayerattack', successfulAttacks),
+    await achievementCell(ctx, x + 1125, y, 'Elixir looted', 'elixir', elixirLooted),
+    await achievementCell(ctx, x + 1125, y + 225, 'Spell donations', 'spelldonation', spellDonations),
+    await achievementCell(ctx, x + 1125, y + 450, 'Season challenge pts', 'goldpass', seasonChallengePts),
+    await achievementCell(ctx, x + 1125, y + 675, 'War stars', 'warstar', warStars),
+    await achievementCell(ctx, x + 1125, y + 900, 'Successful attacks', 'multiplayerattack', successfulAttacks),
         
-        achievementCell(ctx, x + 2250, y, 'Dark elixir looted', 'darkelixir', darkElixirLooted),
-        achievementCell(ctx, x + 2250, y + 225, 'Siege donations', 'siegemachinedonation', siegeDonations),
-        achievementCell(ctx, x + 2250, y + 450, 'Campaign map stars', 'campaigner', campaignMapStars),
-        achievementCell(ctx, x + 2250, y + 675, 'Clan war league stars', 'cwlstar', clanWarLeagueStars),
-        achievementCell(ctx, x + 2250, y + 900, 'Successful defenses', 'shield', successfulDefenses)
-    ]
-    
-    await Promise.all(tasks)
+    await achievementCell(ctx, x + 2250, y, 'Dark elixir looted', 'darkelixir', darkElixirLooted),
+    await achievementCell(ctx, x + 2250, y + 225, 'Siege donations', 'siegemachinedonation', siegeDonations),
+    await achievementCell(ctx, x + 2250, y + 450, 'Campaign map stars', 'campaigner', campaignMapStars),
+    await achievementCell(ctx, x + 2250, y + 675, 'Clan war league stars', 'cwlstar', clanWarLeagueStars),
+    await achievementCell(ctx, x + 2250, y + 900, 'Successful defenses', 'shield', successfulDefenses)
 
     await signature(ctx, x + 100, y + 850, 6)
 }
