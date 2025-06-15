@@ -28,12 +28,12 @@ client.on('interactionCreate', async (interaction) => {
 });
 
 client.once('ready', async () => {
-  console.log('Connected to discord!');
+  console.log(`${new Date().toString()} Connected to discord!`);
   await connectDB()
 
   client.user.setPresence({ activities: [{ name: 'with fireballs 🔥', type: ActivityType.Playing }], status: 'online'})
   scheduleLeaderboards()
-  console.log('Wizard is ready to go!')
+  console.log(`${new Date().toString()} Wizard is ready to go!`)
 });
 
 client.login(process.env.DISCORD_TOKEN);
