@@ -8,9 +8,9 @@ const { getProfileEmbed, getTroopShowcaseEmbed } = require('../../../utils/embed
 const { InteractionContextType, ApplicationIntegrationType, ComponentType, AttachmentBuilder, MessageFlags } = require('discord.js');
 const { profileOptions } = require('../../../utils/selections/profileOptions');
 const { expiredOptions } = require('../../../utils/selections/expiredOptions');
-const { EmbedBuilder } = require('@discordjs/builders');
 const { getLoadingEmbed } = require('../../../utils/embeds/loading');
 const { getNotYourInteractionProfileEmbed } = require('../../../utils/embeds/safety/notYourInteractionProfile');
+const renderManager = require('../../../utils/render/SafeRenderManager');
 
 module.exports = {
   mainServerOnly: false,
@@ -90,8 +90,6 @@ module.exports = {
 
         const keyProfile = playerData.tag.replace(/[^a-zA-Z0-9-_]/g, '');
         const keyTroop = keyProfile + '_troop';
-
-        const renderManager = require('../../../utils/render/SafeRenderManager');
 
         const profileImage = await renderManager.render('profile', playerData, keyProfile);
         const troopImage = await renderManager.render('troop', playerData, keyTroop);

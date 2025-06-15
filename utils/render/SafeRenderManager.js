@@ -1,12 +1,18 @@
+const PQueue = require('p-queue').default;
 const { Worker } = require('worker_threads');
 const path = require('path');
 
 class SafeRenderManager {
     constructor() {
         this.workerPath = path.resolve(__dirname, './renderWorker.js');
+        this.queue = new PQueue({ concurrency: 2 });
     }
 
     async render(type, profile, key) {
+        return this.queue.add(() => this._runWorker(type, profile, key))
+    }
+
+    _runWorker(type, profile, key) {
         return new Promise((resolve, reject) => {
             const worker = new Worker(this.workerPath);
 
