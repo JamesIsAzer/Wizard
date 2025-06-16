@@ -10,7 +10,7 @@ class SafeRenderManager {
         // Track active workers for cleanup
         this.workerPool = [];      // The actual worker pool
         this.workerIndex = 0;      // Round robin index
-        this.NUM_WORKERS = 4;
+        this.NUM_WORKERS = 1;
         this.isShuttingDown = false;
         
         // Initialize queue lazily
