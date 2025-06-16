@@ -168,7 +168,7 @@ const legendLeagueSection = async (legendStats, ctx, x, y) => {
         { offset: 0, color: 'rgba(148, 113, 210, 0)' },
         { offset: 0.5, color: 'rgba(148, 113, 210, 1)' },
         { offset: 1, color: 'rgba(148, 113, 210, 0)' }
-    ]);
+    ], 'horizontal');
 
     ctx.beginPath();
     ctx.strokeStyle = gradient1;
@@ -368,11 +368,13 @@ const leagueTrophyBanner = async (ctx, x, y, emblemWidth, emblemHeight, trophies
     const emblemCenterY = y + (emblemHeight / 2);
     const line1Y = emblemCenterY - 55; 
 
+    const gradientWidth = 900 + (emblemWidth/2)
+    const gradientHeight = 700
     //check this and one below, i dont think width  and height are correct
-    const gradient1 = createOptimizedGradient(ctx, 'leaguetrophybanner', x, y, emblemWidth, emblemHeight, [
+    const gradient1 = createOptimizedGradient(ctx, 'leaguetrophybanner', x, y, gradientWidth, gradientHeight, [
         { offset: 0, color: 'rgba(0, 0, 0, 0.8)' },
         { offset: 1, color: 'rgba(0, 0, 0, 0)' }
-    ]);
+    ], 'horizontal');
 
 
     ctx.beginPath();
@@ -384,11 +386,11 @@ const leagueTrophyBanner = async (ctx, x, y, emblemWidth, emblemHeight, trophies
     ctx.closePath();
 
     const line2Y = emblemCenterY + 50; 
-    const gradient2 = createOptimizedGradient(ctx, 'leaguetrophybanner2', x, y, emblemWidth, emblemHeight, [
+    const gradient2 = createOptimizedGradient(ctx, 'leaguetrophybanner2', x, y, gradientWidth, gradientHeight, [
         { offset: 0, color: 'rgba(118, 82, 178, 1)' },
         { offset: 0.5, color: 'rgba(101, 82, 166, 1)' },
         { offset: 1, color: 'rgba(101, 82, 166, 0)' }
-    ]);
+    ], 'horizontal');
     
     ctx.beginPath();
     ctx.strokeStyle = gradient2;

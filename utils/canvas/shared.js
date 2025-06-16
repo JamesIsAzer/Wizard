@@ -54,9 +54,9 @@ const getCachedImage = async (imagePath) => {
     }
 };
 
-const createOptimizedGradient = (ctx, key, x, y, width, height, stops) => {
+const createOptimizedGradient = (ctx, key, x, y, width, height, stops, direction = 'vertical') => {
     // Create a unique cache key that includes all parameters that affect the gradient
-    const cacheKey = `${key}_${x}_${y}_${width}_${height}_${JSON.stringify(stops)}`;
+    const cacheKey = `${key}_${x}_${y}_${width}_${height}_${direction}_${JSON.stringify(stops)}`;
     
     // Check if gradient exists in cache
     if (gradientCache.has(cacheKey)) {
@@ -64,7 +64,14 @@ const createOptimizedGradient = (ctx, key, x, y, width, height, stops) => {
     }
     
     // Create new gradient
-    const gradient = ctx.createLinearGradient(x, y, x, y + height);
+    let gradient;
+    if (direction === 'horizontal') {
+        gradient = ctx.createLinearGradient(x, y, x + width, y);
+    } else {
+        // Default to vertical
+        gradient = ctx.createLinearGradient(x, y, x, y + height);
+    }
+    
     stops.forEach(stop => gradient.addColorStop(stop.offset, stop.color));
     
     // Cache management - remove oldest if cache is full
