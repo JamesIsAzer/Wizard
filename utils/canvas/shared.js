@@ -1,65 +1,117 @@
 const { loadImage } = require('canvas');
 const path = require('path');
 
+// Image cache with proper LRU implementation
 const imageCache = new Map();
 const CACHE_SIZE_LIMIT = 100;
-let cacheAccessOrder = new Map();
-const CACHE_IDLE_TIME_MS = 60000;
+const cacheAccessOrder = new Map(); // Track access times for LRU
 
+// Gradient cache with LRU
 const gradientCache = new Map();
+const gradientAccessOrder = new Map();
 const GRADIENT_CACHE_LIMIT = 50;
 
-let lastCacheClearTime = Date.now();
-let rendersSinceLastCheck = 0;
+// User render cache with cleanup
+const renderCache = new Map();
+const CACHE_TTL_MS = 5 * 60 * 1000;
+const USER_CACHE_CLEANUP_INTERVAL = 10 * 60 * 1000; // Cleanup every 10 minutes
+const MAX_USERS_IN_CACHE = 50;
 
-function autoThrottleCacheClear() {
-    rendersSinceLastCheck++;
+// Cleanup old user caches periodically
+setInterval(() => {
+    cleanupUserCaches();
+}, USER_CACHE_CLEANUP_INTERVAL);
 
+function cleanupUserCaches() {
     const now = Date.now();
-    const timeSinceLastClear = now - lastCacheClearTime;
-
-    if (
-        imageCache.size > CACHE_SIZE_LIMIT &&
-        rendersSinceLastCheck >= 5 &&
-        timeSinceLastClear > CACHE_IDLE_TIME_MS
-    ) {
-        clearCaches();
-        lastCacheClearTime = Date.now();
-        rendersSinceLastCheck = 0;
+    const userIds = Array.from(renderCache.keys());
+    
+    // Remove expired entries
+    for (const userId of userIds) {
+        const userCache = renderCache.get(userId);
+        const entries = Array.from(userCache.entries());
+        
+        // Remove expired entries from user cache
+        for (const [key, cached] of entries) {
+            if (cached.expiresAt <= now) {
+                userCache.delete(key);
+            }
+        }
+        
+        // Remove empty user caches
+        if (userCache.size === 0) {
+            renderCache.delete(userId);
+        }
+    }
+    
+    // If still too many users, remove oldest
+    if (renderCache.size > MAX_USERS_IN_CACHE) {
+        const sortedUsers = userIds
+            .map(userId => ({
+                userId,
+                lastAccess: Math.max(...Array.from(renderCache.get(userId).values()).map(v => v.expiresAt - CACHE_TTL_MS))
+            }))
+            .sort((a, b) => a.lastAccess - b.lastAccess);
+        
+        const usersToRemove = sortedUsers.slice(0, renderCache.size - MAX_USERS_IN_CACHE);
+        usersToRemove.forEach(({ userId }) => renderCache.delete(userId));
+    }
+    
+    // Force garbage collection if available
+    if (global.gc) {
+        global.gc();
     }
 }
 
-const getCachedImage = async (imagePath) => {
-    if (imageCache.has(imagePath)) {
-        const image = imageCache.get(imagePath);
-        imageCache.delete(imagePath);
-        imageCache.set(imagePath, image); // move to end (most recently used)
-        return image;
-    }
+const setupCanvasContext = (ctx) => {
+    // Enable hardware acceleration hints
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
     
-    // LRU eviction when cache is full
-    if (imageCache.size >= CACHE_SIZE_LIMIT) {
-        const oldestKey = imageCache.keys().next().value;
-        imageCache.delete(oldestKey);
-    }
+    // Set default text properties once
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.font = '40px ClashFont';
     
-    try {
-        const image = await loadImage(imagePath);
-        imageCache.set(imagePath, image);
-        cacheAccessOrder.set(imagePath, Date.now());
-        return image;
-    } catch (error) {
-        console.error(`Failed to load image: ${imagePath}`, error);
-        throw error; // Re-throw to let caller handle
-    }
+    return ctx;
 };
 
+async function getCachedRender(userId, key, renderFunction, profileData) {
+    const userCache = renderCache.get(userId) ?? new Map();
+
+    const cached = userCache.get(key);
+    const now = Date.now();
+
+    if (cached && cached.expiresAt > now) {
+        return cached.value;
+    }
+
+    try {
+        // Do actual render
+        const result = await renderFunction(profileData, key);
+
+        // Cache result with expiration
+        userCache.set(key, { 
+            value: result, 
+            expiresAt: now + CACHE_TTL_MS 
+        });
+        renderCache.set(userId, userCache);
+
+        return result;
+    } catch (error) {
+        console.error(`Render function failed for key ${key}:`, error);
+        throw error;
+    }
+}
+
 const createOptimizedGradient = (ctx, key, x, y, width, height, stops, direction = 'vertical') => {
-    // Create a unique cache key that includes all parameters that affect the gradient
     const cacheKey = `${key}_${x}_${y}_${width}_${height}_${direction}_${JSON.stringify(stops)}`;
+    const now = Date.now();
     
     // Check if gradient exists in cache
     if (gradientCache.has(cacheKey)) {
+        // Update access time for LRU
+        gradientAccessOrder.set(cacheKey, now);
         return gradientCache.get(cacheKey);
     }
     
@@ -68,22 +120,123 @@ const createOptimizedGradient = (ctx, key, x, y, width, height, stops, direction
     if (direction === 'horizontal') {
         gradient = ctx.createLinearGradient(x, y, x + width, y);
     } else {
-        // Default to vertical
         gradient = ctx.createLinearGradient(x, y, x, y + height);
     }
     
     stops.forEach(stop => gradient.addColorStop(stop.offset, stop.color));
     
-    // Cache management - remove oldest if cache is full
+    // LRU eviction when cache is full
     if (gradientCache.size >= GRADIENT_CACHE_LIMIT) {
-        const firstKey = gradientCache.keys().next().value;
-        gradientCache.delete(firstKey);
+        // Find least recently used
+        let oldestKey = null;
+        let oldestTime = now;
+        
+        for (const [key, time] of gradientAccessOrder) {
+            if (time < oldestTime) {
+                oldestTime = time;
+                oldestKey = key;
+            }
+        }
+        
+        if (oldestKey) {
+            gradientCache.delete(oldestKey);
+            gradientAccessOrder.delete(oldestKey);
+        }
     }
     
-    // Store in cache
+    // Store in cache with access time
     gradientCache.set(cacheKey, gradient);
+    gradientAccessOrder.set(cacheKey, now);
     
     return gradient;
+};
+
+const getCachedImage = async (imagePath) => {
+    const now = Date.now();
+    
+    if (imageCache.has(imagePath)) {
+        // Update access time for LRU
+        cacheAccessOrder.set(imagePath, now);
+        return imageCache.get(imagePath);
+    }
+    
+    // LRU eviction when cache is full
+    if (imageCache.size >= CACHE_SIZE_LIMIT) {
+        // Find least recently used
+        let oldestKey = null;
+        let oldestTime = now;
+        
+        for (const [key, time] of cacheAccessOrder) {
+            if (time < oldestTime) {
+                oldestTime = time;
+                oldestKey = key;
+            }
+        }
+        
+        if (oldestKey) {
+            imageCache.delete(oldestKey);
+            cacheAccessOrder.delete(oldestKey);
+        }
+    }
+    
+    try {
+        const image = await loadImage(imagePath);
+        imageCache.set(imagePath, image);
+        cacheAccessOrder.set(imagePath, now);
+        return image;
+    } catch (error) {
+        console.error(`Failed to load image: ${imagePath}`, error);
+        throw error;
+    }
+};
+
+// Enhanced canvas cleanup
+const createCanvasWithCleanup = (createCanvas, width, height) => {
+    const canvas = createCanvas(width, height);
+    const originalCtx = canvas.getContext('2d');
+    
+    // Wrap the canvas to add cleanup method
+    canvas.cleanup = function() {
+        // Clear the canvas
+        originalCtx.clearRect(0, 0, width, height);
+        
+        // Reset context state
+        originalCtx.restore();
+        originalCtx.save();
+        
+        // Force garbage collection if available
+        if (global.gc) {
+            global.gc();
+        }
+    };
+    
+    return canvas;
+};
+
+// Memory-conscious buffer conversion
+const streamToBufferSafe = async (stream) => {
+    return new Promise((resolve, reject) => {
+        const chunks = [];
+        let totalLength = 0;
+        
+        stream.on('data', (chunk) => {
+            chunks.push(chunk);
+            totalLength += chunk.length;
+        });
+        
+        stream.on('end', () => {
+            try {
+                const buffer = Buffer.concat(chunks, totalLength);
+                // Clear chunks array to free memory
+                chunks.length = 0;
+                resolve(buffer);
+            } catch (error) {
+                reject(error);
+            }
+        });
+        
+        stream.on('error', reject);
+    });
 };
 
 const ALL_TROOP_IMAGES = [
@@ -182,48 +335,58 @@ const preloadAllImages = async () => {
   }
 };
 
+// Enhanced preload with memory management
 const preloadImages = async (imagePaths) => {
     const uniquePaths = [...new Set(imagePaths)];
-    const loadPromises = uniquePaths.map(path => getCachedImage(path));
-    return Promise.all(loadPromises);
-};
-
-const clearCaches = () => {
-    // More aggressive cleanup based on usage patterns
-    if (imageCache.size > 80) {
-        const sortedByAccess = [...cacheAccessOrder.entries()]
-            .sort((a, b) => a[1] - b[1]);
+    const batchSize = 10; // Process in batches to avoid memory spikes
+    
+    for (let i = 0; i < uniquePaths.length; i += batchSize) {
+        const batch = uniquePaths.slice(i, i + batchSize);
+        const loadPromises = batch.map(path => getCachedImage(path));
         
-        // Remove oldest 30% of entries
-        const toRemove = Math.floor(sortedByAccess.length * 0.3);
-        for (let i = 0; i < toRemove; i++) {
-            const key = sortedByAccess[i][0];
-            imageCache.delete(key);
-            cacheAccessOrder.delete(key);
+        try {
+            await Promise.all(loadPromises);
+        } catch (error) {
+            console.error(`Failed to preload batch ${i}-${i + batchSize}:`, error);
+        }
+        
+        // Small delay between batches to prevent memory pressure
+        if (i + batchSize < uniquePaths.length) {
+            await new Promise(resolve => setTimeout(resolve, 100));
         }
     }
+};
+
+// Clear all caches (useful for testing/debugging)
+const clearAllCaches = () => {
+    imageCache.clear();
+    cacheAccessOrder.clear();
+    gradientCache.clear();
+    gradientAccessOrder.clear();
+    renderCache.clear();
     
-    if (gradientCache.size > 50) {
-        gradientCache.clear();
-    }
-    
-    // Force garbage collection hint
     if (global.gc) {
         global.gc();
     }
 };
 
-const setupCanvasContext = (ctx) => {
-    // Enable hardware acceleration hints
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
-    
-    // Set default text properties once
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'top';
-    ctx.font = '40px ClashFont';
-    
-    return ctx;
+// Get cache statistics
+const getCacheStats = () => {
+    return {
+        images: {
+            size: imageCache.size,
+            limit: CACHE_SIZE_LIMIT
+        },
+        gradients: {
+            size: gradientCache.size,
+            limit: GRADIENT_CACHE_LIMIT
+        },
+        users: {
+            size: renderCache.size,
+            limit: MAX_USERS_IN_CACHE,
+            totalRenderCaches: Array.from(renderCache.values()).reduce((sum, cache) => sum + cache.size, 0)
+        }
+    };
 };
 
 const sectionTitleFont = (ctx, message, x, y, fontSize = '80', outline = 2) => {
@@ -428,28 +591,33 @@ const formatDateYearMonth = (dateStr) => {
     return `${monthName} ${year}`;
 }
 
-module.exports = { 
-    sectionTitleFont, 
-    drawRoundedRectPath, 
-    drawRightRoundedRectPath,
-    signature,
-    getImagePath,
-    getFontPath,
-    getTownhallPath,
+module.exports = {
+    getCachedRender,
+    createOptimizedGradient,
+    getCachedImage,
+    preloadImages,
+    createCanvasWithCleanup,
+    streamToBufferSafe,
+    clearAllCaches,
+    getCacheStats,
+    cleanupUserCaches,
     getAchievementStarsImagePath,
-    clashFont,
+    getImagePath,
+    signature,
+    drawRightRoundedRectPath,
+    drawRoundedRectPath,
     tagFont,
-    mapClanRoles,
+    formatNumberWithSpaces,
+    clashFontScaled,
+    clashFont,
+    sectionTitleFont,
     getTrophyLeagueImagePath,
+    getLastYearMonth,
+    getTownhallPath,
+    getFontPath,
+    mapClanRoles,
     getLeagueName,
     formatDateYearMonth,
-    clashFontScaled,
-    formatNumberWithSpaces,
-    getLastYearMonth,
-    getCachedImage,
-    createOptimizedGradient,
-    preloadImages,
-    setupCanvasContext,
-    autoThrottleCacheClear,
-    preloadAllImages
+    preloadAllImages,
+    setupCanvasContext
 };

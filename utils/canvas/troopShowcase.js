@@ -8,48 +8,52 @@ const {
   getCachedImage, 
   createOptimizedGradient, 
   setupCanvasContext,
-  autoThrottleCacheClear
- } = require('./shared')
+  createCanvasWithCleanup
+ } = require('./shared');
+const { streamToBuffer } = require('../streamHelpers');
 
 registerFont(getFontPath('Clash_Regular'), { family: 'ClashFont' });
 
 const getTroopShowcaseImage = async (profile, key) => {
   const width = 2950;
   const height = 2050;
-  const canvas = createCanvas(width, height);
-   const ctx = setupCanvasContext(canvas.getContext('2d'));
-
-  const gradient = createOptimizedGradient(
-    ctx,
-    'troops-showcase-bg',
-    0,
-    0,
-    width,
-    height,
-    [
-      { offset: 0, color: '#8c96af' },
-      { offset: 1, color: '#6b7899' }
-    ]
-  );
-
-  ctx.fillStyle = gradient
-  ctx.fillRect(0, 0, width, height);
-
+  const canvas = createCanvasWithCleanup(createCanvas, width, height);
   try {
-    await heroSection(ctx, 50, 50, profile.heroes),
-    await petSection(ctx, 50, 675, profile.troops),
-    await troopSection(ctx, 850, 50, profile.troops),
-    await spellSection(ctx, 2150, 50, profile.spells),
-    await siegeMachineSection(ctx, 850, 1675, profile.troops),
-    await signature(ctx, 50, 1750)
-  } catch (err) {
-    console.error('🛑 Failed to load image:', err);
-    return null;
-  }
+    const ctx = setupCanvasContext(canvas.getContext('2d'));
 
-  autoThrottleCacheClear();
+    const gradient = createOptimizedGradient(
+      ctx,
+      'troops-showcase-bg',
+      0,
+      0,
+      width,
+      height,
+      [
+        { offset: 0, color: '#8c96af' },
+        { offset: 1, color: '#6b7899' }
+      ]
+    );
 
-  return canvas
+    ctx.fillStyle = gradient
+    ctx.fillRect(0, 0, width, height);
+
+    try {
+      await heroSection(ctx, 50, 50, profile.heroes),
+      await petSection(ctx, 50, 675, profile.troops),
+      await troopSection(ctx, 850, 50, profile.troops),
+      await spellSection(ctx, 2150, 50, profile.spells),
+      await siegeMachineSection(ctx, 850, 1675, profile.troops),
+      await signature(ctx, 50, 1750)
+    } catch (err) {
+      console.error('🛑 Failed to load image:', err);
+      return null;
+    }
+
+    const buffer = await streamToBuffer(canvas.createPNGStream());
+    const fileName = `${key}.png`
+
+    return { buffer, fileName }
+  } finally { canvas.cleanup() }
 };
 
 const isMaxed = (list, name) => {

@@ -1,5 +1,6 @@
 const { createCanvas, registerFont } = require('canvas');
-const { getImagePath, getFontPath, clashFont, tagFont, mapClanRoles, getTrophyLeagueImagePath, getLeagueName, drawRoundedRectPath, drawRightRoundedRectPath, getTownhallPath, clashFontScaled, formatDateYearMonth, signature, getAchievementStarsImagePath, formatNumberWithSpaces, getLastYearMonth, getCachedImage, createOptimizedGradient, preloadImages, setupCanvasContext, autoThrottleCacheClear } = require('./shared');
+const { getImagePath, getFontPath, clashFont, tagFont, mapClanRoles, getTrophyLeagueImagePath, getLeagueName, drawRoundedRectPath, drawRightRoundedRectPath, getTownhallPath, clashFontScaled, formatDateYearMonth, signature, getAchievementStarsImagePath, formatNumberWithSpaces, getLastYearMonth, getCachedImage, createOptimizedGradient, preloadImages, setupCanvasContext, createCanvasWithCleanup } = require('./shared');
+const { streamToBuffer } = require('../streamHelpers');
 
 registerFont(getFontPath('Clash_Regular'), { family: 'ClashFont' });
 
@@ -8,42 +9,44 @@ const getProfileImage = async (profile, key) => {
     
     const width = 3500;
     const height = hasLegendStats ? 2550 : 2125;
-    const canvas = createCanvas(width, height);
-    const ctx = setupCanvasContext(canvas.getContext('2d'))
+    const canvas = createCanvasWithCleanup(createCanvas, width, height);
+    try {
+        const ctx = setupCanvasContext(canvas.getContext('2d'))
 
-    ctx.fillStyle = '#e8e8e0';
-    
-    ctx.fillRect(0, 0, width, height);
+        ctx.fillStyle = '#e8e8e0';
+        
+        ctx.fillRect(0, 0, width, height);
 
-    const requiredImages = [
-        getTownhallPath(profile.townHallLevel),
-        getImagePath('xp'),
-        getImagePath('shine')
-    ];
+        const requiredImages = [
+            getTownhallPath(profile.townHallLevel),
+            getImagePath('xp'),
+            getImagePath('shine')
+        ];
 
-    if (profile.clan) {
-        requiredImages.push(profile.clan.badgeUrls.medium);
-    }
-    
-    // Achievement images
-    if (profile.achievements) {
-        profile.achievements.forEach(achievement => {
-            if (achievement.stars > 0) {
-                requiredImages.push(getAchievementStarsImagePath(achievement.stars));
-            }
-        });
-    }
+        if (profile.clan) {
+            requiredImages.push(profile.clan.badgeUrls.medium);
+        }
+        
+        // Achievement images
+        if (profile.achievements) {
+            profile.achievements.forEach(achievement => {
+                if (achievement.stars > 0) {
+                    requiredImages.push(getAchievementStarsImagePath(achievement.stars));
+                }
+            });
+        }
 
-    await nameCardSection(profile, ctx, 25, 25),
-    await achievementsSection(profile.achievements, ctx, 75, hasLegendStats ? 1425 : 1000)
+        await nameCardSection(profile, ctx, 25, 25),
+        await achievementsSection(profile.achievements, ctx, 75, hasLegendStats ? 1425 : 1000)
 
-    if (hasLegendStats) {
-        await legendLeagueSection(profile.legendStatistics, ctx, 25, 1000)
-    }
+        if (hasLegendStats) {
+            await legendLeagueSection(profile.legendStatistics, ctx, 25, 1000)
+        }
 
-    autoThrottleCacheClear();
-
-    return canvas
+        const buffer = await streamToBuffer(canvas.createPNGStream());
+        const fileName = `${key}.png`
+        return { buffer, fileName };
+    } finally { canvas.cleanup() }
 };
 
 const nameCardSection = async (profile, ctx, x, y) => {

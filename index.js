@@ -7,6 +7,7 @@ require('dotenv').config();
 
 const interactionCommand = require('./service/commands/commandHandler.js');
 const interactionEvent = require('./service/events/eventHandler');
+const { preloadAllImages } = require('./utils/canvas/shared.js');
 
 interactionCommand.loadCommands(client);
 
@@ -17,7 +18,7 @@ process.on('uncaughtException', (error) => {
 setInterval(() => {
   const mem = process.memoryUsage();
   console.log(`Heap Used: ${Math.round(mem.heapUsed / 1024 / 1024)} MB, RSS: ${Math.round(mem.rss / 1024 / 1024)} MB`);
-}, 3600000);
+}, 60000);
 
 client.on('interactionCreate', async (interaction) => {
   try {
@@ -35,7 +36,7 @@ client.on('interactionCreate', async (interaction) => {
 client.once('ready', async () => {
   console.log(`${new Date().toString()} Connected to discord!`);
   await connectDB()
-
+  await preloadAllImages()
   client.user.setPresence({ activities: [{ name: 'with fireballs 🔥', type: ActivityType.Playing }], status: 'online'})
   scheduleLeaderboards()
   console.log(`${new Date().toString()} Wizard is ready to go!`)

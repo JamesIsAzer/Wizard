@@ -10,7 +10,9 @@ const { profileOptions } = require('../../../utils/selections/profileOptions');
 const { expiredOptions } = require('../../../utils/selections/expiredOptions');
 const { getLoadingEmbed } = require('../../../utils/embeds/loading');
 const { getNotYourInteractionProfileEmbed } = require('../../../utils/embeds/safety/notYourInteractionProfile');
-const renderManager = require('../../../utils/render/SafeRenderManager');
+const { getProfileImage } = require('../../../utils/canvas/profile');
+const { getTroopShowcaseImage } = require('../../../utils/canvas/troopShowcase');
+const { getCachedRender } = require('../../../utils/canvas/shared');
 
 module.exports = {
   mainServerOnly: false,
@@ -86,11 +88,12 @@ module.exports = {
         const timeoutMs = 300_000
         const endTimestamp = Math.floor((Date.now() + timeoutMs) / 1000);
 
-        const keyProfile = playerData.tag.replace(/[^a-zA-Z0-9-_]/g, '');
-        const keyTroop = keyProfile + '_troop';
+        const formattedTag = playerData.tag.replace(/[^a-zA-Z0-9-_]/g, '');
+        const profileKey = `profile-${formattedTag}`
+        const troopsKey = `troops-${formattedTag}`
 
-        const profileImage = await renderManager.render('profile', playerData, keyProfile);
-        const troopImage = await renderManager.render('troop', playerData, keyTroop);
+        const profileImage = await getCachedRender(interaction.user.id, profileKey, getProfileImage, playerData);
+        const troopImage = await getCachedRender(interaction.user.id, troopsKey, getTroopShowcaseImage, playerData)
 
         const profileAttachment = new AttachmentBuilder(Buffer.from(profileImage.buffer), { name: profileImage.fileName });
 
@@ -161,10 +164,7 @@ module.exports = {
 
         collector.on('end', async () => {
             await interaction.editReply({ components: [expiredOptions()] });
-
-            profileImage.buffer = null;
-            troopImage.buffer = null;
-
+            collector.buffer = null;
             if (global.gc) global.gc();
         });
 
