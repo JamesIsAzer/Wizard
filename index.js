@@ -14,6 +14,11 @@ process.on('uncaughtException', (error) => {
   console.error(`Uncaught exception at ${new Date().toString()} - ${error}`)
 })
 
+setInterval(() => {
+  const used = process.memoryUsage();
+  console.log(`Heap Used: ${Math.round(used.heapUsed / 1024 / 1024)} MB`);
+}, 3600000);
+
 client.on('interactionCreate', async (interaction) => {
   try {
     if (interaction.isCommand()) return await interactionCommand.execute(interaction)
