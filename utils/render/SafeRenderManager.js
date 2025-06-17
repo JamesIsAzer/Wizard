@@ -1,6 +1,5 @@
 const { Worker } = require('worker_threads');
 const path = require('path');
-const PQueue = require('p-queue').default;
 const pLimit = require('p-limit');
 
 class SafeRenderManager {
@@ -10,7 +9,7 @@ class SafeRenderManager {
         this.workerPool = [];
         this.workerIndex = 0;
         this.isShuttingDown = false;
-        this.queue = new PQueue({ concurrency: 1, interval: 100, intervalCap: 2 });
+        this.queue = null;  // Now we will lazy-load this
         this.globalLimiter = pLimit(1);
         this.initWorkerPool();
     }
@@ -23,8 +22,16 @@ class SafeRenderManager {
         }
     }
 
+    async initQueue() {
+        if (this.queue) return;  // If already initialized, do nothing
+        const pQueueImport = await import('p-queue');
+        const PQueue = pQueueImport.default;
+        this.queue = new PQueue({ concurrency: 1, interval: 100, intervalCap: 2 });
+    }
+
     async render(type, profile, key) {
         if (this.isShuttingDown) throw new Error('Render manager shutting down');
+        await this.initQueue();  // Ensure queue is initialized before render
         return this.globalLimiter(() => this.queue.add(() => this._runWorker(type, profile, key)));
     }
 
@@ -89,6 +96,7 @@ class SafeRenderManager {
     async shutdown() {
         if (this.isShuttingDown) return;
         this.isShuttingDown = true;
+        await this.initQueue();
         this.queue.pause();
         this.queue.clear();
         await Promise.allSettled(this.workerPool.map(w => w.terminate()));
