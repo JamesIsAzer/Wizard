@@ -43,9 +43,7 @@ const getProfileImage = async (profile, key) => {
 
     autoThrottleCacheClear();
 
-    const buffer = canvas.toBuffer('image/png');
-    const fileName = `player-profile-${key}.png`
-    return { buffer, fileName };
+    return canvas
 };
 
 const nameCardSection = async (profile, ctx, x, y) => {

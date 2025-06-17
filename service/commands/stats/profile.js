@@ -161,6 +161,11 @@ module.exports = {
 
         collector.on('end', async () => {
             await interaction.editReply({ components: [expiredOptions()] });
+
+            profileImage.buffer = null;
+            troopImage.buffer = null;
+
+            if (global.gc) global.gc();
         });
 
     } else if (interaction.options.getSubcommand() === 'save') {

@@ -7,7 +7,6 @@ const {
   getImagePath,
   getCachedImage, 
   createOptimizedGradient, 
-  preloadImages, 
   setupCanvasContext,
   autoThrottleCacheClear
  } = require('./shared')
@@ -50,10 +49,7 @@ const getTroopShowcaseImage = async (profile, key) => {
 
   autoThrottleCacheClear();
 
-  const buffer = canvas.toBuffer('image/png');
-  const fileName = `player-profile-${key}.png`
-
-  return { buffer, fileName }
+  return canvas
 };
 
 const isMaxed = (list, name) => {
