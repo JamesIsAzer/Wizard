@@ -15,8 +15,8 @@ process.on('uncaughtException', (error) => {
 })
 
 setInterval(() => {
-  const used = process.memoryUsage();
-  console.log(`Heap Used: ${Math.round(used.heapUsed / 1024 / 1024)} MB`);
+  const mem = process.memoryUsage();
+  console.log(`Heap Used: ${Math.round(mem.heapUsed / 1024 / 1024)} MB, RSS: ${Math.round(mem.rss / 1024 / 1024)} MB`);
 }, 3600000);
 
 client.on('interactionCreate', async (interaction) => {
