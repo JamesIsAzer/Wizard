@@ -13,6 +13,7 @@ const { getNotYourInteractionProfileEmbed } = require('../../../utils/embeds/saf
 const { getProfileImage } = require('../../../utils/canvas/profile');
 const { getTroopShowcaseImage } = require('../../../utils/canvas/troopShowcase');
 const { getCachedRender } = require('../../../utils/canvas/shared');
+const { getXpImage } = require('../../../utils/canvas/xp');
 
 module.exports = {
   mainServerOnly: false,
@@ -91,23 +92,27 @@ module.exports = {
         const formattedTag = playerData.tag.replace(/[^a-zA-Z0-9-_]/g, '');
         const profileKey = `profile-${formattedTag}`
         const troopsKey = `troops-${formattedTag}`
+        const xpKey = `xp-${playerData.expLevel}`
 
         const profileImage = await getCachedRender(interaction.user.id, profileKey, getProfileImage, playerData);
         const troopImage = await getCachedRender(interaction.user.id, troopsKey, getTroopShowcaseImage, playerData)
 
-        const profileAttachment = new AttachmentBuilder(Buffer.from(profileImage.buffer), { name: profileImage.fileName });
+        const thumbnailXpImage = await getCachedRender(interaction.user.id, xpKey, getXpImage, playerData.expLevel)
 
-        const profileEmbed = await getProfileEmbed(playerData, verified, null, profileImage.fileName);
+        const profileAttachment = new AttachmentBuilder(Buffer.from(profileImage.buffer), { name: profileImage.fileName });
+        const xpAttachment = new AttachmentBuilder(Buffer.from(thumbnailXpImage.buffer), { name: thumbnailXpImage.fileName });
+
+        const profileEmbed = await getProfileEmbed(playerData, verified, null, profileImage.fileName, thumbnailXpImage.fileName);
 
         const profileMenu = profileOptions('profile')
 
         const message = await interaction.editReply({ 
             embeds: [profileEmbed], 
-            files: [profileAttachment], 
+            files: [profileAttachment, xpAttachment], 
             components: [profileMenu]
         })
 
-        const timestampedProfileEmbed = await getProfileEmbed(playerData, verified, endTimestamp, profileImage.fileName)
+        const timestampedProfileEmbed = await getProfileEmbed(playerData, verified, endTimestamp, profileImage.fileName, thumbnailXpImage.fileName)
         const timestampedTroopShowcaseEmbed = await getTroopShowcaseEmbed(playerData, verified, endTimestamp, troopImage.fileName)
 
         const dataOptions = {
@@ -151,13 +156,22 @@ module.exports = {
                 components: [profileOptions(selected, true)]
             });
             
-            const attachment = selected === 'profile' 
-                ? new AttachmentBuilder(Buffer.from(profileImage.buffer), { name: profileImage.fileName })
-                : new AttachmentBuilder(Buffer.from(troopImage.buffer), { name: troopImage.fileName });
-
+            const fileList = []
+            
+            if (selected === 'profile') {
+                fileList.push(
+                    new AttachmentBuilder(Buffer.from(profileImage.buffer), { name: profileImage.fileName }),
+                    new AttachmentBuilder(Buffer.from(thumbnailXpImage.buffer), { name: thumbnailXpImage.fileName })
+                )
+            }
+            
+            if (selected === 'army') {
+                fileList.push(new AttachmentBuilder(Buffer.from(troopImage.buffer), { name: troopImage.fileName }))
+            }
+            
             await selectInteraction.editReply({
                 embeds: [selectedData],
-                files: [attachment],
+                files: fileList,
                 components: [profileOptions(selected)]
             });
         });

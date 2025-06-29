@@ -16,26 +16,7 @@ const getProfileImage = async (profile, key) => {
         ctx.fillStyle = '#e8e8e0';
         
         ctx.fillRect(0, 0, width, height);
-
-        const requiredImages = [
-            getTownhallPath(profile.townHallLevel),
-            getImagePath('xp'),
-            getImagePath('shine')
-        ];
-
-        if (profile.clan) {
-            requiredImages.push(profile.clan.badgeUrls.medium);
-        }
         
-        // Achievement images
-        if (profile.achievements) {
-            profile.achievements.forEach(achievement => {
-                if (achievement.stars > 0) {
-                    requiredImages.push(getAchievementStarsImagePath(achievement.stars));
-                }
-            });
-        }
-
         await nameCardSection(profile, ctx, 25, 25),
         await achievementsSection(profile.achievements, ctx, 75, hasLegendStats ? 1425 : 1000)
 

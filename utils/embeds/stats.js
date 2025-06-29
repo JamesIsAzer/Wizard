@@ -22,7 +22,7 @@ const getTroopShowcaseEmbed = async (profile, verified, endTimestamp, fileName) 
     return embed
 }
 
-const getProfileEmbed = async (profile, verified, endTimestamp, fileName) => {
+const getProfileEmbed = async (profile, verified, endTimestamp, fileName, thumbnailFileName) => {
     const descriptionLines = [
         `**Player tag:** \`${profile.tag}\``,
         `${emojis.link} **[View profile in-game](https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=${parseTag(profile.tag)})**`,
@@ -35,7 +35,7 @@ const getProfileEmbed = async (profile, verified, endTimestamp, fileName) => {
         .setColor('#33E3FF')
         .setDescription(descriptionLines.join('\n'))
         .setImage(`attachment://${fileName}`)
-        .setThumbnail('https://i.imgur.com/FSzGdhn.png');
+        .setThumbnail(`attachment://${thumbnailFileName}`);
 
     if (verified) {
         embed.setFooter({
