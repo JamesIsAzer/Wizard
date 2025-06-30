@@ -26,10 +26,12 @@ client.on('interactionCreate', async (interaction) => {
     return await interactionEvent.execute(interaction)
   } catch (e) {
     console.error(`[INTERACTION ERROR]: ${new Date().toString()} - ${e} ${e.stack}`);
-    await interaction.editReply({
-      content: 'There was an error while executing this command!',
-      flags: MessageFlags.Ephemeral
-    });
+
+    if (interaction.deferred || interaction.replied) {
+      await interaction.editReply({ content: 'There was an error while executing this command!' });
+    } else {
+      await interaction.reply({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
+    }
   }
 });
 

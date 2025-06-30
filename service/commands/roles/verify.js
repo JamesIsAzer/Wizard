@@ -18,10 +18,10 @@ const {
 } = require('../../../utils/embeds/verify');
 const { parseTag, isTagValid } = require('../../../utils/arguments/tagHandling');
 const { getAchievements, hasAnyRoles, getMaxTownhallLevel, addRoles } = require('../../../utils/setRoles');
-const { logChannels } = require('../../../config.json')
+const { logChannels, ownerGuildID } = require('../../../config.json')
 const { getNewVerifationID, getCrossVerificationIDs } = require('../../../utils/buttons/getID')
 const { InteractionContextType, MessageFlags } = require('discord.js');
-const { getGuild, getChannel } = require('../../../utils/getDiscordObjects');
+const { getChannel } = require('../../../utils/getDiscordObjects');
 const { getConfig } = require('../../../config');
 
 module.exports = {
@@ -54,7 +54,8 @@ module.exports = {
     const token = interaction.options.getString('token');
 
     const config = await getConfig(interaction.guildId)
-    
+    const onMainServer = interaction.guildId == ownerGuildID
+
     const crossVerifyLogChannel = getChannel(logChannels.crossVerify)
     const newVerifyLogChannel = getChannel(logChannels.newVerify)
 
@@ -115,7 +116,7 @@ module.exports = {
       if (await alreadyTaken(tag, interaction.member.id)) {
         const originalAccountId = await getDiscordOfTag(tag)
         await interaction.editReply('This account is already taken!');
-        return (await crossVerifyLogChannel).send({embeds: [alertAttemptCrossVerification(memberId, originalAccountId, tag)], components: [getCrossVerificationIDs(memberId, originalAccountId)]})
+        return (await crossVerifyLogChannel).send({embeds: [alertAttemptCrossVerification(memberId, originalAccountId, tag, onMainServer)], components: [getCrossVerificationIDs(memberId, originalAccountId)]})
       } else {
         addRoles(anyRoles, achieved, townhallLevel, interaction.member, config)
 

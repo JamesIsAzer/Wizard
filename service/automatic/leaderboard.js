@@ -13,11 +13,29 @@ const { getChannel } = require('../../utils/getDiscordObjects');
 
 const MAX_LEADERBOARD_PARTICIPANTS = 5
 
-const limiter = new Bottleneck({
-    maxConcurrent: 40,
-    minTime: 25
+const clashAPISecondLimiter = new Bottleneck({
+    reservoir: 60,
+    reservoirRefreshAmount: 60,
+    reservoirRefreshInterval: 1000,
+    maxConcurrent: 10
 });
-  
+
+const clashAPIMinuteLimiter = new Bottleneck({
+    reservoir: 2500,
+    reservoirRefreshAmount: 2500,
+    reservoirRefreshInterval: 60_000,
+});
+
+const clashAPILimiter = clashAPISecondLimiter.chain(clashAPIMinuteLimiter)
+
+const discordAPILimiter = new Bottleneck({
+    reservoir: 25,                  
+    reservoirRefreshAmount: 25,     
+    reservoirRefreshInterval: 1000, 
+    maxConcurrent: 5,               
+    minTime: 0                      
+});
+
 const createLeaderboard = async() => {
     console.log(`${new Date().toString()} Creating leaderboards`)
     
@@ -39,23 +57,62 @@ const createLeaderboard = async() => {
 
     refreshLeaderboardSnapshot(playerData)
     
-    legendsChannelIDs.forEach(async (legendsChannelID) => {
-        try {
-            const legendsChannel = await getChannel(legendsChannelID)
-            legendsChannel.send({embeds: [getLegendaryLeaderboard(formatToSnapshot(topLegends), legendParticipantCount, 0, MAX_LEADERBOARD_PARTICIPANTS)], components: [getHowToCompete()] })
-        } catch (e) {
-            console.error(`Invalid legendary leaderboard channel ID: ${legendsChannelID}`)
-        }
-        
-    })
-    builderChannelIDs.forEach(async (builderChannelID) => {
-        try {
-            const builderChannel = await getChannel(builderChannelID)
-            builderChannel.send({embeds: [getBuilderLeaderboard(formatToSnapshot(topBuilders), builderParticipantCount, 0, MAX_LEADERBOARD_PARTICIPANTS)], components: [getHowToCompete()] })
-        } catch (e) {
-            console.error(`Invalid builder leaderboard channel ID: ${builderChannelID}`)
-        }
-    })
+    sendLeaderboards(legendsChannelIDs, builderChannelIDs, topLegends, topBuilders, legendParticipantCount, builderParticipantCount)
+}
+
+const sendLeaderboards = async (
+    legendsChannelIDs, 
+    builderChannelIDs, 
+    topLegends, 
+    topBuilders, 
+    legendParticipantCount, 
+    builderParticipantCount
+) => {
+    const sendTasks = [
+        ...legendsChannelIDs.map((channelID) =>
+            discordAPILimiter.schedule(async () => {
+                try {
+                    const channel = await getChannel(channelID);
+                    await channel.send({
+                        embeds: [
+                            getLegendaryLeaderboard(
+                                formatToSnapshot(topLegends),
+                                legendParticipantCount,
+                                0,
+                                MAX_LEADERBOARD_PARTICIPANTS
+                            )
+                        ],
+                        components: [getHowToCompete()]
+                    });
+                } catch (e) {
+                    console.error(`Failed to send to legend channel ${channelID}:`, e);
+                }
+            })
+        ),
+        ...builderChannelIDs.map((channelID) =>
+            discordAPILimiter.schedule(async () => {
+                try {
+                    const channel = await getChannel(channelID);
+                    await channel.send({
+                        embeds: [
+                            getBuilderLeaderboard(
+                                formatToSnapshot(topBuilders),
+                                builderParticipantCount,
+                                0,
+                                MAX_LEADERBOARD_PARTICIPANTS
+                            )
+                        ],
+                        components: [getHowToCompete()]
+                    });
+                } catch (e) {
+                    console.error(`Failed to send to builder channel ${channelID}:`, e);
+                }
+            })
+        )
+    ];
+
+    await Promise.allSettled(sendTasks);
+
 }
 
 const findLeaderboardChannels = (leaderboards) => 
@@ -93,15 +150,20 @@ const filterInvalidAccounts = (participants) =>
     participants.filter((participant) => participant.discordUsername)
 
 const fetchAllAccounts = (participants) => 
-    promiseAllProps(participants.map((participant) => 
-        limiter.schedule(() => ({
-            discordUsername: participant.discordUsername,
-            clash: findProfile(participant.playerTag),
-            discordID: participant.discordID,
-            leaderboard: participant.leaderboard,
-            builderleaderboard: participant.builderleaderboard
-        }))
-    ))
+    promiseAllProps(
+        participants.map((participant) => 
+            clashAPILimiter.schedule(async () => {
+                const clashData = await findProfile(participant.playerTag)
+                return {
+                    discordUsername: participant.discordUsername,
+                    clash: clashData,
+                    discordID: participant.discordID,
+                    leaderboard: participant.leaderboard,
+                    builderleaderboard: participant.builderleaderboard
+                }
+            })
+        )
+    )
 
 const splitParticipants = (participants) => 
     participants.reduce((acc, x) => {

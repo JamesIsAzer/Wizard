@@ -37,8 +37,8 @@ const getUnverifiedEmbed = () => new EmbedBuilder()
     .setColor('#00DE30')
     .setDescription('Unverified all accounts linked to you and removed achievement roles in all servers.');
 
-const alertAttemptCrossVerification = (newUserId, originalOwnerId, tag) => new EmbedBuilder()
-    .setTitle('Attempted cross verification⚠️')
+const alertAttemptCrossVerification = (newUserId, originalOwnerId, tag, onMainServer) => new EmbedBuilder()
+    .setTitle(`Attempted cross verification ${onMainServer ? 'outside of server' : ''}⚠️`)
     .setColor('FFFF00')
     .setDescription(`User <@${newUserId}> tried to verify an account linked to <@${originalOwnerId}> using the tag \`#${tag}\``)
 
