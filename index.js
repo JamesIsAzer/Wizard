@@ -7,7 +7,6 @@ require('dotenv').config();
 
 const interactionCommand = require('./service/commands/commandHandler.js');
 const interactionEvent = require('./service/events/eventHandler');
-const { preloadAllImages } = require('./utils/canvas/shared.js');
 
 interactionCommand.loadCommands(client);
 
@@ -38,7 +37,6 @@ client.on('interactionCreate', async (interaction) => {
 client.once('ready', async () => {
   console.log(`${new Date().toString()} Connected to discord!`);
   await connectDB()
-  await preloadAllImages()
   client.user.setPresence({ activities: [{ name: 'with fireballs 🔥', type: ActivityType.Playing }], status: 'online'})
   scheduleLeaderboards()
   console.log(`${new Date().toString()} Wizard is ready to go!`)

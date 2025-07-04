@@ -10,10 +10,7 @@ const { profileOptions } = require('../../../utils/selections/profileOptions');
 const { expiredOptions } = require('../../../utils/selections/expiredOptions');
 const { getLoadingEmbed } = require('../../../utils/embeds/loading');
 const { getNotYourInteractionProfileEmbed } = require('../../../utils/embeds/safety/notYourInteractionProfile');
-const { getProfileImage } = require('../../../utils/canvas/profile');
-const { getTroopShowcaseImage } = require('../../../utils/canvas/troopShowcase');
-const { getCachedRender } = require('../../../utils/canvas/shared');
-const { getXpImage } = require('../../../utils/canvas/xp');
+const { fetchProfileImage, fetchTroopsImage, fetchXpThumbnail } = require('../../../dao/microservices/clashImageGenerator');
 
 module.exports = {
   mainServerOnly: false,
@@ -90,17 +87,13 @@ module.exports = {
         const endTimestamp = Math.floor((Date.now() + timeoutMs) / 1000);
 
         const formattedTag = playerData.tag.replace(/[^a-zA-Z0-9-_]/g, '');
-        const profileKey = `profile-${formattedTag}`
-        const troopsKey = `troops-${formattedTag}`
-        const xpKey = `xp-${playerData.expLevel}`
 
-        const profileImage = await getCachedRender(interaction.user.id, profileKey, getProfileImage, playerData);
-        const troopImage = await getCachedRender(interaction.user.id, troopsKey, getTroopShowcaseImage, playerData)
+        const profileImage = { fileName: `profile-${formattedTag}.png`, buffer: fetchProfileImage(tag) }
+        const troopImage = { fileName: `troops-${formattedTag}.png`, buffer: fetchTroopsImage(tag) }
+        const thumbnailXpImage = { fileName: `xp-${formattedTag}.png`, buffer: fetchXpThumbnail(tag) }
 
-        const thumbnailXpImage = await getCachedRender(interaction.user.id, xpKey, getXpImage, playerData.expLevel)
-
-        const profileAttachment = new AttachmentBuilder(Buffer.from(profileImage.buffer), { name: profileImage.fileName });
-        const xpAttachment = new AttachmentBuilder(Buffer.from(thumbnailXpImage.buffer), { name: thumbnailXpImage.fileName });
+        const profileAttachment = new AttachmentBuilder(Buffer.from(await profileImage.buffer), { name: profileImage.fileName });
+        const xpAttachment = new AttachmentBuilder(Buffer.from(await thumbnailXpImage.buffer), { name: thumbnailXpImage.fileName });
 
         const profileEmbed = await getProfileEmbed(playerData, verified, null, profileImage.fileName, thumbnailXpImage.fileName);
 
@@ -160,13 +153,13 @@ module.exports = {
             
             if (selected === 'profile') {
                 fileList.push(
-                    new AttachmentBuilder(Buffer.from(profileImage.buffer), { name: profileImage.fileName }),
-                    new AttachmentBuilder(Buffer.from(thumbnailXpImage.buffer), { name: thumbnailXpImage.fileName })
+                    new AttachmentBuilder(Buffer.from(await profileImage.buffer), { name: profileImage.fileName }),
+                    new AttachmentBuilder(Buffer.from(await thumbnailXpImage.buffer), { name: thumbnailXpImage.fileName })
                 )
             }
             
             if (selected === 'army') {
-                fileList.push(new AttachmentBuilder(Buffer.from(troopImage.buffer), { name: troopImage.fileName }))
+                fileList.push(new AttachmentBuilder(Buffer.from(await troopImage.buffer), { name: troopImage.fileName }))
             }
             
             await selectInteraction.editReply({
