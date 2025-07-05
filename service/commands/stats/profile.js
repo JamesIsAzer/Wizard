@@ -88,9 +88,9 @@ module.exports = {
 
         const formattedTag = playerData.tag.replace(/[^a-zA-Z0-9-_]/g, '');
 
-        const profileImage = { fileName: `profile-${formattedTag}.png`, buffer: () => fetchProfileImage(tag) }
-        const troopImage = { fileName: `troops-${formattedTag}.png`, buffer: () => fetchTroopsImage(tag) }
-        const thumbnailXpImage = { fileName: `xp-${formattedTag}.png`, buffer: () => fetchXpThumbnail(tag) }
+        const profileImage = { fileName: `profile-${formattedTag}.png`, buffer: () => fetchProfileImage(formattedTag) }
+        const troopImage = { fileName: `troops-${formattedTag}.png`, buffer: () => fetchTroopsImage(formattedTag) }
+        const thumbnailXpImage = { fileName: `xp-${formattedTag}.png`, buffer: () => fetchXpThumbnail(formattedTag) }
 
         const profileAttachment = new AttachmentBuilder(Buffer.from(await profileImage.buffer()), { name: profileImage.fileName });
         const xpAttachment = new AttachmentBuilder(Buffer.from(await thumbnailXpImage.buffer()), { name: thumbnailXpImage.fileName });
