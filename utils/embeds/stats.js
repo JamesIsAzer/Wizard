@@ -172,11 +172,8 @@ function getWarLeagueEmote(warLeagueId){
 
 const getURLTag = (profile) => profile.tag.substr(1)
 const getURLName = (profile) => encodeURIComponent(profile.name.replace(/\s+/g, '-').toLowerCase())
-const getURLPlayerClanTag = (profile) => profile?.clan?.tag?.substr(1)
-const getURLPlayerClanName = (profile) => encodeURIComponent(profile?.clan?.name?.replace(/\s+/g, '-').toLowerCase())
 const getURLClanTag = (clan) => clan.tag.substr(1)
 const getURLClanName = (clan) => encodeURIComponent(clan.name.replace(/[\s+]/g, '-').toLowerCase())
-const isInClan = (profile) => !!profile.clan
 const getTopMemberNames = (clan) => fillEmptyString(getTopMembers(clan.memberList).map((member) => member.name).join("\n"))
 const getTopMemberTags = (clan) => fillEmptyString(getTopMembers(clan.memberList).map((member) => member.tag).join("\n"))
 const getTopMemberTrophies = (clan) => fillEmptyString(getTopMembers(clan.memberList).map((member) => member.trophies).join("\n"))

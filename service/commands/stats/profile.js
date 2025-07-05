@@ -88,12 +88,12 @@ module.exports = {
 
         const formattedTag = playerData.tag.replace(/[^a-zA-Z0-9-_]/g, '');
 
-        const profileImage = { fileName: `profile-${formattedTag}.png`, buffer: fetchProfileImage(tag) }
-        const troopImage = { fileName: `troops-${formattedTag}.png`, buffer: fetchTroopsImage(tag) }
-        const thumbnailXpImage = { fileName: `xp-${formattedTag}.png`, buffer: fetchXpThumbnail(tag) }
+        const profileImage = { fileName: `profile-${formattedTag}.png`, buffer: () => fetchProfileImage(tag) }
+        const troopImage = { fileName: `troops-${formattedTag}.png`, buffer: () => fetchTroopsImage(tag) }
+        const thumbnailXpImage = { fileName: `xp-${formattedTag}.png`, buffer: () => fetchXpThumbnail(tag) }
 
-        const profileAttachment = new AttachmentBuilder(Buffer.from(await profileImage.buffer), { name: profileImage.fileName });
-        const xpAttachment = new AttachmentBuilder(Buffer.from(await thumbnailXpImage.buffer), { name: thumbnailXpImage.fileName });
+        const profileAttachment = new AttachmentBuilder(Buffer.from(await profileImage.buffer()), { name: profileImage.fileName });
+        const xpAttachment = new AttachmentBuilder(Buffer.from(await thumbnailXpImage.buffer()), { name: thumbnailXpImage.fileName });
 
         const profileEmbed = await getProfileEmbed(playerData, verified, null, profileImage.fileName, thumbnailXpImage.fileName);
 
@@ -105,19 +105,19 @@ module.exports = {
             components: [profileMenu]
         })
 
-        const timestampedProfileEmbed = await getProfileEmbed(playerData, verified, endTimestamp, profileImage.fileName, thumbnailXpImage.fileName)
-        const timestampedTroopShowcaseEmbed = await getTroopShowcaseEmbed(playerData, verified, endTimestamp, troopImage.fileName)
-
-        const dataOptions = {
-            'profile': timestampedProfileEmbed,
-            'army': timestampedTroopShowcaseEmbed
-        }
+        const loadTimestampedProfileEmbed = () => getProfileEmbed(playerData, verified, endTimestamp, profileImage.fileName, thumbnailXpImage.fileName)
+        const loadTimestampedTroopShowcaseEmbed = () => getTroopShowcaseEmbed(playerData, verified, endTimestamp, troopImage.fileName)
 
         await interaction.editReply({
-            embeds: [timestampedProfileEmbed],
+            embeds: [await loadTimestampedProfileEmbed()],
             components: [profileMenu]
         });
         
+        const dataOptions = {
+            'profile': loadTimestampedProfileEmbed,
+            'army': loadTimestampedTroopShowcaseEmbed
+        }
+
         const collector = message.createMessageComponentCollector({
             componentType: ComponentType.StringSelect,
             time: timeoutMs
@@ -153,17 +153,17 @@ module.exports = {
             
             if (selected === 'profile') {
                 fileList.push(
-                    new AttachmentBuilder(Buffer.from(await profileImage.buffer), { name: profileImage.fileName }),
-                    new AttachmentBuilder(Buffer.from(await thumbnailXpImage.buffer), { name: thumbnailXpImage.fileName })
+                    new AttachmentBuilder(Buffer.from(await profileImage.buffer()), { name: profileImage.fileName }),
+                    new AttachmentBuilder(Buffer.from(await thumbnailXpImage.buffer()), { name: thumbnailXpImage.fileName })
                 )
             }
             
             if (selected === 'army') {
-                fileList.push(new AttachmentBuilder(Buffer.from(await troopImage.buffer), { name: troopImage.fileName }))
+                fileList.push(new AttachmentBuilder(Buffer.from(await troopImage.buffer()), { name: troopImage.fileName }))
             }
             
             await selectInteraction.editReply({
-                embeds: [selectedData],
+                embeds: [await selectedData()],
                 files: fileList,
                 components: [profileOptions(selected)]
             });
