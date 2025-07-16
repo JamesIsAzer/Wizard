@@ -3,7 +3,6 @@ const { refreshLeaderboardSnapshot } = require('../../dao/mongo/leaderboardSnaps
 const { findProfile } = require('../../dao/clash/verification');
 const { getLegendaryLeaderboard, getBuilderLeaderboard } = require('../../utils/embeds/leaderboard')
 const { getHowToCompete } = require('../../utils/buttons/leaderboard')
-const { ownerGuildID } = require('../../config.json')
 const Bottleneck = require('bottleneck');
 const client = require('../../client')
 const {Promise} = require('bluebird');
@@ -32,8 +31,8 @@ const discordAPILimiter = new Bottleneck({
     reservoir: 25,                  
     reservoirRefreshAmount: 25,     
     reservoirRefreshInterval: 1000, 
-    maxConcurrent: 5,               
-    minTime: 0                      
+    maxConcurrent: 5,
+    minTime: 50                      
 });
 
 const createLeaderboard = async() => {
@@ -41,9 +40,7 @@ const createLeaderboard = async() => {
     
     const leaderboards = getAllLeaderboards()
     const participants = await getLeaderboardAccounts()
-    const discordData = await appendDiscordData(participants)
-    const filteredDiscordData = filterInvalidAccounts(discordData)
-    const playerData = await fetchAllAccounts(filteredDiscordData).then((x) => pruneIncompleteData(x))
+    const playerData = await fetchAllAccounts(participants).then((x) => pruneIncompleteData(x))
     
     const participantsSplit = splitParticipants(playerData)
 
@@ -61,11 +58,11 @@ const createLeaderboard = async() => {
 }
 
 const sendLeaderboards = async (
-    legendsChannelIDs, 
-    builderChannelIDs, 
-    topLegends, 
-    topBuilders, 
-    legendParticipantCount, 
+    legendsChannelIDs,
+    builderChannelIDs,
+    topLegends,
+    topBuilders,
+    legendParticipantCount,
     builderParticipantCount
 ) => {
     const sendTasks = [
@@ -124,38 +121,13 @@ const findLeaderboardChannels = (leaderboards) =>
         { legendsChannelIDs: [], builderChannelIDs: [] }
       );
 
-const appendDiscordData = async(participants) => {
-    const participantsIDs = participants.map((participant) => participant.discordID)
-    const guild = client.guilds.cache.get(ownerGuildID)
-    
-    const participantIDChunks = chunk(participantsIDs, 100)
-
-    const memberDataAsync = participantIDChunks.reduce((acc, participantIDChunk) => {
-        const members = guild.members.fetch({ user: participantIDChunk })
-        return acc.concat(members)
-    }, [])
-
-    const memberDataArray = (await Promise.all(memberDataAsync))
-    const memberData = new Map(memberDataArray.map(x => [...x]).flat())
-
-    return participants.map((participant) => ({ ...participant._doc, discordUsername: findDiscordUsername(participant, memberData) }))
-}
-
-const findDiscordUsername = (participant, memberData) => {
-    const discordUser = memberData.get(participant.discordID)?.user
-    return discordUser ? `${discordUser.username}` : null
-}
-
-const filterInvalidAccounts = (participants) => 
-    participants.filter((participant) => participant.discordUsername)
-
 const fetchAllAccounts = (participants) => 
     promiseAllProps(
         participants.map((participant) => 
             clashAPILimiter.schedule(async () => {
                 const clashData = await findProfile(participant.playerTag)
                 return {
-                    discordUsername: participant.discordUsername,
+                    discordUsername: participant.discordUsername ?? "-",
                     clash: clashData,
                     discordID: participant.discordID,
                     leaderboard: participant.leaderboard,
@@ -187,11 +159,6 @@ const sortBuilders = (builderParticipants) =>
         .slice(0, MAX_LEADERBOARD_PARTICIPANTS)
 
 const takeTopPlayers = (participants) => participants.slice(0, MAX_LEADERBOARD_PARTICIPANTS)
-
-const chunk = (arr, size) =>
-    Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
-      arr.slice(i * size, i * size + size)
-    )
 
 const formatToSnapshot = (participants) => participants.map(participant => ({
     discordID: participant.discordID,

@@ -36,7 +36,8 @@ module.exports = {
     });
     
     const tag = parseTag(interaction.options.getString('tag'))
-    const id = interaction.member.id
+    const id = interaction.user.id
+    const username = interaction.user.username
 
     if (await isLeaderboardLocked()) {
       await interaction.editReply('Leaderboard participation is currently locked.')
@@ -92,7 +93,7 @@ module.exports = {
     const builder = account.builderBaseTrophies >= BUILDER_MINIMUM
 
     if (legends || builder) {
-      updateLeaderboardParticipation(tag, id, legends, builder)
+      updateLeaderboardParticipation(tag, id, username, legends, builder)
       interaction.member.roles.add(leaderboardContestID);
     }
 

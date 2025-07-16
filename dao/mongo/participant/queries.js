@@ -14,9 +14,9 @@ const checkIfCompetingInBoth = async ( tag, discordID ) =>
         return false
     })
 
-const updateLeaderboardParticipation = async (tag, discordID, leaderboard, builderleaderboard) =>
+const updateLeaderboardParticipation = async (tag, discordID, discordUsername, leaderboard, builderleaderboard) =>
     participants.updateOne({ discordID, playerTag: tag },
-    { $set: { leaderboard: leaderboard, builderleaderboard: builderleaderboard } },
+    { $set: { leaderboard, builderleaderboard, discordUsername } },
     { upsert: true })
 
 const uncompete = async ( tag, discordID ) =>
