@@ -20,20 +20,24 @@ setInterval(() => {
 }, 3600000);
 
 client.on("shardDisconnect", (event, id) => {
-  console.warn(`Shard ${id} disconnected:`, event);
+  console.warn(`${new Date().toString()} - Shard ${id} disconnected:`, event);
 });
 
 client.on("shardReconnecting", id => {
-  console.warn(`Shard ${id} is reconnecting...`);
+  console.warn(`${new Date().toString()} - Shard ${id} is reconnecting...`);
 });
 
 client.on("error", error => {
-  console.error("Client error:", error);
+  console.error(`${new Date().toString()} - Client error:`, error);
 });
 
 client.on("rateLimit", (info) => {
-  console.warn("Rate limit hit:", info);
+  console.warn(`${new Date().toString()} - Rate limit hit:`, info);
 });
+
+client.on("debug", (msg) => {
+  console.log(`${new Date().toString()} - Debug log: ${msg}`)
+})
 
 client.on('interactionCreate', async (interaction) => {
   try {
