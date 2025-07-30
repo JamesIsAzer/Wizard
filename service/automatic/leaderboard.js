@@ -82,7 +82,7 @@ const sendLeaderboards = async (
                         components: [getHowToCompete()]
                     });
                 } catch (e) {
-                    console.error(`Failed to send to legend channel ${channelID}:`, e);
+                    console.error(`Failed to send to legend channel ${channelID}`);
                 }
             })
         ),
@@ -102,7 +102,7 @@ const sendLeaderboards = async (
                         components: [getHowToCompete()]
                     });
                 } catch (e) {
-                    console.error(`Failed to send to builder channel ${channelID}:`, e);
+                    console.error(`Failed to send to builder channel ${channelID}`);
                 }
             })
         )

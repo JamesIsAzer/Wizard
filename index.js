@@ -19,6 +19,22 @@ setInterval(() => {
   console.log(`Heap Used: ${Math.round(mem.heapUsed / 1024 / 1024)} MB, RSS: ${Math.round(mem.rss / 1024 / 1024)} MB`);
 }, 3600000);
 
+client.on("shardDisconnect", (event, id) => {
+  console.warn(`Shard ${id} disconnected:`, event);
+});
+
+client.on("shardReconnecting", id => {
+  console.warn(`Shard ${id} is reconnecting...`);
+});
+
+client.on("error", error => {
+  console.error("Client error:", error);
+});
+
+client.on("rateLimit", (info) => {
+  console.warn("Rate limit hit:", info);
+});
+
 client.on('interactionCreate', async (interaction) => {
   try {
     if (interaction.isCommand()) return await interactionCommand.execute(interaction)
