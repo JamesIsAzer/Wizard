@@ -133,6 +133,14 @@ module.exports = {
                 )
                 .addStringOption((option) =>
                     option
+                        .setName('bsoto_role_id')
+                        .setDescription('Bsoto role ID.')
+                        .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(19)
+                )
+                .addStringOption((option) =>
+                    option
                         .setName('rock_solid_role_id')
                         .setDescription('Rock Solid role ID.')
                         .setRequired(false)
@@ -244,6 +252,14 @@ module.exports = {
                     option
                         .setName('campaigner_colour_role_id')
                         .setDescription('Campaigner colour role ID.')
+                        .setRequired(false)
+                        .setMinLength(17)
+                        .setMaxLength(19)
+                )
+                .addStringOption((option) =>
+                    option
+                        .setName('bsoto_colour_role_id')
+                        .setDescription('Bsoto colour role ID.')
                         .setRequired(false)
                         .setMinLength(17)
                         .setMaxLength(19)
@@ -389,6 +405,7 @@ module.exports = {
         const vanquisherRoleInputID = interaction.options.getString('vanquisher_role_id')
         const capitalistRoleInputID = interaction.options.getString('capitalist_role_id')
         const campaignerRoleInputID = interaction.options.getString('campaigner_role_id')
+        const bsotoRoleInputID = interaction.options.getString('bsoto_role_id')
         const rockSolidRoleInputID = interaction.options.getString('rock_solid_role_id')
         const vipRoleInputID = interaction.options.getString('vip_role_id')
         const goldRoleInputID = interaction.options.getString('gold_role_id')
@@ -403,6 +420,7 @@ module.exports = {
         const vanquisherColourRoleInputID = interaction.options.getString('vanquisher_colour_role_id')
         const capitalistColourRoleInputID = interaction.options.getString('capitalist_colour_role_id')
         const campaignerColourRoleInputID = interaction.options.getString('campaigner_colour_role_id')
+        const bsotoColourRoleInputID = interaction.options.getString('bsoto_colour_role_id')
         const rockSolidColourRoleInputID = interaction.options.getString('rock_solid_colour_role_id')
         const vipColourRoleInputID = interaction.options.getString('vip_colour_role_id')
         const goldColourRoleInputID = interaction.options.getString('gold_colour_role_id')
@@ -440,6 +458,7 @@ module.exports = {
                 vanquisher: vanquisherRoleInputID ? vanquisherRoleInputID : config?.verificationRoles?.vanquisher,
                 capitalist: capitalistRoleInputID ? capitalistRoleInputID : config?.verificationRoles?.capitalist,
                 campaigner: campaignerRoleInputID ? campaignerRoleInputID : config?.verificationRoles?.campaigner,
+                bsoto: bsotoRoleInputID ? bsotoRoleInputID : config?.verificationRoles?.bsoto,
                 rockSolid: rockSolidRoleInputID ? rockSolidRoleInputID : config?.verificationRoles?.rockSolid,
                 vip: vipRoleInputID ? vipRoleInputID : config?.verificationRoles?.vip,
                 gold: goldRoleInputID ? goldRoleInputID : config?.verificationRoles?.gold
@@ -457,6 +476,7 @@ module.exports = {
                 vanquisher: vanquisherColourRoleInputID ? vanquisherColourRoleInputID : config?.colourRoles?.vanquisher,
                 capitalist: capitalistColourRoleInputID ? capitalistColourRoleInputID : config?.colourRoles?.capitalist,
                 campaigner: campaignerColourRoleInputID ? campaignerColourRoleInputID : config?.colourRoles?.campaigner,
+                bsoto: bsotoColourRoleInputID ? bsotoColourRoleInputID : config?.colourRoles?.bsoto,
                 rockSolid: rockSolidColourRoleInputID ? rockSolidColourRoleInputID : config?.colourRoles?.rockSolid,
                 vip: vipColourRoleInputID ? vipColourRoleInputID : config?.colourRoles?.vip,
                 gold: goldColourRoleInputID ? goldColourRoleInputID : config?.colourRoles?.gold

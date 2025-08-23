@@ -31,6 +31,7 @@ const getColourList = (user, colourRoles, verificationRoles) => {
     displayRowColour(emojis.diamondleague, shouldDisplayRole(colourRoles?.vanquisher, verificationRoles?.vanquisher), colourRoles?.vanquisher) +
     displayRowColour(emojis.capitalgold, shouldDisplayRole(colourRoles?.capitalist, verificationRoles?.capitalist), colourRoles?.capitalist) +
     displayRowColour(emojis.goblin, shouldDisplayRole(colourRoles?.campaigner, verificationRoles?.campaigner), colourRoles?.campaigner) +
+    displayRowColour(emojis.xp, shouldDisplayRole(colourRoles?.bsoto, verificationRoles?.bsoto), colourRoles?.bsoto) +
     displayRowColour(emojis.rock, shouldDisplayRole(colourRoles?.rockSolid, verificationRoles?.rockSolid), colourRoles?.rockSolid) +
     displayRowColour(emojis.heart, shouldDisplayRole(colourRoles?.vip, verificationRoles?.vip), colourRoles?.vip) +
     displayRowColour(emojis.gold, shouldDisplayRole(colourRoles?.gold, verificationRoles?.gold), colourRoles?.gold) +
@@ -51,6 +52,7 @@ const getColourListRequirements = (colourRoles, verificationRoles) => {
     displayRowColourRequirements(colourRoles?.vanquisher, verificationRoles?.vanquisher) +
     displayRowColourRequirements(colourRoles?.capitalist, verificationRoles?.capitalist) +
     displayRowColourRequirements(colourRoles?.campaigner, verificationRoles?.campaigner) +
+    displayRowColourRequirements(colourRoles?.bsoto, verificationRoles?.bsoto) +
     displayRowColourRequirements(colourRoles?.rockSolid, verificationRoles?.rockSolid) +
     displayRowColourRequirements(colourRoles?.vip, verificationRoles?.vip) +
     displayRowColourRequirements(colourRoles?.gold, verificationRoles?.gold) +

@@ -49,6 +49,7 @@ module.exports = {
         const vanquisherRoleID = config?.verificationRoles?.vanquisher
         const capitalistRoleID = config?.verificationRoles?.capitalist
         const campaignerRoleID = config?.verificationRoles?.campaigner
+        const bsotoRoleID = config?.verificationRoles?.bsoto
         const rockSolidRoleID = config?.verificationRoles?.rockSolid
         const vipRoleID = config?.verificationRoles?.vip
         const goldRoleID = config?.verificationRoles?.gold
@@ -66,6 +67,7 @@ module.exports = {
         const vanquisherColourRoleID = config?.colourRoles?.vanquisher
         const capitalistColourRoleID = config?.colourRoles?.capitalist
         const campaignerColourRoleID = config?.colourRoles?.campaigner
+        const bsotoColourRoleID = config?.colourRoles?.bsoto
         const rockSolidColourRoleID = config?.colourRoles?.rockSolid
         const vipColourRoleID = config?.colourRoles?.vip
         const goldColourRoleID = config?.colourRoles?.gold
@@ -100,6 +102,7 @@ module.exports = {
             displayRole('Vanquisher', vanquisherRoleID) +
             displayRole('Capitalist', capitalistRoleID) +
             displayRole('Campaigner', campaignerRoleID) +
+            displayRole('Bsoto', bsotoRoleID) +
             displayRole('Rock Solid', rockSolidRoleID) +
             displayRole('VIP', vipRoleID) +
             displayRole('Gold', goldRoleID) +
@@ -116,6 +119,7 @@ module.exports = {
             displayRole('Vanquisher', vanquisherColourRoleID) +
             displayRole('Capitalist', capitalistColourRoleID) +
             displayRole('Campaigner', campaignerColourRoleID) +
+            displayRole('Bsoto', bsotoColourRoleID) +
             displayRole('Rock Solid', rockSolidColourRoleID) +
             displayRole('VIP', vipColourRoleID) +
             displayRole('Gold', goldColourRoleID) +

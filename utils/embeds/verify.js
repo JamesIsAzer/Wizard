@@ -66,6 +66,7 @@ const getSuccessfulVerificationEmbedDescription = (achieved, thLevel, anyRoles, 
         displayRow(emojis.diamondleague, achieved.vanquisher, verificationRoles?.vanquisher) +
         displayRow(emojis.capitalgold, achieved.capitalist, verificationRoles?.capitalist) +
         displayRow(emojis.goblin, achieved.campaigner, verificationRoles?.campaigner) +
+        displayRow(emojis.xp, achieved.bsoto, verificationRoles?.bsoto) +
         displayRow(emojis.rock, achieved.rockSolid, verificationRoles?.rockSolid) +
         getThLevelDescription(thLevel, townhallRoles)
     );

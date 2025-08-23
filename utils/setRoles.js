@@ -26,6 +26,7 @@ const getAchievements = (playerData) => {
     vanquisher: playerData?.legendStatistics?.bestBuilderBaseSeason?.rank <= 1000,
     capitalist: playerData?.clanCapitalContributions >= 3000000,
     campaigner: playerAchievement[1].value >= 270,
+    bsoto: playerData.expLevel >= 300,
     rockSolid: playerAchievement[13].value >= 7500,
     member: playerData?.townHallLevel >= 5
   };
@@ -77,6 +78,7 @@ const addAchievementRoles = (user, achieved, verificationRoles) => {
   addAchievementRole(achieved.vanquisher, verificationRoles?.vanquisher)
   addAchievementRole(achieved.capitalist, verificationRoles?.capitalist)
   addAchievementRole(achieved.campaigner, verificationRoles?.campaigner)
+  addAchievementRole(achieved.bsoto, verificationRoles?.bsoto)
   addAchievementRole(achieved.rockSolid, verificationRoles?.rockSolid)
   addAchievementRole(achieved.member, verificationRoles?.member)
 };
