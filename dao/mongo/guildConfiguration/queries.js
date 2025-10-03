@@ -1,4 +1,3 @@
-const { channel } = require('diagnostics_channel');
 const GuildConfiguration = require('./modal');
 
 const getConfigDB = async (guildID) => {
