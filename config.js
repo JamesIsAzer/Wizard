@@ -4,11 +4,8 @@ const { getConfigDB, updateConfigDB, getAllConfigs } = require('./dao/mongo/guil
 
 const getConfig = async (guildID) => {
     let config = configCache.get(guildID);
-    if (!config) {
-        config = await getConfigDB(guildID)
-        if (config) configCache.set(guildID, config)
-    }
-    
+    config = await getConfigDB(guildID)
+    configCache.set(guildID, config)
     return config;
 };
 
