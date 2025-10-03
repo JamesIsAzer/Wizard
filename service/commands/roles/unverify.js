@@ -39,7 +39,7 @@ module.exports = {
       flags: MessageFlags.Ephemeral
      });
 
-     await interaction.editReply('Checking all guilds and unverifying, this may take a bit!');
+     await interaction.editReply('Checking all guilds and unverifying, this may take a bit...');
 
     if (interaction.options.getString('id')) {
       if (interaction.guildId != ownerGuildID)
@@ -108,8 +108,8 @@ module.exports = {
       roleResults.length - successes;
 
     interaction.editReply({
-      embeds: [getUnverifiedEmbed()], 
-      flags: MessageFlags.Ephemeral
+      content: null,
+      embeds: [getUnverifiedEmbed()] 
     })
 
     console.log(`Unverify ${discordID}: roles removed in ${successes}/${pairs.length} guilds; failures=${failures}`);
