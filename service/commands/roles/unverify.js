@@ -9,7 +9,7 @@ const client = require('../../../client');
 const { getConfig } = require('../../../config');
 const { ownerGuildID } = require('../../../config.json');
 const { default: Bottleneck } = require('bottleneck');
-const { loading } = require('../../emojis.json')
+const { loading } = require('../../../emojis.json')
 
 const limiter = new Bottleneck({
   reservoir: 20,                 
