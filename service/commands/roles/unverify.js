@@ -8,6 +8,16 @@ const { InteractionContextType, MessageFlags } = require('discord.js');
 const client = require('../../../client');
 const { getConfig } = require('../../../config');
 const { ownerGuildID } = require('../../../config.json');
+const { default: Bottleneck } = require('bottleneck');
+
+const limiter = new Bottleneck({
+  reservoir: 20,                 
+  reservoirRefreshAmount: 20,    
+  reservoirRefreshInterval: 1000,
+  maxConcurrent: 3,              
+  minTime: 50                    
+});
+
 
 module.exports = {
   mainServerOnly: false,
@@ -41,34 +51,65 @@ module.exports = {
     
     uncompeteAllAccountsForUser(discordID)
 
-    const sharedGuilds = [];
+    const fetchTasks = [...client.guilds.cache.values()].map(guild =>
+      limiter.schedule(async () => {
+        let member = guild.members.cache.get(discordID);
+        if (!member) {
+          try { member = await guild.members.fetch(discordID) } 
+          catch { return null }
+        }
+        return member ? { guild, member } : null;
+      })
+    );
 
-    for (const guild of client.guilds.cache.values()) {
-      let member = guild.members.cache.get(discordID);
-
-      if (!member)
-        member = await guild.members.fetch(discordID).catch(() => null);
-      
-      if (member) 
-        sharedGuilds.push(guild);
+    const pairs = (await Promise.all(fetchTasks)).filter(Boolean);
+    if (pairs.length === 0) {
+      await interaction.editReply('No mutual guilds found for that user.');
+      return;
     }
 
-    unverifyUser(discordID)
-    
-    for (const sharedGuild of sharedGuilds) {
-      try {
-        const configForSharedGuild = getConfig(sharedGuild.id);
-        const member = sharedGuild.members.fetch(discordID)
+    const configEntries = await Promise.allSettled(
+      pairs.map(({ guild }) => getConfig(guild.id).then(cfg => [guild.id, cfg]))
+    );
 
-        await removeRoles(await member, await configForSharedGuild);
-      } catch (error) {
-        console.error(`Error processing guild ${sharedGuild.id}:`, error);
-      }
-    }
+    const configByGuild = new Map(
+      configEntries
+        .filter(r => r.status === 'fulfilled')
+        .map(r => r.value)
+    );
+
+    const dbOps = Promise.allSettled([
+      unverifyUser(discordID),
+      uncompeteAllAccountsForUser(discordID),
+    ]);
+
+    const roleTasks = pairs.map(({ guild, member }) =>
+      limiter.schedule(async () => {
+        try {
+          const cfg = configByGuild.get(guild.id) ?? (await getConfig(guild.id)); // fallback if fetch failed
+          await removeRoles(member, cfg);
+          return { guildId: guild.id, ok: true };
+        } catch (err) {
+          console.error(`Error processing guild ${guild.id}:`, err);
+          return { guildId: guild.id, ok: false, err };
+        }
+      })
+    );
+
+    const [_, roleResults] = await Promise.all([
+      dbOps,
+      Promise.allSettled(roleTasks),
+    ]);
+
+    const successes = roleResults.filter(r => r.status === 'fulfilled' && r.value?.ok).length;
+    const failures =
+      roleResults.length - successes;
 
     interaction.editReply({
       embeds: [getUnverifiedEmbed()], 
       flags: MessageFlags.Ephemeral
     })
+
+    console.log(`Unverify ${discordID}: roles removed in ${successes}/${pairs.length} guilds; failures=${failures}`);
   },
 };
