@@ -66,10 +66,6 @@ module.exports = {
     );
 
     const pairs = (await Promise.all(fetchTasks)).filter(Boolean);
-    if (pairs.length === 0) {
-      await interaction.editReply('No mutual guilds found for that user.');
-      return;
-    }
 
     const configEntries = await Promise.allSettled(
       pairs.map(({ guild }) => getConfig(guild.id).then(cfg => [guild.id, cfg]))
