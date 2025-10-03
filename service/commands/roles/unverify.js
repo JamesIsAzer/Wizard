@@ -9,6 +9,7 @@ const client = require('../../../client');
 const { getConfig } = require('../../../config');
 const { ownerGuildID } = require('../../../config.json');
 const { default: Bottleneck } = require('bottleneck');
+const { loading } = require('../../emojis.json')
 
 const limiter = new Bottleneck({
   reservoir: 20,                 
@@ -39,7 +40,7 @@ module.exports = {
       flags: MessageFlags.Ephemeral
      });
 
-     await interaction.editReply('Checking all guilds and unverifying, this may take a bit...');
+     await interaction.editReply(`${loading} Checking all guilds and unverifying, this may take a bit...`);
 
     if (interaction.options.getString('id')) {
       if (interaction.guildId != ownerGuildID)
