@@ -1,11 +1,13 @@
-const { channel } = require('diagnostics_channel');
 const GuildConfiguration = require('./modal');
 
 const getConfigDB = async (guildID) => {
-    config = await GuildConfiguration.findOne({ guildID });
-    if (!config) {
-        config = await GuildConfiguration.create({ guildID });
-    }
+    const config = await GuildConfiguration.findOneAndUpdate(
+        { guildID: guildID },
+        { upsert: true, new: true, setDefaultsOnInsert: true }
+    )
+    .lean()
+    .exec();
+
     return config;
 };
 
