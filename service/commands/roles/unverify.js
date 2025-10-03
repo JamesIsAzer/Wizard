@@ -39,6 +39,8 @@ module.exports = {
       flags: MessageFlags.Ephemeral
      });
 
+     await interaction.editReply('Checking all guilds and unverifying, this may take a bit!');
+
     if (interaction.options.getString('id')) {
       if (interaction.guildId != ownerGuildID)
         return interaction.editReply('This command can only be run from the main Discord server.')
