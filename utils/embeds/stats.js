@@ -12,7 +12,7 @@ const getTroopShowcaseEmbed = async (profile, verified, endTimestamp, fileName) 
     ];
 
     const embed = new EmbedBuilder()
-        .setTitle(`${getLeagueEmote(profile.trophies)} ${profile.name} • Army showcase`)
+        .setTitle(`${getLeagueEmote(profile?.leagueTier?.name)} ${profile.name} • Army showcase`)
         .setURL(`https://www.clashofstats.com/players/${getURLName(profile)}-${getURLTag(profile)}/summary`)
         .setColor('#33E3FF')
         .setDescription(descriptionLines.join('\n'))
@@ -31,7 +31,7 @@ const getProfileEmbed = async (profile, verified, endTimestamp, fileName, thumbn
     ];
 
     const embed = new EmbedBuilder()
-        .setTitle(`${getLeagueEmote(profile.trophies)} ${profile.name} • Profile overview`)
+        .setTitle(`${getLeagueEmote(profile?.leagueTier?.name)} ${profile.name} • Profile overview`)
         .setURL(`https://www.clashofstats.com/players/${getURLName(profile)}-${getURLTag(profile)}/summary`)
         .setColor('#33E3FF')
         .setDescription(descriptionLines.join('\n'))
@@ -124,41 +124,21 @@ const getClanEmbed = (clan) => {
         return embed
 }
 
-const getLeagueEmote = (trophycount) => {
-    if (trophycount >= 5000) return emojis.legend
-    if (trophycount >= 4100) return emojis.titan
-    if (trophycount >= 3200) return emojis.champion
-    if (trophycount >= 2600) return emojis.master
-    if (trophycount >= 2000) return emojis.crystal
-    if (trophycount >= 1400) return emojis.goldrank
-    if (trophycount >= 800) return emojis.silver
-    if (trophycount >= 400) return emojis.bronze
+const getLeagueEmote = (leagueName) => {
+    const leagueNameCaps = leagueName.toUpperCase()
+    if (leagueNameCaps.startsWith("LEGEND")) return emojis.legendleague
+    if (leagueNameCaps.startsWith("ELECTRO")) return emojis.electrodragonleague
+    if (leagueNameCaps.startsWith("DRAGON")) return emojis.dragonleague
+    if (leagueNameCaps.startsWith("TITAN")) return emojis.titanleague
+    if (leagueNameCaps.startsWith("PEKKA")) return emojis.pekkaleague
+    if (leagueNameCaps.startsWith("GOLEM")) return emojis.golemleague
+    if (leagueNameCaps.startsWith("WITCH")) return emojis.witchleague
+    if (leagueNameCaps.startsWith("VALKYRIE")) return emojis.valkyrieleague
+    if (leagueNameCaps.startsWith("WIZARD")) return emojis.wizardleague
+    if (leagueNameCaps.startsWith("ARCHER")) return emojis.archerleague
+    if (leagueNameCaps.startsWith("BARBARIAN")) return emojis.barbarianleague
+    if (leagueNameCaps.startsWith("SKELETON")) return emojis.skeletonleague
     return emojis.unranked
-}
-
-const getTownhallEmote = (thlvl) => {
-    switch(thlvl) {
-        case 17:
-            return emojis.th17
-        case 16:
-            return emojis.th16
-        case 15:
-            return emojis.th15
-        case 14:
-            return emojis.th14
-        case 13:
-            return emojis.th13
-        case 12:
-            return emojis.th12
-        case 11:
-            return emojis.th11
-        case 10:
-            return emojis.th10
-        case 9:
-            return emojis.th9
-        default:
-            return emojis.th8
-    }
 }
 
 function getWarLeagueEmote(warLeagueId){

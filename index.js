@@ -35,10 +35,6 @@ client.on("rateLimit", (info) => {
   console.warn(`${new Date().toString()} - Rate limit hit:`, info);
 });
 
-client.on("debug", (msg) => {
-  console.log(`${new Date().toString()} - Debug log: ${msg}`)
-})
-
 client.on('interactionCreate', async (interaction) => {
   try {
     if (interaction.isCommand()) return await interactionCommand.execute(interaction)
