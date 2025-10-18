@@ -11,7 +11,7 @@ const getLegendaryLeaderboard = (topLegends, legendParticipantCount, index, page
     for (let i = topRankRange; i <= bottomRankRange; i++){
 
         const rankTitle = `Rank ${formatRank((index*pageSize) + i+1)} - ${getLeagueEmote(topLegends[i].leagueLegends.name)} ${
-            topLegends[i].leagueLegends.name != "Legend League" ? `[${topLegends[i].leagueLegends.id - 105000000}]` : ``} ${topLegends[i].trophiesLegends} 🏆`
+            topLegends[i].leagueLegends.name != "Legend League" ? `[${topLegends[i].leagueLegends.id - 105000000}] ` : ``}${topLegends[i].trophiesLegends} 🏆`
 
         embed.addFields({
             name: rankTitle,
