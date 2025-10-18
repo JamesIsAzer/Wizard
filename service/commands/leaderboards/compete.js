@@ -12,7 +12,7 @@ const { parseTag, isTagValid } = require('../../../utils/arguments/tagHandling')
 const { leaderboardContestID } = require("../../../config.json");
 const { InteractionContextType, MessageFlags } = require('discord.js');
 
-const LEGENDARY_MINIMUM = 5000
+const LEGENDARY_MINIMUM = 0
 const BUILDER_MINIMUM = 5000
 
 module.exports = {

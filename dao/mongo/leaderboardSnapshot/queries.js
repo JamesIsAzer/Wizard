@@ -14,6 +14,9 @@ const refreshLeaderboardSnapshot = async (participants) => {
             discordUsername: participant.discordUsername,
             gameName: participant.clash.response.data.name,
             gameTag: participant.clash.response.data.tag,
+            leagueLegends: participant.leaderboard ? { 
+                id: participant.clash.response.data.leagueTier.id, name: participant.clash.response.data.leagueTier.name 
+            } : null,
             trophiesLegends: participant.leaderboard ? participant.clash.response.data.trophies : null,
             trophiesBuilders: participant.builderleaderboard ? participant.clash.response.data.builderBaseTrophies : null
         })))

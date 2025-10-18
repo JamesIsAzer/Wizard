@@ -82,7 +82,7 @@ const sendLeaderboards = async (
                         components: [getHowToCompete()]
                     });
                 } catch (e) {
-                    console.error(`${new Date().toString()} - Failed to send to legend channel ${channelID}`);
+                    console.error(`${new Date().toString()} - Failed to send to legend channel ${channelID}, ${e}`);
                 }
             })
         ),
@@ -150,9 +150,23 @@ const pruneIncompleteData = (playerData) =>
         return acc
     }, [])
 
-const sortLegends = (legendParticipants) => 
-    legendParticipants.sort((a, b) => b.clash.response.data.trophies - a.clash.response.data.trophies)
-        .slice(0, MAX_LEADERBOARD_PARTICIPANTS)
+const sortLegends = (legendParticipants) =>
+  legendParticipants
+    .sort((a, b) => {
+      const leagueA = a.clash.response.data.leagueTier.id;
+      const leagueB = b.clash.response.data.leagueTier.id;
+      const trophiesA = a.clash.response.data.trophies;
+      const trophiesB = b.clash.response.data.trophies;
+
+      // 1) Sort by league tier ID (descending)
+      if (leagueB !== leagueA) {
+        return leagueB - leagueA;
+      }
+
+      // 2) If same league tier, sort by trophies (descending)
+      return trophiesB - trophiesA;
+    })
+    .slice(0, MAX_LEADERBOARD_PARTICIPANTS);
 
 const sortBuilders = (builderParticipants) => 
     builderParticipants.sort((a, b) => b.clash.response.data.builderBaseTrophies - a.clash.response.data.builderBaseTrophies)
@@ -165,6 +179,9 @@ const formatToSnapshot = (participants) => participants.map(participant => ({
     discordUsername: participant.discordUsername,
     gameName: participant.clash.response.data.name,
     gameTag: participant.clash.response.data.tag,
+    leagueLegends: participant.leaderboard ? {
+        id: participant.clash.response.data.leagueTier.id, name: participant.clash.response.data.leagueTier.name
+    } : null,
     trophiesLegends: participant.leaderboard ? participant.clash.response.data.trophies : null,
     trophiesBuilders: participant.builderleaderboard ? participant.clash.response.data.builderBaseTrophies : null
 }))

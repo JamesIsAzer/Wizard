@@ -1,4 +1,5 @@
-const { EmbedBuilder } = require('discord.js')
+const { EmbedBuilder } = require('discord.js');
+const { getLeagueEmote } = require('../getEmojis');
 
 const getLegendaryLeaderboard = (topLegends, legendParticipantCount, index, pageSize) => {
     const topRankRange = (index * pageSize) % pageSize
@@ -8,8 +9,12 @@ const getLegendaryLeaderboard = (topLegends, legendParticipantCount, index, page
     .setTitle('Legendary leaderboard')
     .setColor('#9650DC');
     for (let i = topRankRange; i <= bottomRankRange; i++){
+
+        const rankTitle = `Rank ${formatRank((index*pageSize) + i+1)} - ${getLeagueEmote(topLegends[i].leagueLegends.name)} ${
+            topLegends[i].leagueLegends.name != "Legend League" ? `[${topLegends[i].leagueLegends.id - 105000000}]` : ``} ${topLegends[i].trophiesLegends} 🏆`
+
         embed.addFields({
-            name: `Rank ${formatRank((index*pageSize) + i+1)} - ${topLegends[i].trophiesLegends} 🏆`,
+            name: rankTitle,
             value: `Discord tag: <@${topLegends[i].discordID}>\n` +
             `Discord username: ${topLegends[i].discordUsername}\n` +
             `In-game name: ${topLegends[i].gameName}\n` +

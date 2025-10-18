@@ -6,6 +6,7 @@ const leaderboardSnapshotSchema = Schema({
     discordUsername: { type: String, required: true },
     gameName: { type: String, required: true },
     gameTag: { type: String, required: true },
+    leagueLegends: { id: { type: Number, required: false }, name: { type: String, required: false } },
     trophiesLegends: { type: Number, required: false },
     trophiesBuilders: { type: Number, required: false }
 })
