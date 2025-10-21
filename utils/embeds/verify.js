@@ -55,7 +55,7 @@ const getSuccessfulVerificationEmbedDescription = (achieved, thLevel, anyRoles, 
 
     return (
         displayRow(emojis.xp, achieved.member, verificationRoles?.member) +
-        displayRow(emojis.legend, achieved.legends, verificationRoles?.legends) +
+        displayRow(emojis.legendleague, achieved.legends, verificationRoles?.legends) +
         displayRow(emojis.star, achieved.starLord, verificationRoles?.starLord) +
         displayRow(emojis.loot, achieved.farmersRUs, verificationRoles?.farmersRUs) +
         displayRow(emojis.masterbuilder, achieved.masterBuilder, verificationRoles?.masterBuilder) +

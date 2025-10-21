@@ -20,7 +20,7 @@ const getColourList = (user, colourRoles, verificationRoles) => {
   }
 
   return (
-    displayRowColour(emojis.legend, shouldDisplayRole(colourRoles?.legends, verificationRoles?.legends), colourRoles?.legends) +
+    displayRowColour(emojis.legendleague, shouldDisplayRole(colourRoles?.legends, verificationRoles?.legends), colourRoles?.legends) +
     displayRowColour(emojis.star, shouldDisplayRole(colourRoles?.starLord, verificationRoles?.starLord), colourRoles?.starLord) +
     displayRowColour(emojis.loot, shouldDisplayRole(colourRoles?.farmersRUs, verificationRoles?.farmersRUs), colourRoles?.farmersRUs) +
     displayRowColour(emojis.masterbuilder, shouldDisplayRole(colourRoles?.masterBuilder, verificationRoles?.masterBuilder), colourRoles?.masterBuilder) +
