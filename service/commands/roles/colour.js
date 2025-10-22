@@ -27,7 +27,7 @@ module.exports = {
             .setDescription('The colour override you want.')
             .setRequired(true)
             .addChoices(
-              { name: 'Legends Red', value: 'LEGENDRED' },
+              { name: 'Legends Orange', value: 'LEGENDORANGE' },
               { name: 'Star Lord Yellow', value: 'YELLOW' },
               { name: 'Farmers Pink', value: 'FARMERPINK' },
               { name: 'Builder Blue', value: 'BLUE' },
@@ -122,7 +122,7 @@ const setColorRoles = async (colour, verificationRoles, colourRoles, interaction
   }
 
   try {
-    if (colour == "LEGENDRED") addRoleIfRequirementMet(colourRoles?.legends, verificationRoles?.legends)
+    if (colour == "LEGENDORANGE") addRoleIfRequirementMet(colourRoles?.legends, verificationRoles?.legends)
     if (colour == "YELLOW") addRoleIfRequirementMet(colourRoles?.starLord, verificationRoles?.starLord)
     if (colour == "FARMERPINK") addRoleIfRequirementMet(colourRoles?.farmersRUs, verificationRoles?.farmersRUs)
     if (colour == "BLUE") addRoleIfRequirementMet(colourRoles?.masterBuilder, verificationRoles?.masterBuilder)
