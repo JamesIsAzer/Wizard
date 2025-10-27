@@ -10,7 +10,7 @@ const limiter = new Bottleneck({
 const getAchievements = (playerData) => {
   const playerAchievement = playerData.achievements;
   const achieved = {
-    legends: playerData.bestTrophies >= 5000,
+    legends: playerAchievement[53].value >= 34,
     starLord: 
       playerData.warStars >= 1300 &&
       playerAchievement[33].value >= 500,
