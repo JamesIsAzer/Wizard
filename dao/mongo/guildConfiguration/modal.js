@@ -9,6 +9,7 @@ const guildConfigurationSchema = Schema({
     },
     verificationRoles: {
         member: { type: String, required: false },
+        legendsOld: { type: String, required: false },
         legends: { type: String, required: false },
         starLord: { type: String, required: false },
         farmersRUs: { type: String, required: false },
