@@ -69,6 +69,7 @@ const addAchievementRoles = (user, achieved, verificationRoles) => {
   }
 
   addAchievementRole(achieved.legends, verificationRoles?.legends)
+  addAchievementRole(achieved.legendsOld, verificationRoles?.legendsOld)
   addAchievementRole(achieved.starLord, verificationRoles?.starLord)
   addAchievementRole(achieved.farmersRUs, verificationRoles?.farmersRUs)
   addAchievementRole(achieved.masterBuilder, verificationRoles?.masterBuilder)
