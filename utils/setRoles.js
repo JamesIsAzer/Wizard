@@ -10,7 +10,6 @@ const limiter = new Bottleneck({
 const getAchievements = (playerData) => {
   const playerAchievement = playerData.achievements;
   const achieved = {
-    legendsOld: playerData.bestTrophies >= 5000,
     legends: playerAchievement[53].value >= 34,
     starLord: 
       playerData.warStars >= 1300 &&
@@ -69,7 +68,6 @@ const addAchievementRoles = (user, achieved, verificationRoles) => {
   }
 
   addAchievementRole(achieved.legends, verificationRoles?.legends)
-  addAchievementRole(achieved.legendsOld, verificationRoles?.legendsOld)
   addAchievementRole(achieved.starLord, verificationRoles?.starLord)
   addAchievementRole(achieved.farmersRUs, verificationRoles?.farmersRUs)
   addAchievementRole(achieved.masterBuilder, verificationRoles?.masterBuilder)
