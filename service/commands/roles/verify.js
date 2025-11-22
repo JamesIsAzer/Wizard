@@ -115,7 +115,11 @@ module.exports = {
     if (await tagVerified(tag)) {
       if (await alreadyTaken(tag, interaction.member.id)) {
         const originalAccountId = await getDiscordOfTag(tag)
-        await interaction.editReply('This account is already taken!');
+        const alreadyTakenMessage = onMainServer 
+          ? 'This account is already taken! Please DM <@471484399616131104> if you believe this is incorrect' 
+          : 'This account is already taken!'
+        await interaction.editReply(alreadyTakenMessage);
+
         return (await crossVerifyLogChannel).send({embeds: [alertAttemptCrossVerification(memberId, originalAccountId, tag, onMainServer)], components: [getCrossVerificationIDs(memberId, originalAccountId)]})
       } else {
         addRoles(anyRoles, achieved, townhallLevel, interaction.member, config)
