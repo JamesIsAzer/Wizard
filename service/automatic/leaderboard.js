@@ -1,5 +1,5 @@
-const { getLeaderboardAccounts } = require('../../dao/mongo/participant/queries');
-const { refreshLeaderboardSnapshot } = require('../../dao/mongo/leaderboardSnapshot/queries');
+const { getLeaderboardAccounts, getLegendaryLeaderboardAccounts, getBuilderLeaderboardAccounts } = require('../../dao/mongo/participant/queries');
+const { refreshBuilderLeaderboardSnapshot, refreshLegendaryLeaderboardSnapshot } = require('../../dao/mongo/leaderboardSnapshot/queries');
 const { findProfile } = require('../../dao/clash/verification');
 const { getLegendaryLeaderboard, getBuilderLeaderboard } = require('../../utils/embeds/leaderboard')
 const { getHowToCompete } = require('../../utils/buttons/leaderboard')
@@ -35,46 +35,55 @@ const discordAPILimiter = new Bottleneck({
     minTime: 50                      
 });
 
-const createLeaderboard = async() => {
-    console.log(`${new Date().toString()} Creating leaderboards`)
-    
+const createLegendaryLeaderboard = async() => {
+    console.log(`${new Date().toString()} Creating legendary leaderboards`)
     const leaderboards = getAllLeaderboards()
-    const participants = await getLeaderboardAccounts()
+    const participants = await getLegendaryLeaderboardAccounts() 
+
     const playerData = await fetchAllAccounts(participants).then((x) => pruneIncompleteData(x))
-    
-    const participantsSplit = splitParticipants(playerData)
+    const topLegends = takeTopPlayers(sortLegends(playerData))
 
-    const topLegends = takeTopPlayers(sortLegends(participantsSplit.legendParticipants))
-    const topBuilders = takeTopPlayers(sortBuilders(participantsSplit.builderParticipants))
+    const legendParticipantCount = playerData.length
 
-    const legendParticipantCount = participantsSplit.legendParticipants.length
-    const builderParticipantCount = participantsSplit.builderParticipants.length
+    const { legendsChannelIDs } = findLeaderboardChannels(await leaderboards)
 
-    const { legendsChannelIDs, builderChannelIDs } = findLeaderboardChannels(await leaderboards)
+    refreshLegendaryLeaderboardSnapshot(playerData)
 
-    refreshLeaderboardSnapshot(playerData)
-    
-    sendLeaderboards(legendsChannelIDs, builderChannelIDs, topLegends, topBuilders, legendParticipantCount, builderParticipantCount)
+    sendLegendaryLeaderboard(legendsChannelIDs, topLegends, legendParticipantCount, "legend")
 }
 
-const sendLeaderboards = async (
-    legendsChannelIDs,
-    builderChannelIDs,
-    topLegends,
-    topBuilders,
-    legendParticipantCount,
-    builderParticipantCount
+const createBuilderLeaderboard = async() => {
+    console.log(`${new Date().toString()} Creating builder leaderboards`)
+    const leaderboards = getAllLeaderboards()
+    const participants = await getBuilderLeaderboardAccounts() 
+
+    const playerData = await fetchAllAccounts(participants).then((x) => pruneIncompleteData(x))
+    const topBuilders = takeTopPlayers(sortBuilders(playerData))
+
+    const builderParticipantCount = playerData.length
+
+    const { builderChannelIDs } = findLeaderboardChannels(await leaderboards)
+
+    refreshBuilderLeaderboardSnapshot(playerData)
+
+    sendBuilderLeaderboard(builderChannelIDs, topBuilders, builderParticipantCount, "builder")
+}
+
+const sendLegendaryLeaderboard = async (
+    channelIDs,
+    topUsers,
+    participantCount
 ) => {
     const sendTasks = [
-        ...legendsChannelIDs.map((channelID) =>
+        ...channelIDs.map((channelID) =>
             discordAPILimiter.schedule(async () => {
                 try {
                     const channel = await getChannel(channelID);
                     await channel.send({
                         embeds: [
                             getLegendaryLeaderboard(
-                                formatToSnapshot(topLegends),
-                                legendParticipantCount,
+                                formatToSnapshot(topUsers),
+                                participantCount,
                                 0,
                                 MAX_LEADERBOARD_PARTICIPANTS
                             )
@@ -82,19 +91,30 @@ const sendLeaderboards = async (
                         components: [getHowToCompete()]
                     });
                 } catch (e) {
-                    console.error(`${new Date().toString()} - Failed to send to legend channel ${channelID}, ${e}`);
+                    console.error(`${new Date().toString()} - Failed to send to legendary channel ${channelID}, ${e}`);
                 }
             })
         ),
-        ...builderChannelIDs.map((channelID) =>
+    ];
+
+    await Promise.allSettled(sendTasks);
+}
+
+const sendBuilderLeaderboard = async (
+    channelIDs,
+    topUsers,
+    participantCount
+) => {
+    const sendTasks = [
+        ...channelIDs.map((channelID) =>
             discordAPILimiter.schedule(async () => {
                 try {
                     const channel = await getChannel(channelID);
                     await channel.send({
                         embeds: [
                             getBuilderLeaderboard(
-                                formatToSnapshot(topBuilders),
-                                builderParticipantCount,
+                                formatToSnapshot(topUsers),
+                                participantCount,
                                 0,
                                 MAX_LEADERBOARD_PARTICIPANTS
                             )
@@ -105,11 +125,10 @@ const sendLeaderboards = async (
                     console.error(`${new Date().toString()} - Failed to send to builder channel ${channelID}`);
                 }
             })
-        )
+        ),
     ];
 
     await Promise.allSettled(sendTasks);
-
 }
 
 const findLeaderboardChannels = (leaderboards) => 
@@ -136,13 +155,6 @@ const fetchAllAccounts = (participants) =>
             })
         )
     )
-
-const splitParticipants = (participants) => 
-    participants.reduce((acc, x) => {
-        if (x.leaderboard) acc.legendParticipants.push(x)
-        if (x.builderleaderboard) acc.builderParticipants.push(x)
-        return acc
-    } , { legendParticipants: [], builderParticipants: [] })
 
 const pruneIncompleteData = (playerData) =>
     playerData.reduce((acc, x) => {
@@ -187,8 +199,8 @@ const formatToSnapshot = (participants) => participants.map(participant => ({
 }))
 
 module.exports = {
-    createLeaderboard,
-    splitParticipants,
+    createLegendaryLeaderboard,
+    createBuilderLeaderboard,
     sortLegends,
     sortBuilders
 }

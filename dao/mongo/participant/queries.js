@@ -3,6 +3,12 @@ const participants = require('./modal');
 const getLeaderboardAccounts = async ( guildID ) => 
     participants.find({ guildID }).then((result) => result)
 
+const getLegendaryLeaderboardAccounts = async ( guildID ) => 
+    participants.find({ guildID, leaderboard: true }).then((result) => result)
+
+const getBuilderLeaderboardAccounts = async ( guildID ) => 
+    participants.find({ guildID, builderleaderboard: true }).then((result) => result)
+
 const checkIfCompetingInBoth = async ( tag, discordID ) => 
     participants.findOne({
         discordID,
@@ -43,6 +49,8 @@ const resetLeaderboards = async () =>
 
 module.exports = {
     getLeaderboardAccounts,
+    getLegendaryLeaderboardAccounts,
+    getBuilderLeaderboardAccounts,
     checkIfCompetingInBoth,
     updateLeaderboardParticipation,
     uncompete,
