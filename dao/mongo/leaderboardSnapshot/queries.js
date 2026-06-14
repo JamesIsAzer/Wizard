@@ -12,12 +12,11 @@ const refreshLegendaryLeaderboardSnapshot = async (participants) => {
     await leaderboardSnapshots.bulkWrite(
       participants.map(participant => ({
         updateOne: {
-          filter: { discordID: participant.discordID },
+          filter: { discordID: participant.discordID, gameTag: participant.clash.response.data.tag },
           update: {
             $set: {
               discordUsername: participant.discordUsername,
               gameName: participant.clash.response.data.name,
-              gameTag: participant.clash.response.data.tag,
               leagueLegends: participant.leaderboard
                 ? {
                     id: participant.clash.response.data.leagueTier.id,
