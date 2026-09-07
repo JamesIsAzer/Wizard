@@ -9,9 +9,8 @@ const getLegendaryLeaderboard = (topLegends, legendParticipantCount, index, page
     .setTitle('Legendary leaderboard')
     .setColor('#9650DC');
     for (let i = topRankRange; i <= bottomRankRange; i++){
-
-        const rankTitle = `Rank ${formatRank((index*pageSize) + i+1)} - ${getLeagueEmote(topLegends[i].leagueLegends.name)} ${
-            topLegends[i].leagueLegends.name != "Legend League" ? `[${topLegends[i].leagueLegends.id - 105000000}] ` : ``}${topLegends[i].trophiesLegends} 🏆`
+        const rankTitle = `Rank ${formatRank((index*pageSize) + i+1)} - ${getLeagueEmote(topLegends[i].league.name)} ${
+            topLegends[i].league.name != "Legend League" ? `[${topLegends[i].league.id - 105000000}] ` : ``}${topLegends[i].trophies} 🏆`
 
         embed.addFields({
             name: rankTitle,
@@ -33,7 +32,7 @@ const getBuilderLeaderboard = (topBuilders, builderParticipantCount, index, page
     .setColor('#0B0B3B');
     for (let i = topRankRange; i <= bottomRankRange; i++){
         embed.addFields({
-            name: `Rank ${formatRank((index*pageSize) + i+1)} - ${topBuilders[i].trophiesBuilders} 🏆`,
+            name: `Rank ${formatRank((index*pageSize) + i+1)} - ${topBuilders[i].trophies} 🏆`,
             value: `Discord tag: <@${topBuilders[i].discordID}>\n` +
             `Discord username: ${topBuilders[i].discordUsername}\n` +
             `In-game name: ${topBuilders[i].gameName}\n` +

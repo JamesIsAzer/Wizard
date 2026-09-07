@@ -3,8 +3,8 @@ const { CronJob } = require('cron');
 const { createLegendaryLeaderboard, createBuilderLeaderboard } = require('../service/automatic/leaderboard')
 
 const scheduleLeaderboards = () => {
-    const LEGENDS_RESET_TIME = '10 0,12 * * *' 
-    const BUILDER_RESET_TIME = '55 11,23 * * *'
+    const LEGENDS_RESET_TIME = '* * * * *' 
+    const BUILDER_RESET_TIME = '* * * * *'
     
     new CronJob({
         cronTime: LEGENDS_RESET_TIME,

@@ -82,7 +82,7 @@ const sendLegendaryLeaderboard = async (
                     await channel.send({
                         embeds: [
                             getLegendaryLeaderboard(
-                                formatToSnapshot(topUsers),
+                                formatToLegendarySnapshot(topUsers),
                                 participantCount,
                                 0,
                                 MAX_LEADERBOARD_PARTICIPANTS
@@ -113,7 +113,7 @@ const sendBuilderLeaderboard = async (
                     await channel.send({
                         embeds: [
                             getBuilderLeaderboard(
-                                formatToSnapshot(topUsers),
+                                formatToBuilderSnapshot(topUsers),
                                 participantCount,
                                 0,
                                 MAX_LEADERBOARD_PARTICIPANTS
@@ -122,7 +122,7 @@ const sendBuilderLeaderboard = async (
                         components: [getHowToCompete()]
                     });
                 } catch (e) {
-                    console.error(`${new Date().toString()} - Failed to send to builder channel ${channelID}`);
+                    console.error(`${new Date().toString()} - Failed to send to builder channel ${channelID}, ${e}`);
                 }
             })
         ),
@@ -186,16 +186,23 @@ const sortBuilders = (builderParticipants) =>
 
 const takeTopPlayers = (participants) => participants.slice(0, MAX_LEADERBOARD_PARTICIPANTS)
 
-const formatToSnapshot = (participants) => participants.map(participant => ({
+const formatToLegendarySnapshot = (participants) => participants.map(participant => ({
     discordID: participant.discordID,
     discordUsername: participant.discordUsername,
     gameName: participant.clash.response.data.name,
     gameTag: participant.clash.response.data.tag,
-    leagueLegends: participant.leaderboard ? {
+    league: {
         id: participant.clash.response.data.leagueTier.id, name: participant.clash.response.data.leagueTier.name
-    } : null,
-    trophiesLegends: participant.leaderboard ? participant.clash.response.data.trophies : null,
-    trophiesBuilders: participant.builderleaderboard ? participant.clash.response.data.builderBaseTrophies : null
+    },
+    trophies: participant.clash.response.data.trophies,
+}))
+
+const formatToBuilderSnapshot = (participants) => participants.map(participant => ({
+    discordID: participant.discordID,
+    discordUsername: participant.discordUsername,
+    gameName: participant.clash.response.data.name,
+    gameTag: participant.clash.response.data.tag,
+    trophies:participant.clash.response.data.builderBaseTrophies
 }))
 
 module.exports = {

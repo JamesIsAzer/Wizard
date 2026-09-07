@@ -23,10 +23,10 @@ const paginateLeaderboard = (acc, participants) => {
 const sortLegends = (legendParticipants) =>
   legendParticipants
     .sort((a, b) => {
-      const leagueA = a.leagueLegends.id;
-      const leagueB = b.leagueLegends.id;
-      const trophiesA = a.trophiesLegends;
-      const trophiesB = b.trophiesLegends;
+      const leagueA = a.league.id;
+      const leagueB = b.league.id;
+      const trophiesA = a.trophies;
+      const trophiesB = b.trophies;
 
       // 1) Sort by league tier ID (descending)
       if (leagueB !== leagueA) {
@@ -38,7 +38,7 @@ const sortLegends = (legendParticipants) =>
     });
 
 const sortBuilders = (builderParticipants) => 
-    builderParticipants.sort((a, b) => b.trophiesBuilders - a.trophiesBuilders)
+    builderParticipants.sort((a, b) => b.trophies - a.trophies)
 
 module.exports = {
     mainServerOnly: false,
